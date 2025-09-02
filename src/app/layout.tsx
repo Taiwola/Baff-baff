@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Poppins, Montserrat, Roboto } from "next/font/google"
 import "./globals.css"
-import HeroUiProvider from "./provider/herouiProvider"
+import HeroUiProvider from "../providers/herouiProvider"
 
 const poppins = Poppins({
   subsets: ["latin"],

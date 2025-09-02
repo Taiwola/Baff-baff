@@ -7,7 +7,7 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline"
 import NavLink from "./navlink"
-import { menuItems } from "../../data/menuItems"
+import { menuItems } from "../../../lib/menuItems"
 import Link from "next/link"
 import LargeLogoSvg from "@/app/asset/svg/largeLogoSvg"
 import NavSidebar from "./navSideBar"

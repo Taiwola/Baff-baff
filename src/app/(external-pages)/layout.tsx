@@ -1,4 +1,4 @@
-import HeroUiProvider from "../provider/herouiProvider"
+import HeroUiProvider from "../../providers/herouiProvider"
 import Footer from "./component/footer"
 import Header from "./component/header"
 
