@@ -1,3 +1,1 @@
-
-
-export default {ExternalHeader} from './Headers/ExternalHeader'
+export { default as HomeHero } from './HomeHero'
