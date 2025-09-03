@@ -1,4 +1,4 @@
-import { SweatShirtSvg } from "../../asset/svg/sweatShirtSvg"
+import { SweatShirtSvg } from "@assets/svg/sweatShirtSvg"
 
 export default function Discount() {
   return (

@@ -1,7 +1,7 @@
 "use client"
-import LargeHeroSvg from "../../asset/svg/largeheroSvg"
-import { HeroBannerSvg } from "../../asset/svg/herobannerSvg"
-import { HeroShopSvg } from "../../asset/svg/heroShopSvg"
+import LargeHeroSvg from "@assets/svg/largeheroSvg"
+import { HeroBannerSvg } from "@assets/svg/herobannerSvg"
+import { HeroShopSvg } from "@assets/svg/heroShopSvg"
 import { Button } from "@heroui/react"
 import { ArrowRightIcon } from "@heroicons/react/24/outline"
 

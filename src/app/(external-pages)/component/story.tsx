@@ -1,4 +1,4 @@
-import { OurStorySvg } from "../../asset/svg/ourStorysvg"
+import { OurStorySvg } from "@assets/svg/ourStorysvg"
 
 export default function Story() {
   return (

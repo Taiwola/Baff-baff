@@ -1,0 +1,19 @@
+:root {
+  --background: #eeeeee;
+  --foreground: #e0e0e0;
+
+  /* Brand colors */
+  --color-brand: #eeeeee;
+  --color-brand-dark: #202020;
+  --color-brand-light: #ffffff;
+
+  /* Spacing */
+  --layout-x: 4.375rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #eeeeee;
+    --foreground: #e0e0e0;
+  }
+}

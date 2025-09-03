@@ -1,4 +1,4 @@
-import { ManInBlueShirtSvg } from "../../asset/svg/manInBlueShirtSvg"
+import { ManInBlueShirtSvg } from "@assets/svg/manInBlueShirtSvg"
 
 export default function FeaturedImages() {
   return (

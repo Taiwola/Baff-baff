@@ -1,6 +1,5 @@
-import HeroUiProvider from "../../providers/herouiProvider"
-import Footer from "./component/footer"
-import Header from "./component/header"
+// import HeroUiProvider from "../../providers/herouiProvider"
+// import Footer from "./component/footer"
 
 export default function NonDashboardLayout({
   children,
@@ -9,11 +8,9 @@ export default function NonDashboardLayout({
 }>) {
   return (
     <>
-      <HeroUiProvider>
-        <Header />
-        {children}
-        <Footer />
-      </HeroUiProvider>
+        {/* <Header /> */}
+      {children}
+      {/* <Footer /> */}
     </>
   )
 }

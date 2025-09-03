@@ -1,9 +1,9 @@
 import Link from "next/link"
-import { BaffFooterIconSvg } from "../../asset/svg/baffFooterIconSvg"
-import { FacebookSvg } from "../../asset/svg/facebookSvg"
-import { InstagramSvg } from "../../asset/svg/instagramSvg"
-import { LinkdlnSvg } from "../../asset/svg/linkdlnSvg"
-import { TwitterSvg } from "../../asset/svg/twitterSvg"
+import { BaffFooterIconSvg } from "@assets/svg/baffFooterIconSvg"
+import { FacebookSvg } from "@assets/svg/facebookSvg"
+import { InstagramSvg } from "@assets/svg/instagramSvg"
+import { LinkdlnSvg } from "@assets/svg/linkdlnSvg"
+import { TwitterSvg } from "@assets/svg/twitterSvg"
 
 export default function Footer() {
   return (
