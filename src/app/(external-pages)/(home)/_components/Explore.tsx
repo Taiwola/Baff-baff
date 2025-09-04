@@ -1,11 +1,11 @@
-import { ExploreCard } from '@components/ui'
 import React from 'react'
+import { ExploreCard } from '@components/ui'
 
 export default function Explore() {
    return (
       <section className="flex flex-col gap-8 container mx-auto">
          {/* explore text */}
-         <h4 className="font-montserrat font-black text-center">
+         <h4 className="home-label text-center">
             EXPLORE OUR CATEGORIES
          </h4>
 

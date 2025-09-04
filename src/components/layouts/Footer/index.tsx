@@ -7,10 +7,11 @@ import { TwitterSvg } from "@assets/svg/twitterSvg"
 
 export default function Footer() {
   return (
-    <div className="bg-[#202020] py-14 md:py-20 w-full">
+    <div className="bg-brand-dark py-14 md:py-20 w-full">
       <div className="px-10 w-full md:hidden inline-flex justify-center items-center">
         <BaffFooterIconSvg />
       </div>
+      
       <div className="px-10 w-full flex mt-14 justify-center items-center flex-col md:hidden">
         <p className="font-montserrat font-semibold text-sm text-[#FEFEFE]">
           +2348162695360+2348090444452
@@ -43,6 +44,7 @@ export default function Footer() {
           <p className="text-[#FEFEFE] font-montserrat font-semibold">
             Follow us
           </p>
+          
           <div className="flex justify-center items-center gap-6">
             <Link href={"/x.com"}>
               <TwitterSvg />

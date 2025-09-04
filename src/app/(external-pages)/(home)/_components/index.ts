@@ -1,0 +1,7 @@
+export { default as Explore } from './Explore'
+export { default as HomeHero } from './Hero'
+export { default as Story } from './Story'
+export { default as Catalog } from './Catalog'
+export { default as PaymentInfo } from './PaymentInfo'
+export { default as FeaturedImages } from './FeaturedImages'
+export { default as Discount } from './Discount'

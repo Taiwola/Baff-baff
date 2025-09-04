@@ -4,11 +4,14 @@
 @source '@node_modules/@heroui/theme/dist*.{js,ts,jsx,tsx}';
 
 @theme inline {
+   --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-montserrat: var(--font-montserrat);
+  --font-roboto: var(--font-roboto);
+  --font-poppins: var(--font-poppins);
+  
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-
   --color-brand: var(--color-brand);
   --color-brand-dark: var(--color-brand-dark);
   --color-brand-light: var(--color-brand-light);
@@ -27,7 +30,10 @@ body {
     @apply text-2xl font-bold text-gray-900;
   }
   h2 {
-    @apply text-3xl font-semibold text-gray-800;
+    @apply text-base md:text-5xl text-black font-normal md:font-black;
+  }
+  h3 {
+    @apply text-base md:text-4xl text-black font-normal md:font-medium;
   }
   h4 {
      @apply text-[2rem] font-medium text-brand-dark;
@@ -41,16 +47,20 @@ body {
   p {
     @apply text-base font-normal text-brand-dark;
   }
+  small {
+    @apply text-xs font-normal text-black;
+  }
   a {
     @apply text-[0.75rem] text-brand-dark font-medium
-  }
-  .app-container {
-    @apply px-4 md:px-[4.375rem];
   }
 }
 
 /* Reusable components & animations */
 @layer components {
+  .app-container {
+    @apply px-4 md:px-[4.375rem];
+  }
+
   .icon-button {
     @apply cursor-pointer text-brand-dark w-6 h-6 md:w-8 md:h-8 transition-transform duration-300 ease-in-out;
   }
@@ -76,6 +86,10 @@ body {
     @apply scale-105 shadow-lg;
   }
 
+  .home-label {
+    @apply font-montserrat font-black text-black uppercase;
+  }
+
   .icon-button:hover {
     @apply scale-110;
   }
@@ -99,3 +113,14 @@ body {
     overflow: hidden;
   }
 }
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+

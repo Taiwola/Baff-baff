@@ -15,7 +15,7 @@ export const ManInBlueShirtSvg: React.FC<React.SVGProps<SVGSVGElement>> = (
       height="228.667"
       transform="translate(10)"
       fill="#FBFBFB"
-      fill-opacity="0.74902"
+      fillOpacity="0.74902"
     />
     <rect
       width="343"
@@ -28,7 +28,7 @@ export const ManInBlueShirtSvg: React.FC<React.SVGProps<SVGSVGElement>> = (
       height="228.667"
       transform="translate(363)"
       fill="#FBFBFB"
-      fill-opacity="0.74902"
+      fillOpacity="0.74902"
     />
     <rect
       width="343"
