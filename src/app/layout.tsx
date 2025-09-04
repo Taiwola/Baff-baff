@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${poppins.variable} ${montserrat.variable} ${roboto.variable} h-screen w-full`}
+        className={`${poppins.variable} ${montserrat.variable} ${roboto.variable} min:h-screen w-full`}
       >
         <HeroUiProvider>{children}</HeroUiProvider>
       </body>
