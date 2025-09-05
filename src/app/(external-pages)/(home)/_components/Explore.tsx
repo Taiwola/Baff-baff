@@ -3,9 +3,9 @@ import { ExploreCard } from '@components/ui'
 
 export default function Explore() {
    return (
-      <section className="flex flex-col gap-8 container mx-auto">
+      <section className="container mx-auto">
          {/* explore text */}
-         <h4 className="home-label text-center">
+         <h4 className="home-label text-center mb-5 md:mb-12">
             EXPLORE OUR CATEGORIES
          </h4>
 

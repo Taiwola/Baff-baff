@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { UserIcon, ShoppingBagIcon, MagnifyingGlassIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 
 import LargeLogoSvg from "@assets/svg/largeLogoSvg"
+import SmallLogoSvg from "@assets/svg/smallLogoSvg"
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +55,8 @@ export default function Header() {
         {/* Logo */}
         <div className="flex-1 flex justify-center">
           <Link href="/" className="text-xl font-bold">
-            <LargeLogoSvg className="w-full h-auto" />
+            <LargeLogoSvg className="w-full h-auto hidden md:block" />
+            <SmallLogoSvg className="w-full h-auto md:hidden" />
           </Link>
         </div>
 

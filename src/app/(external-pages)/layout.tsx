@@ -1,16 +1,15 @@
-// import HeroUiProvider from "../../providers/herouiProvider"
-// import Footer from "./component/footer"
+import { Footer, Header } from '@components/layouts'
 
-export default function NonDashboardLayout({
-  children,
-}: Readonly<{
+type Props = Readonly<{
   children: React.ReactNode
-}>) {
+}>
+
+export default function ExternalPagesLayout({ children }: Props) {
   return (
     <>
-        {/* <Header /> */}
+      <Header />
       {children}
-      {/* <Footer /> */}
+      <Footer />
     </>
   )
 }

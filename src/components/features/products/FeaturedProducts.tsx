@@ -6,7 +6,7 @@ import { Product } from '@models/product.model'
 export default function FeaturedProducts() {
    return (
       <section className='w-full py-12 container mx-auto'>
-         <h4 className="home-label mb-12">
+         <h4 className="home-label mb-5 md:mb-12">
             featured products
          </h4>
 

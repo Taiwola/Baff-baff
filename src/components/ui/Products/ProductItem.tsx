@@ -12,7 +12,7 @@ type Props = {
 
 export default function ProductItem({ product }: Props) {
   return (
-    <div className="flex w-60 flex-col gap-3">
+    <div className="flex w-full flex-col gap-3">
       <Link href={`/marketplace/${product.id}`} className="w-full relative h-52 md:h-80">
         <Image
           src={product.image}
