@@ -30,7 +30,7 @@ export default function FilterList({ items }: FilterListProps) {
                key={item.key}
                className="text-black"
                classNames={{
-                  base: `py-3.5 px-5 ${idx === 0
+                  base: `py-3.5 px-10 md:px-5 ${idx === 0
                      ? "border-t border-b border-brand-dark" // first item gets top + bottom
                      : idx < items.length - 1
                         ? "border-b border-brand-dark" // middle items get bottom only

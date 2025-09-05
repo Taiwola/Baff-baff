@@ -1,17 +1,11 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@components/ui'
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
-import {
-   Drawer,
-   DrawerBody,
-   DrawerContent,
-   DrawerFooter,
-   DrawerHeader,
-   useDisclosure
-} from '@heroui/react'
 import { X } from 'lucide-react'
+import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
+import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, useDisclosure } from '@heroui/react'
+
+import { Button } from '@components/ui'
 import { FilterAccordion } from '@components/features/marketplace'
 
 export default function FilterDrawer() {
@@ -33,7 +27,6 @@ export default function FilterDrawer() {
          {/* Drawer */}
          <Drawer
             size="full"
-            // placement="left"
             backdrop="blur"
             isOpen={isOpen}
             onOpenChange={onOpenChange}
@@ -44,33 +37,16 @@ export default function FilterDrawer() {
             <DrawerContent className='w-full h-full bg-[#1212124D]'>
                {(onClose) => (
                   <div className='flex justify-between h-full w-full'>
-                     <DrawerBody className='w-[85%]  bg-background p-0 text-xs text-brand-dark'>
-                        <div className="flex flex-col w-full">
-                           <div className='w-full flex justify-start items-center p-4 border-b border-brand-dark'>
-                              <AdjustmentsHorizontalIcon className="w-4 h-4" />
-                              <span>Filter</span>
-                           </div>
+                     <div className='w-[85%] bg-background p-0 text-xs text-brand-dark'>
+                        <DrawerHeader className='w-full flex justify-start items-center gap-2.5 p-4 border-b border-brand-dark uppercase text-xs text-brand-dark font-medium'>
+                           <AdjustmentsHorizontalIcon className="w-4 h-4" />
+                           <span>Filter</span>
+                        </DrawerHeader>
 
-                           <div className='w-full border-t border-b border-brand-dark p-0'>
-                              <FilterAccordion />
-                           </div>
-                           {/* <li
-                                 key={link.href}
-                                 className="p-4 flex justify-between items-center border-t border-foreground"
-                              >
-                                 <Link
-                                    href={link.href}
-                                    className="block w-full nav-link"
-                                    onClick={() => setIsOpen(false)}
-                                 >
-                                    {link.label}
-                                 </Link>
-
-                                 <ChevronRightIcon className="icon-button" />
-                              </li> */}
-
-                        </div>
-                     </DrawerBody>
+                        <DrawerBody className='border-t border-b border-brand-dark p-0'>
+                           <FilterAccordion />
+                        </DrawerBody>
+                     </div>
 
                      <DrawerFooter className='w-[15%] p-3.5'>
                         <button
