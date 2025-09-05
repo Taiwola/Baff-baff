@@ -2,7 +2,7 @@ import React from 'react'
 import { Bars3BottomLeftIcon } from '@heroicons/react/24/outline'
 
 import { Button } from '@components/ui'
-import { FilterDrawer, SortButton, Title } from '../_components'
+import { FilterDrawer, SortButton, SortDrawer, Title } from '../_components'
 import { MarketPlaceProducts } from '@components/features/products'
 
 export default function MarketPlace() {
@@ -39,12 +39,8 @@ export default function MarketPlace() {
           <p className='uppercase text-sm'>Stand out and look goods rocking top quality work shirts.</p>
 
           <div className='flex items-center py-7.5'>
-             <FilterDrawer />
-
-              <Button size='md' variant='bordered' className='font-montserrat flex-1 gap-[1px] text-[0.6875rem] py-3.5'>
-                <span>Sort By</span>
-                 <Bars3BottomLeftIcon className='w-4 h-4' />
-              </Button>
+            <FilterDrawer />
+            <SortDrawer />
           </div>
         </div>
       </div>
