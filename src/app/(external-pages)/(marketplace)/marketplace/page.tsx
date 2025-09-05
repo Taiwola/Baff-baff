@@ -1,9 +1,8 @@
 import React from 'react'
-import { Bars3BottomLeftIcon } from '@heroicons/react/24/outline'
 
 import { Button } from '@components/ui'
-import { FilterDrawer, SortButton, SortDrawer, Title } from '../_components'
 import { MarketPlaceProducts } from '@components/features/products'
+import { FilterDrawer, SortButton, SortDrawer, Title } from '../_components'
 
 export default function MarketPlace() {
   return (

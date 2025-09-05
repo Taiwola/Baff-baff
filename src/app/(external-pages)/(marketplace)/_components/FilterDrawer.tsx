@@ -30,7 +30,7 @@ export default function FilterDrawer() {
             backdrop="blur"
             isOpen={isOpen}
             onOpenChange={onOpenChange}
-            className='top-23 right-0 left-0 bottom-0'
+            className='top-23 right-0 left-0 bottom-0 text-black'
             closeButton={null}
             classNames={{ closeButton: 'hidden' }}
          >

@@ -14,7 +14,7 @@ export default function FilterAccordion() {
             className="w-full p-0 m-0"
             itemClasses={{
                titleWrapper: "w-full px-0",
-               title: "text-sm font-montserrat font-normal flex justify-start",
+               title: "text-sm font-montserrat font-normal flex justify-start text-black",
                trigger: "px-4 md:px-0 py-4 md:py-6 m-0 flex justify-start cursor-pointer w-full",
                content: "text-sm font-montserrat px-0",
                base: "p-0 w-full m-0",
