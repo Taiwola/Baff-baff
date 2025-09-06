@@ -14,6 +14,11 @@ import {
   ModalContent,
   ModalBody,
   useDisclosure,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  User,
 } from "@heroui/react";
 
 import LargeLogoSvg from "@assets/svg/largeLogoSvg";
@@ -26,7 +31,6 @@ export default function Header() {
   const { isOpen: searchOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
 
-  // Navigate only on form submit
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -89,10 +93,48 @@ export default function Header() {
             >
               <MagnifyingGlassIcon className="icon-button" />
             </button>
+            
+            <Dropdown>
+              <DropdownTrigger>
+                <button aria-label="User Account">
+                  <UserIcon className="icon-button" />
+                </button>
+              </DropdownTrigger>
 
-            <button aria-label="User Account">
-              <UserIcon className="icon-button" />
-            </button>
+              <DropdownMenu aria-label="User Account Actions" className="h-[10.6875rem] w-[12.75rem] rounded-[20px] border border-grey bg-background font-lexend">
+                <>
+                  <DropdownItem
+                    key={'user'}
+                    className={`px-5 py-3.5 border-b border-foreground text-sm text-black hover:`}
+                  >
+                    <User
+                      avatarProps={{
+                        className: 'p-0 text-black text-sm',
+                        classNames: { base: 'hidden w-full' }
+                      }}
+                      classNames={{
+                        base: "p-0 text-black text-sm font-lexend",
+                        name: "text-black text-sm font-lexend",
+                        description: "text-[11px] font-light text-black font-lexend",
+                      }}
+                      description="ogbokojoshua77@gmail.com"
+                      name="Jane Doe"
+                    />
+                  </DropdownItem>
+
+                  {userAccountItems.map((item, idx) => (
+                    <DropdownItem
+                      key={item.key}
+                      className={`px-5 py-3.5 border-b border-foreground text-sm ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length -1 ? 'border-none' : '' }`}
+                    >
+                      {item.label}
+                    </DropdownItem>
+                  ))}
+
+                </>
+              </DropdownMenu>
+            </Dropdown>
+
             <button aria-label="Cart">
               <ShoppingBagIcon className="icon-button" />
             </button>
@@ -161,4 +203,15 @@ const navLinks = [
   { label: "Market Place", href: "/marketplace" },
   { label: "Corporates", href: "/corporates" },
   { label: "Casuals", href: "/casuals" },
+];
+
+const userAccountItems = [
+  {
+    key: "order-history",
+    label: "Order history",
+  },
+  {
+    key: "sign-out",
+    label: "Sign out",
+  },
 ];

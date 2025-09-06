@@ -19,7 +19,7 @@ export default function FilterAccordion() {
                content: "text-sm font-montserrat px-0",
                base: "p-0 w-full m-0",
             }}
-            dividerProps={{ className: "text-brand-dark" }}
+            dividerProps={{ className: "bg-brand-dark h-[0.5px]" }}
          >
             {sections.map((section) => (
                <AccordionItem
