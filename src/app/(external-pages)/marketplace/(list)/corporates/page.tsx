@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Button } from '@components/ui'
-import { SortButton, Title } from '../_components'
+import { SortButton, Title } from '../../_components'
 import { MarketPlaceProducts } from '@components/features/products'
 
 export default function Corporates() {

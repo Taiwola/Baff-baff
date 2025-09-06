@@ -3,38 +3,25 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import {
-  UserIcon,
-  ShoppingBagIcon,
-  MagnifyingGlassIcon,
-  ChevronRightIcon,
-} from "@heroicons/react/24/outline";
-import {
-  Modal,
-  ModalContent,
-  ModalBody,
-  useDisclosure,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  User,
-} from "@heroui/react";
+import { useRouter } from "next/navigation";
+import { UserIcon, ShoppingBagIcon, MagnifyingGlassIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { Modal, ModalContent, ModalBody, useDisclosure, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User } from "@heroui/react";
 
 import LargeLogoSvg from "@assets/svg/largeLogoSvg";
 import SmallLogoSvg from "@assets/svg/smallLogoSvg";
-import { useRouter } from "next/navigation";
 
 export default function Header() {
+  const router = useRouter();
+
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false); // mobile menu
+
   const { isOpen: searchOpen, onOpen, onClose } = useDisclosure();
-  const router = useRouter();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      router.push(`/search/${encodeURIComponent(query.trim())}`);
+      router.push(`/marketplace/${encodeURIComponent(query.trim())}`);
       onClose();
     }
   };
@@ -93,7 +80,7 @@ export default function Header() {
             >
               <MagnifyingGlassIcon className="icon-button" />
             </button>
-            
+
             <Dropdown>
               <DropdownTrigger>
                 <button aria-label="User Account">
@@ -125,7 +112,7 @@ export default function Header() {
                   {userAccountItems.map((item, idx) => (
                     <DropdownItem
                       key={item.key}
-                      className={`px-5 py-3.5 border-b border-foreground text-sm ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length -1 ? 'border-none' : '' }`}
+                      className={`px-5 py-3.5 border-b border-foreground text-sm ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length - 1 ? 'border-none' : ''}`}
                     >
                       {item.label}
                     </DropdownItem>
@@ -201,8 +188,8 @@ export default function Header() {
 
 const navLinks = [
   { label: "Market Place", href: "/marketplace" },
-  { label: "Corporates", href: "/corporates" },
-  { label: "Casuals", href: "/casuals" },
+  { label: "Corporates", href: "/marketplace/corporates" },
+  { label: "Casuals", href: "/marketplace/casuals" },
 ];
 
 const userAccountItems = [
