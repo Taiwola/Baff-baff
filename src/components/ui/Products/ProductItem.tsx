@@ -13,7 +13,7 @@ type Props = {
 export default function ProductItem({ product }: Props) {
   return (
     <div className="flex w-full flex-col gap-3">
-      <Link href={`/marketplace/${product.id}`} className="w-full relative h-52 md:h-80">
+      <div className="w-full relative h-52 md:h-80">
         <Image
           src={product.image}
           alt={product.name}
@@ -21,12 +21,14 @@ export default function ProductItem({ product }: Props) {
           className="object-fill"
           quality={100}
         />
-      </Link>
+      </div>
 
       <div>
-        <small className="font-montserrat uppercase mb-1">
-          {product.name}
-        </small>
+        <Link href={`/marketplace/product/${product.slug}`}>
+          <small className="font-montserrat uppercase mb-1">
+            {product.name}
+          </small>
+        </Link>
 
         <small className="font-montserrat flex gap-2 text-[#121212] mb-2">
           <span>{formatCurrency(product.price)}</span>
