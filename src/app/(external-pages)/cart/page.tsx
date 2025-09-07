@@ -5,8 +5,8 @@ import { products } from '@models/product.model'
 
 export default function Cart() {
    return (
-      <main className='app-container py-12'>
-         <h1 className='text-[2.25rem] font-montserrat mb-5'>SHOPPING BAG</h1>
+      <main className='app-container py-5 md:py-12'>
+         <h1 className='text-[18px] md:text-[2.25rem] font-montserrat mb-5 font-bold'>SHOPPING BAG</h1>
 
          <section className='w-full'>
             {cartItems.length <= 0 ? <EmptyCart /> : <CartContent />}

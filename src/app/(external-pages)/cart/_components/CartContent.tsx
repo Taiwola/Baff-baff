@@ -40,7 +40,7 @@ export default function CartContent() {
         {items.map(item => (
           <div
             key={item.id}
-            className="flex items-start justify-between py-7.5 gap-5"
+            className="flex items-start justify-between py-5 md:py-7.5 gap-5"
           >
             {/* Product image */}
             <Image
@@ -53,22 +53,22 @@ export default function CartContent() {
 
             {/* Product details */}
             <div className="flex flex-col flex-1 gap-5">
-              <h3 className="text-[1.625rem] font-medium text-black uppercase">{item.name}</h3>
+              <h3 className="text-xs md:text-[1.625rem] font-medium text-black uppercase">{item.name}</h3>
 
-              <span className="w-[50px] h-[44px] border border-brand-dark flex items-center justify-center text-base text-black font-montserrat">
+              <span className="w-[30px] md:w-[50px] h-[30px] md:h-[44px] border border-brand-dark flex items-center justify-center text-base text-black font-montserrat">
                 {item.size}
               </span>
 
-              <span className="text-[1.125rem] font-medium text-brand-dark">
+              <span className="text-xs md:text-[1.125rem] font-medium text-brand-dark">
                 {formatCurrency(item.price)}
               </span>
             </div>
 
             {/* Quantity + Remove */}
-            <div className="flex items-start gap-24">
+            <div className="flex flex-col-reverse items-end md:flex-row md:items-start gap-12 md:gap-24">
               {/* Quantity button */}
               <div>
-                <p className='font-poppins text-black mb-2.5'>Quantity</p>
+                <p className='hidden md:block font-poppins text-black mb-2.5'>Quantity</p>
                 <QuantityButton />
               </div>
 
@@ -76,7 +76,7 @@ export default function CartContent() {
               <button
                 onClick={() => handleRemove(item.id)}
               >
-                <MinusCircleIcon className='icon-button w-6.5 h-6.5 text-brand-dark'/>
+                <MinusCircleIcon className='icon-button w-4.5 md:w-6.5 h-4.5 md:h-6.5 text-brand-dark' />
               </button>
             </div>
           </div>
@@ -96,7 +96,11 @@ export default function CartContent() {
           Taxes and shipping calculated at checkout
         </p>
 
-        <Button className="px-6 py-3 bg-black text-white text-sm font-medium hover:bg-gray-800 transition w-full md:w-[300px]">
+        <Button
+          as={'link'}
+          href={'cart/shipping'}
+          className="px-6 py-3 bg-black text-white text-sm font-medium hover:bg-gray-800 transition w-full md:w-[300px]"
+        >
           Checkout
         </Button>
       </div>
