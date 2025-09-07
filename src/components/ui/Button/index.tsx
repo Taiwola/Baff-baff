@@ -23,6 +23,11 @@ type ButtonAsLink = BaseButtonProps &
 
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
+/**
+ * 
+ * @param variant Default = filled 
+ * @returns 
+ */
 export default function Button({
   as = "button",
   variant,

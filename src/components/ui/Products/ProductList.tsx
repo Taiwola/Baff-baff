@@ -4,12 +4,13 @@ import { Product } from '@models/product.model'
 
 type Props = {
   products: Product[]
-  variant?: 'default' | 'marketplace'
+  variant?: 'default' | 'marketplace' | 'maylike'
 }
 
 const variants = {
   default: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5',
   marketplace: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4',
+  maylike: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
 }
 
 export default function ProductList({ products, variant = 'default' }: Props) {

@@ -31,7 +31,7 @@ body {
 
 @layer base {
   h1 {
-    @apply text-2xl font-bold text-gray-900;
+    @apply text-base md:text-6xl font-normal md:font-black text-brand-dark;
   }
   h2 {
     @apply text-base md:text-5xl text-black font-normal md:font-black;
@@ -56,6 +56,9 @@ body {
   }
   a {
     @apply text-[0.75rem] text-brand-dark font-medium
+  }
+  button {
+    @apply cursor-pointer
   }
 }
 
@@ -128,3 +131,9 @@ body {
   }
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

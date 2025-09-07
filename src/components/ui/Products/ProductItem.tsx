@@ -15,7 +15,7 @@ export default function ProductItem({ product }: Props) {
     <div className="flex w-full flex-col gap-3">
       <div className="w-full relative h-52 md:h-80">
         <Image
-          src={product.image}
+          src={product.images[0]}
           alt={product.name}
           fill
           className="object-fill"
