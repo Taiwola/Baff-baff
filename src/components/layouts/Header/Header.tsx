@@ -122,9 +122,9 @@ export default function Header() {
               </DropdownMenu>
             </Dropdown>
 
-            <button aria-label="Cart">
+            <Link href="/cart">
               <ShoppingBagIcon className="icon-button" />
-            </button>
+            </Link>
           </div>
         </nav>
 

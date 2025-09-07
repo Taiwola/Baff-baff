@@ -1,5 +1,5 @@
 export { default as ProductItemTab } from './ProductItemTab'
 export { default as ProductSizes } from './ProductSizes'
-export { default as QuantityButton } from './QuantityButton'
+export { default as QuantityButton } from '../../../../../../components/features/cart/QuantityButton'
 export { default as Description } from './Description'
 export { default as ProductBespoke } from './ProductBespoke'
