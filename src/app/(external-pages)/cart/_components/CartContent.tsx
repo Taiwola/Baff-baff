@@ -98,7 +98,7 @@ export default function CartContent() {
 
         <Button
           as={'link'}
-          href={'cart/shipping'}
+          href={'checkout/shipping'}
           className="px-6 py-3 bg-black text-white text-sm font-medium hover:bg-gray-800 transition w-full md:w-[300px]"
         >
           Checkout

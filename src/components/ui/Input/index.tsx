@@ -1,0 +1,87 @@
+'use client'
+
+import React from 'react'
+import { Input, Select, SelectItem } from '@heroui/react'
+
+type BaseProps = {
+  name: string
+  label: string
+  value?: string | number
+  onChange?: (val: string) => void
+}
+
+type TextOrNumberProps = BaseProps & {
+  type?: 'text' | 'number'
+  options?: never
+}
+
+type SelectProps = BaseProps & {
+  type: 'select'
+  options: { key: string; label: string }[]
+}
+
+type Props = TextOrNumberProps | SelectProps
+
+export default function DynamicInput({
+  name,
+  label,
+  type = 'text',
+  options,
+  value,
+  onChange,
+}: Props) {
+  const id = React.useId()
+  const normalizedValue = value != null ? String(value) : ''
+
+  return (
+    <div className="flex flex-col gap-2 w-full">
+      {/* Label */}
+      <label htmlFor={id} className="text-sm font-medium text-black">
+        {label}
+      </label>
+
+      {/* Input / Select */}
+      {type === 'select' ? (
+        <Select
+          id={id}
+          name={name}
+          defaultSelectedKeys={normalizedValue ? [normalizedValue] : []}
+          onChange={(e) => onChange?.(e.target.value)}
+          classNames={{
+            trigger:
+              'border border-black/50 rounded-[10px] py-5 px-2.5 w-full text-sm text-black h-[40px] flex items-center justify-between',
+            listbox: 'border border-foreground rounded-md bg-light text-black text-sm py-2 w-full',
+            listboxWrapper: 'w-full',
+            selectorIcon: 'absolute right-3 text-brand-dark w-5 h-5 pointer-events-none',
+          }}
+        >
+          {options!.map((opt, idx) => (
+            <SelectItem
+              key={opt.key}
+              textValue={opt.label}
+              className={`${options!.length - 1 === idx ? 'border-none' : 'border-b border-foreground'
+                }`}
+            >
+              {opt.label}
+            </SelectItem>
+          ))}
+        </Select>
+
+      ) : (
+        <Input
+          id={id}
+          name={name}
+          type={type}
+          defaultValue={normalizedValue}
+          onChange={(e) => onChange?.(e.target.value)}
+          classNames={{
+            inputWrapper:
+              'border border-black/50 rounded-[10px] w-full',
+            input:
+              'text-black placeholder:text-transparent outline-none p-2',
+          }}
+        />
+      )}
+    </div>
+  )
+}
