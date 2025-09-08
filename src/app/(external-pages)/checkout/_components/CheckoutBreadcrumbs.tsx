@@ -1,28 +1,33 @@
 'use client'
 
 import React from 'react'
-import { Breadcrumbs, BreadcrumbItem } from '@heroui/react'
+import { BreadCrumbItemType, BreadCrumbs } from '@components/ui'
 
 export default function CheckoutBreadcrumbs() {
    return (
-      <Breadcrumbs
-         className="text-sm"
-         separator='/'
-         itemClasses={{
-            item: 'text-[#00000080] cursor-pointer transition-colors text-xs',
-            separator: 'px-2 text-black',
-         }}
-      >
-         <BreadcrumbItem href="/cart">Shopping Bag</BreadcrumbItem>
-         <BreadcrumbItem className='text-black' classNames={{ item: 'text-black cursor-pointer transition-colors text-xs', separator: 'px-2 text-black' }} href="/checkout/shipping" isCurrent>
-            Shipping Details
-         </BreadcrumbItem>
-         <BreadcrumbItem href="/checkout/shipping" isDisabled={true}>
-            Payment
-         </BreadcrumbItem>
-      </Breadcrumbs>
+      <BreadCrumbs separator='/' items={items} />
    )
 }
 
+const items: BreadCrumbItemType[] = [
+   {
+      label: 'Shopping Bag',
+      href: '/cart',
+      isCurrent: false,
+      isDisabled: false
+   },
+   {
+      label: 'Shipping Details',
+      href: '/checkout/shipping',
+      isCurrent: true,
+      isDisabled: false
+   },
+   {
+      label: 'Payment',
+      href: '/checkout/shipping',
+      isCurrent: false,
+      isDisabled: true
+   }
+]
 
 

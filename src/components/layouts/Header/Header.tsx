@@ -10,6 +10,12 @@ import { Modal, ModalContent, ModalBody, useDisclosure, Dropdown, DropdownTrigge
 import LargeLogoSvg from "@assets/svg/largeLogoSvg";
 import SmallLogoSvg from "@assets/svg/smallLogoSvg";
 
+type UserAccount = {
+  key: string
+  label: string
+  href: string
+}
+
 export default function Header() {
   const router = useRouter();
 
@@ -25,6 +31,14 @@ export default function Header() {
       onClose();
     }
   };
+
+  function handlePressUserItem(item: UserAccount) {
+    if (item.key === 'sign-out') {
+      return;
+    }
+
+    router.push(item.href)
+  }
 
   return (
     <>
@@ -88,7 +102,7 @@ export default function Header() {
                 </button>
               </DropdownTrigger>
 
-              <DropdownMenu aria-label="User Account Actions" className="h-[10.6875rem] w-[12.75rem] rounded-[20px] border border-grey bg-background font-lexend">
+              <DropdownMenu aria-label="User Account Actions" className="h-auto w-[12.75rem] rounded-[20px] border border-grey bg-background font-lexend">
                 <>
                   <DropdownItem
                     key={'user'}
@@ -111,6 +125,7 @@ export default function Header() {
 
                   {userAccountItems.map((item, idx) => (
                     <DropdownItem
+                      onClick={() => handlePressUserItem(item)}
                       key={item.key}
                       className={`px-5 py-3.5 border-b border-foreground text-sm ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length - 1 ? 'border-none' : ''}`}
                     >
@@ -192,13 +207,25 @@ const navLinks = [
   { label: "Casuals", href: "/marketplace/casuals" },
 ];
 
-const userAccountItems = [
+const userAccountItems: UserAccount[] = [
   {
     key: "order-history",
     label: "Order history",
+    href: '/orders'
+  },
+  {
+    key: "address-book",
+    label: "Address book",
+    href: '/addresses'
+  },
+  {
+    key: "measurement",
+    label: "Measurement",
+    href: '/measurements'
   },
   {
     key: "sign-out",
     label: "Sign out",
+    href: '/'
   },
 ];
