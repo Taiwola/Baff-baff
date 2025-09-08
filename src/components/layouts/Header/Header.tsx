@@ -103,37 +103,43 @@ export default function Header() {
               </DropdownTrigger>
 
               <DropdownMenu aria-label="User Account Actions" className="h-auto w-[12.75rem] rounded-[20px] border border-grey bg-background font-lexend">
-                <>
-                  <DropdownItem
-                    key={'user'}
-                    className={`px-5 py-3.5 border-b border-foreground text-sm text-black hover:`}
-                  >
-                    <User
-                      avatarProps={{
-                        className: 'p-0 text-black text-sm',
-                        classNames: { base: 'hidden w-full' }
-                      }}
-                      classNames={{
-                        base: "p-0 text-black text-sm font-lexend",
-                        name: "text-black text-sm font-lexend",
-                        description: "text-[11px] font-light text-black font-lexend",
-                      }}
-                      description="ogbokojoshua77@gmail.com"
-                      name="Jane Doe"
-                    />
-                  </DropdownItem>
 
-                  {userAccountItems.map((item, idx) => (
-                    <DropdownItem
-                      onClick={() => handlePressUserItem(item)}
-                      key={item.key}
-                      className={`px-5 py-3.5 border-b border-foreground text-sm ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length - 1 ? 'border-none' : ''}`}
-                    >
-                      {item.label}
-                    </DropdownItem>
-                  ))}
 
-                </>
+                {userAccountItems.map((item, idx) => (
+                  <>
+                    {item.key === 'profile' ? (
+                      <DropdownItem
+                        key={item.key}
+                        onClick={() => handlePressUserItem(item)}
+                        className={`px-5 py-3.5 border-b border-foreground text-sm text-black hover:`}
+                      >
+                        <User
+                          avatarProps={{
+                            className: 'p-0 text-black text-sm',
+                            classNames: { base: 'hidden w-full' }
+                          }}
+                          classNames={{
+                            base: "p-0 text-black text-sm font-lexend",
+                            name: "text-black text-sm font-lexend",
+                            description: "text-[11px] font-light text-black font-lexend",
+                          }}
+                          description="ogbokojoshua77@gmail.com"
+                          name="Jane Doe"
+                        />
+                      </DropdownItem>
+
+                    ) : (
+                      <DropdownItem
+                        onClick={() => handlePressUserItem(item)}
+                        key={item.key}
+                        className={`px-5 py-3.5 border-b border-foreground text-sm ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length - 1 ? 'border-none' : ''}`}
+                      >
+                        {item.label}
+                      </DropdownItem>
+
+                    )}
+                  </>
+                ))}
               </DropdownMenu>
             </Dropdown>
 
@@ -208,6 +214,11 @@ const navLinks = [
 ];
 
 const userAccountItems: UserAccount[] = [
+  {
+    key: "profile",
+    label: "Profile",
+    href: '/profile'
+  },
   {
     key: "order-history",
     label: "Order history",
