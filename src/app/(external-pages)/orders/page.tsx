@@ -20,12 +20,10 @@ export default function Orders() {
 
          <h2 className='md:hidden font-semibold text-black text-[1.125rem]'>ORDER HISTORY</h2>
 
-         <div className='mx-auto w-full md:max-w-[65%] flex flex-col justify-center items-start mt-5'>
-            <div className="mx-auto w-full max-w-[60rem] flex flex-col gap-8">
-               {orders.map((order) => (
-                  <OrderItem key={order.id} order={order} />
-               ))}
-            </div>
+         <div className='mx-auto w-full md:max-w-[65%] flex flex-col gap-8 justify-center items-start mt-5'>
+            {orders.map((order) => (
+               <OrderItem key={order.id} order={order} />
+            ))}
          </div>
       </main>
    )
@@ -90,7 +88,7 @@ function ProductItem({ product }: { product: Product }) {
                View Product
             </Link>
             <span className='hidden md:block'>|</span>
-            <button className="text-[10px] text-sm font-bold">Buy Again</button>
+            <button className="text-[10px] md:text-sm font-bold">Buy Again</button>
          </div>
       </div>
    )
