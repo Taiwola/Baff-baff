@@ -1,5 +1,5 @@
 import React from 'react'
-import { AddressForm } from '@components/features/cart'
+import { AddressForm } from '@components/features/address'
 
 export default function EditShipping() {
 

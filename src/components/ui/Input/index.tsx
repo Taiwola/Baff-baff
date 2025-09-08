@@ -8,6 +8,7 @@ type BaseProps = {
   label: string
   value?: string | number
   onChange?: (val: string) => void
+  endContent?: string
 }
 
 type TextOrNumberProps = BaseProps & {
@@ -29,6 +30,7 @@ export default function DynamicInput({
   options,
   value,
   onChange,
+  endContent
 }: Props) {
   const id = React.useId()
   const normalizedValue = value != null ? String(value) : ''
@@ -80,6 +82,11 @@ export default function DynamicInput({
             input:
               'text-black placeholder:text-transparent outline-none p-2',
           }}
+          endContent={
+            endContent ? (
+              <span className="text-xs text-black/70 pr-2">in</span>
+            ) : null
+          }
         />
       )}
     </div>

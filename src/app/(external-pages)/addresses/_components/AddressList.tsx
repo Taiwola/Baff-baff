@@ -1,12 +1,14 @@
 'use client'
 
 import React from 'react'
-import { Address } from '@models/address.model'
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { Button } from '@components/ui'
 import { useDisclosure } from '@heroui/react'
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+
+import { Button } from '@components/ui'
 import AddressFormModal from './AddressModal'
-import DeleteModal from './DeleteModal'
+import { DeleteModal } from '@components/ui/Modals'
+
+import { Address } from '@models/address.model'
 
 type Props = {
   addresses: Address[]
@@ -40,7 +42,12 @@ export default function AddressList({ addresses }: Props) {
       </section>
 
       <AddressFormModal isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} />
-      <DeleteModal isOpen={isOpenDelete} onClose={onCloseDelete} onOpenChange={onOpenChangeDelete} />
+      <DeleteModal
+        confirm='Are you sure you want to remove this Address?'
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        onOpenChange={onOpenChangeDelete}
+      />
     </>
   )
 }

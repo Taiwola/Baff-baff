@@ -9,11 +9,14 @@ import WarningIcon from '@assets/svg/warning-icon.png'
 
 interface Props {
    isOpen: boolean;
+   confirm: string
+   btnCloseTxt?: string
+   btnConfirmTxt?: string
    onClose: () => void
    onOpenChange: () => void
 }
 
-export default function DeleteModal({ isOpen, onOpenChange }: Props) {
+export default function DeleteModal({ isOpen, confirm, onOpenChange, btnCloseTxt = 'No', btnConfirmTxt = 'Yes' }: Props) {
 
    return (
       <Modal
@@ -32,11 +35,11 @@ export default function DeleteModal({ isOpen, onOpenChange }: Props) {
                   <Image src={WarningIcon} width={50} height={50} alt="warning icon" />
 
                   <p className="font-bold text-brand-dark mb-1">Delete</p>
-                  <small className="text-center">Are you sure you want to remove this address?</small>
+                  <small className="text-center">{confirm}</small>
 
                   <div className="flex justify-center items-center gap-2.5">
-                     <Button onClick={onClose} variant="bordered" className="py-2.5 px-12.5 rounded-[2.1875rem]">No</Button>
-                     <Button onClick={onClose} className="py-2.5 px-12.5 rounded-[2.1875rem] bg-black">Yes</Button>
+                     <Button onClick={onClose} variant="bordered" className="py-2.5 px-12.5 rounded-[2.1875rem]">{btnCloseTxt}</Button>
+                     <Button onClick={onClose} className="py-2.5 px-12.5 rounded-[2.1875rem] bg-black">{btnConfirmTxt}</Button>
                   </div>
                </ModalBody>
             )}
