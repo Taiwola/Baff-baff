@@ -6,7 +6,7 @@ import ProductDetails from "./productDetails"
 export function Product() {
   return (
     <div>
-      <div className="w-full">
+      <div className="w-full py-10">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row">
             <div className="md:hidden">
@@ -32,7 +32,7 @@ export function Product() {
             </h2>
 
             <div>
-              <RelatedProducts />
+              <RelatedProducts length={3} className="grid grid-cols-3 gap-4" />
             </div>
           </div>
         </div>

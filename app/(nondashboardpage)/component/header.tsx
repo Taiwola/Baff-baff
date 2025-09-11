@@ -77,7 +77,9 @@ export default function Header() {
               aria-label="Shopping cart"
               tabIndex={0}
             >
-              <ShoppingBagIcon className="w-6 h-6 cursor-pointer" />
+              <Link href={"/cart"}>
+                <ShoppingBagIcon className="w-6 h-6 cursor-pointer" />
+              </Link>
             </div>
           </div>
         </div>

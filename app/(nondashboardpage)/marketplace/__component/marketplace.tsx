@@ -5,7 +5,7 @@ import Products from "./product"
 
 export default function Marketplace() {
   return (
-    <div className="py-6 w-full">
+    <div className="py-10 w-full">
       <div className="container mx-auto">
         <div className="flex gap-10">
           <div className="border-t-1 border-b-1 h-[47.78%] w-[25%] border-[#20202066] hidden md:block">

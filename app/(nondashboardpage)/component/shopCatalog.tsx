@@ -17,7 +17,7 @@ export default function ShopCatalog() {
           <div className="space-y-2 md:space-y-4">
             <div>
               <div className="flex flex-row justify-center items-center w-[138px] h-[29px] md:w-[539px] md:h-[115px] bg-[#202020]">
-                <span className="font-montserrat font-black text-[24px] leading-[29px] md:text-[94px] md:leading-[115px] text-white">
+                <span className="font-montserrat font-black text-[24px] leading-[29px] md:text-[94px]  text-white">
                   SHOP OUR
                 </span>
               </div>
