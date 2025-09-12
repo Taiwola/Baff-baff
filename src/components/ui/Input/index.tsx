@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Input, Select, SelectItem } from '@heroui/react'
 
 type BaseProps = {
@@ -8,11 +8,11 @@ type BaseProps = {
   label: string
   value?: string | number
   onChange?: (val: string) => void
-  endContent?: string
+  endContent?: string | ReactNode
 }
 
 type TextOrNumberProps = BaseProps & {
-  type?: 'text' | 'number'
+  type?: 'text' | 'number' | 'email' | 'password'
   options?: never
 }
 
@@ -34,6 +34,7 @@ export default function DynamicInput({
 }: Props) {
   const id = React.useId()
   const normalizedValue = value != null ? String(value) : ''
+  const endContentComponent = typeof endContent === 'string' ? (<span className="text-xs text-black/70 pr-2">{endContent}</span>) : endContent
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -51,7 +52,7 @@ export default function DynamicInput({
           onChange={(e) => onChange?.(e.target.value)}
           classNames={{
             trigger:
-              'border border-black/50 rounded-[10px] py-5 px-2.5 w-full text-sm text-black h-[40px] flex items-center justify-between',
+              'border border-black/50 rounded-md py-5 px-2.5 w-full text-sm text-black h-[40px] flex items-center justify-between',
             listbox: 'border border-foreground rounded-md bg-light text-black text-sm py-2 w-full',
             listboxWrapper: 'w-full',
             selectorIcon: 'absolute right-3 text-brand-dark w-5 h-5 pointer-events-none',
@@ -78,15 +79,11 @@ export default function DynamicInput({
           onChange={(e) => onChange?.(e.target.value)}
           classNames={{
             inputWrapper:
-              'border border-black/50 rounded-[10px] w-full',
+              'border border-black/50 rounded-md w-full',
             input:
               'text-black placeholder:text-transparent outline-none p-2',
           }}
-          endContent={
-            endContent ? (
-              <span className="text-xs text-black/70 pr-2">in</span>
-            ) : null
-          }
+          endContent={endContentComponent}
         />
       )}
     </div>
