@@ -24,6 +24,8 @@ export default function Header() {
 
   const { isOpen: searchOpen, onOpen, onClose } = useDisclosure();
 
+  const isAuth = false
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -37,12 +39,16 @@ export default function Header() {
       return;
     }
 
-    router.push(item.href)
+    else if (item.key === 'profile' && !isAuth) {
+      router.push('/login')
+    }
+
+    else router.push(item.href)
   }
 
   return (
     <>
-      <header className="pt-8 pb-0 md:pb-8 w-full sticky backdrop-blur-sm top-0 z-50 border-b border-foreground">
+      <header className="pt-4 pb-0 md:pb-4 w-full sticky backdrop-blur-sm top-0 z-50 border-b border-foreground bg-white">
         <nav className="app-container flex items-center justify-between pb-8 md:pb-0">
           {/* Left side */}
           <div className="flex items-center gap-7 flex-1">

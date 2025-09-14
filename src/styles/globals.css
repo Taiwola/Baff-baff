@@ -19,6 +19,7 @@
   --color-brand-purple: var(--color-brand-purple);
   --color-light: var(--color-light);
   --color-grey: var(--color-grey);
+  --color-grey-2: var(--color-grey-2);
 
   --spacing-layout: var(--layout-x);
 }
@@ -26,7 +27,7 @@
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-montserrat);
 }
 
 @layer base {
