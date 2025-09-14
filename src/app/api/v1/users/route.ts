@@ -1,5 +1,5 @@
 'use server'
-import { getAllUsers } from '@action/user'
+import { getAllUsers } from '@actions/user'
 import { getAuthUser } from '@middleware/auth'
 import { transformUsers } from '@utils/transform/user.transform'
 import { NextRequest, NextResponse } from 'next/server'

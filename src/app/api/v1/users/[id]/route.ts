@@ -1,4 +1,4 @@
-import { deleteUser, getUserById, updateUser } from '@action/user'
+import { deleteUser, getUserById, updateUser } from '@actions/user'
 import { IUser } from '@models/user.model'
 import { transformUser } from '@utils/transform/user.transform'
 import { validateUpdateUser } from '@utils/validation/users-validation'

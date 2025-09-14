@@ -1,5 +1,5 @@
 'use server'
-import { createUser, getUserByEmail } from '@action/user'
+import { createUser, getUserByEmail } from '@actions/user'
 import dbConnect from '@lib/database'
 import { generateToken } from '@utils/jwt'
 import { validateUserRegistration } from '@utils/validation/auth-validation'

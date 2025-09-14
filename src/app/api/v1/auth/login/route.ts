@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { generateToken } from '@utils/jwt'
 import { validateUserLogin } from '@utils/validation/auth-validation'
-import { compareUserPassword, getUserByEmail } from '@action/user'
+import { compareUserPassword, getUserByEmail } from '@actions/user'
 import dbConnect from '@lib/database'
 
 async function loadDb() {
