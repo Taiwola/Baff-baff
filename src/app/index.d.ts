@@ -21,10 +21,11 @@ interface User {
   firstName: string
   lastName: string
   email: string
+  fullName?: string
   role: 'user' | 'admin'
   password: string
-  createdAt: string
-  updatedAt: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 interface UserRegistration {
@@ -51,4 +52,13 @@ interface AuthResponse {
   token?: string
   errors?: { field: string; message: string }[]
   error?: unknown
+}
+
+interface Material {
+  id: string
+  name: string
+  stock: number
+  image: string
+  createdAt: Date
+  updatedAt: Date
 }

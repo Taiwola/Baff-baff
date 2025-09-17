@@ -1,22 +1,23 @@
-import { deleteUser, getUserById, updateUser } from '@actions/user'
+import { deleteUser, getUserById, updateUser } from '@services/user'
 import { IUser } from '@models/user.model'
 import { transformUser } from '@utils/transform/user.transform'
 import { validateUpdateUser } from '@utils/validation/users-validation'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
+import { sendResponse } from '@utils/response/api.response'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const user = await getUserById(params.id)
   if (!user) {
-    return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    return sendResponse(false, 'User not found', null, 404)
   }
   const transformedUser = transformUser(user)
-  return NextResponse.json({ message: 'Request was successful', data: transformedUser }, { status: 200 })
+  return sendResponse(true, 'User fetched successfully', transformedUser, 200)
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const user = await getUserById(params.id)
   if (!user) {
-    return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    return sendResponse(false, 'User not found', null, 404)
   }
 
   const json: Partial<IUser> = await req.json()
@@ -26,31 +27,31 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       field: detail.path.join('.'),
       message: detail.message
     }))
-    return NextResponse.json({ errors: validationErrors }, { status: 400 })
+    return sendResponse(false, 'Validation failed', validationErrors, 400)
   }
   try {
     const updatedUser = await updateUser(user.id, json)
     if (!updatedUser) {
-      return NextResponse.json({ message: 'User not found after update' }, { status: 404 })
+      return sendResponse(false, 'User not found after update', null, 404)
     }
     const transformedUser = transformUser(updatedUser)
-    return NextResponse.json({ message: 'User updated successfully', data: transformedUser }, { status: 200 })
+    return sendResponse(true, 'User updated successfully', transformedUser, 200)
   } catch (error) {
     console.error('Error updating user:', error)
-    return NextResponse.json({ message: 'Error updating user' }, { status: 500 })
+    return sendResponse(false, 'Error updating user', null, 500)
   }
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   const user = await getUserById(params.id)
   if (!user) {
-    return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    return sendResponse(false, 'User not found', null, 404)
   }
   try {
     await deleteUser(user.id)
-    return NextResponse.json({ message: 'User deleted successfully' }, { status: 200 })
+    return sendResponse(true, 'User deleted successfully', null, 200)
   } catch (error) {
     console.error('Error deleting user:', error)
-    return NextResponse.json({ message: 'Error deleting user' }, { status: 500 })
+    return sendResponse(false, 'Error deleting user', null, 500)
   }
 }

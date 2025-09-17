@@ -1,8 +1,9 @@
 'use server'
-import { createUser, getUserByEmail } from '@actions/user'
+import { createUser, getUserByEmail } from '@services/user'
 import dbConnect from '@lib/database'
 import { generateToken } from '@utils/jwt'
-import { validateUserRegistration } from '@utils/validation/auth-validation'
+import { sendResponse } from '@utils/response/api.response'
+import { registerSchema } from '@utils/validation/auth'
 import { NextResponse, NextRequest } from 'next/server'
 
 async function loadDb() {
@@ -13,25 +14,25 @@ loadDb()
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const json: User = await req.json()
-  const { error } = validateUserRegistration(json)
-  if (error) {
-    const validationErrors = error.details.map((detail) => ({
+  const result = registerSchema.safeParse(json)
+  if (!result.success) {
+    const validationErrors = result.error.issues.map((detail) => ({
       field: detail.path.join('.'),
       message: detail.message
     }))
-    return NextResponse.json({ errors: validationErrors }, { status: 400 })
+    return sendResponse(false, 'Validation failed', validationErrors, 400)
   }
 
   const userExist = await getUserByEmail(json.email)
   if (userExist) {
-    return NextResponse.json({ message: 'User with this email already exists' }, { status: 404 })
+    return sendResponse(false, 'User with this email already exists', null, 404)
   }
 
   try {
     const user = await createUser(json)
     const token = await generateToken({ id: user.id, email: user.email, role: user.role })
-    return NextResponse.json({ message: 'User registered successfully', token }, { status: 201 })
+    return sendResponse(true, 'User registered successfully', { token }, 201)
   } catch (error) {
-    return NextResponse.json({ message: 'Error creating user', error }, { status: 500 })
+    return sendResponse(false, 'Error creating user', error, 500)
   }
 }

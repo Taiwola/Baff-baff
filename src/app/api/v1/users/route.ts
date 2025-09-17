@@ -1,17 +1,18 @@
 'use server'
-import { getAllUsers } from '@actions/user'
+import { getAllUsers } from '@services/user'
 import { getAuthUser } from '@middleware/auth'
 import { transformUsers } from '@utils/transform/user.transform'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
+import { sendResponse } from '@utils/response/api.response'
 
 export async function GET(req: NextRequest) {
   const authUser = await getAuthUser(req)
 
   if (authUser?.role !== 'admin') {
-    return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+    return sendResponse(false, 'Forbidden', null, 403)
   }
 
   const users = await getAllUsers()
   const transformedUsers = transformUsers(users)
-  return NextResponse.json({ message: 'Request was successfull', data: transformedUsers }, { status: 200 })
+  return sendResponse(true, 'Users fetched successfully', transformedUsers, 200)
 }
