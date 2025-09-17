@@ -62,3 +62,14 @@ interface Material {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface FileValidationOptions {
+  maxSize?: number
+  allowedTypes?: string[]
+  allowedExtensions?: string[]
+}
+
+export interface ValidationResult {
+  isValid: boolean
+  errors: string[]
+}

@@ -1,6 +1,9 @@
 'use server'
+import { uploadToCloudinary } from '@lib/cloudinary'
+import { CLOUDINARY_FOLDERS } from '@lib/folder'
 import { getAuthUser } from '@middleware/auth'
 import { createMaterial, getAllMaterials } from '@services/material'
+import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { sendResponse } from '@utils/response/api.response'
 import { transformMaterial, transformMaterials } from '@utils/transform/material.transform'
 import { CreateMaterialDto, createMaterialSchema } from '@utils/validation/material'
@@ -12,7 +15,12 @@ export async function POST(req: NextRequest) {
   if (authUser?.role !== 'admin') {
     return sendResponse(false, 'Forbidden', null, 403)
   }
-  const body: CreateMaterialDto = await req.json()
+  const formData = await req.formData()
+
+  const body: CreateMaterialDto = {
+    name: formData.get('name') as string,
+    stock: Number(formData.get('stock'))
+  }
 
   const result = createMaterialSchema.safeParse(body)
   if (!result.success) {
@@ -21,6 +29,27 @@ export async function POST(req: NextRequest) {
       message: detail.message
     }))
     return sendResponse(false, 'Validation failed', validationErrors, 400)
+  }
+
+  const image = formData.get('image') as File
+
+  if (image && image.size > 0) {
+    const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
+    if (!validation.isValid) {
+      return sendResponse(false, 'File validation failed', { errors: validation.errors }, 400)
+    }
+  }
+
+  try {
+    const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.MATERIALS)
+    if (!uploadResult.success) {
+      return sendResponse(false, 'Image upload failed', { error: uploadResult.error }, 500)
+    }
+
+    body.image = uploadResult.data?.url ?? ''
+  } catch (error) {
+    console.error('Cloudinary upload error:', error)
+    return sendResponse(false, 'Image upload failed', null, 500)
   }
 
   const material = await createMaterial(body)

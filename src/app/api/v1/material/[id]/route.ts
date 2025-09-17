@@ -1,6 +1,9 @@
 'use server'
+import { uploadToCloudinary } from '@lib/cloudinary'
+import { CLOUDINARY_FOLDERS } from '@lib/folder'
 import { getAuthUser } from '@middleware/auth'
 import { deleteMaterial, getMaterialById, updateMaterial } from '@services/material'
+import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { sendResponse } from '@utils/response/api.response'
 import { transformMaterial } from '@utils/transform/material.transform'
 import { UpdateMaterialDto, updateMaterialSchema } from '@utils/validation/material'
@@ -25,8 +28,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (authUser?.role !== 'admin') {
     return sendResponse(false, 'Forbidden', null, 403)
   }
+  const id = await params.id
 
-  const body: UpdateMaterialDto = await req.json()
+  const formData = await req.formData()
+
+  const body: UpdateMaterialDto = {
+    name: (formData.get('name') as string) || undefined,
+    stock: Number(formData.get('stock')) || undefined
+  }
 
   const result = updateMaterialSchema.safeParse(body)
   if (!result.success) {
@@ -38,10 +47,30 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 
   try {
-    const material = await getMaterialById(params.id)
+    const material = await getMaterialById(id)
 
     if (!material) {
       return sendResponse(false, 'Material not found', null, 404)
+    }
+
+    if (formData.get('image') !== null) {
+      const image = formData.get('image') as File
+      console.log('Image file:', image)
+
+      if (image && image.size > 0) {
+        const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
+        if (!validation.isValid) {
+          return sendResponse(false, 'File validation failed', { errors: validation.errors }, 400)
+        }
+      }
+
+      const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.MATERIALS)
+      if (!uploadResult.success) {
+        return sendResponse(false, 'Image upload failed', { error: uploadResult.error }, 500)
+      }
+
+      body.image = uploadResult.data?.url ?? ''
+      console.log('Uploaded image URL:', body.image)
     }
 
     const update = await updateMaterial(material.id, body)

@@ -15,6 +15,7 @@
     "@heroui/react": "^2.8.2",
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.7.0",
     "framer-motion": "^12.23.12",
     "joi": "^18.0.1",
     "jose": "^6.1.0",
