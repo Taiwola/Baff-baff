@@ -1,3 +1,5 @@
+import { ISizeVariant, Status } from '@models/product.model'
+
 interface MenuItem {
   href: string
   label: string
@@ -72,4 +74,34 @@ export interface FileValidationOptions {
 export interface ValidationResult {
   isValid: boolean
   errors: string[]
+}
+
+interface Category {
+  id: string
+  name: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+interface CategoryType {
+  id: string
+  name: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+interface Product {
+  id: string
+  range?: string
+  images: string[]
+  description: string
+  category: string
+  category_type: string
+  material: string
+  yard: number
+  name: string
+  status: Status
+  sizes: ISizeVariant[]
+  createdAt: Date
+  updatedAt: Date
 }

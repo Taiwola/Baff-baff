@@ -3,7 +3,7 @@ import { generateToken } from '@utils/jwt'
 import { loginSchema } from '@utils/validation/auth'
 import { compareUserPassword, getUserByEmail } from '@services/user'
 import dbConnect from '@lib/database'
-import { sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/response/api.response'
 
 async function loadDb() {
   await dbConnect()
@@ -21,12 +21,12 @@ export async function POST(req: NextRequest) {
         field: detail.path.join('.'),
         message: detail.message
       }))
-      return sendResponse(false, 'Validation failed', validationErrors, 400)
+      return errorResponse('Validation failed', validationErrors, 400)
     }
 
     const user = await getUserByEmail(json.email)
     if (!user) {
-      return sendResponse(false, 'Invalid email or password', null, 401)
+      return errorResponse('Invalid email or password', null, 401)
     }
 
     const isMatch = await compareUserPassword({
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     })
 
     if (!isMatch) {
-      return sendResponse(false, 'Invalid email or password', null, 401)
+      return errorResponse('Invalid email or password', null, 401)
     }
 
     const token = await generateToken({
@@ -45,7 +45,6 @@ export async function POST(req: NextRequest) {
     })
 
     return sendResponse(
-      true,
       'User logged in successfully',
       {
         id: user._id || user.id,
@@ -57,6 +56,6 @@ export async function POST(req: NextRequest) {
     )
   } catch (error) {
     console.error('Login error:', error)
-    return sendResponse(false, 'Error logging in user', process.env.NODE_ENV === 'development' ? error : null, 500)
+    return errorResponse('Error logging in user', process.env.NODE_ENV === 'development' ? error : null, 500)
   }
 }

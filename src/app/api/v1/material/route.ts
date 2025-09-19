@@ -4,7 +4,7 @@ import { CLOUDINARY_FOLDERS } from '@lib/folder'
 import { getAuthUser } from '@middleware/auth'
 import { createMaterial, getAllMaterials } from '@services/material'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
-import { sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/response/api.response'
 import { transformMaterial, transformMaterials } from '@utils/transform/material.transform'
 import { CreateMaterialDto, createMaterialSchema } from '@utils/validation/material'
 import { NextRequest } from 'next/server'
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   const authUser = await getAuthUser(req)
 
   if (authUser?.role !== 'admin') {
-    return sendResponse(false, 'Forbidden', null, 403)
+    return errorResponse('Forbidden', null, 403)
   }
   const formData = await req.formData()
 
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       field: detail.path.join('.'),
       message: detail.message
     }))
-    return sendResponse(false, 'Validation failed', validationErrors, 400)
+    return errorResponse('Validation failed', validationErrors, 400)
   }
 
   const image = formData.get('image') as File
@@ -36,34 +36,34 @@ export async function POST(req: NextRequest) {
   if (image && image.size > 0) {
     const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
     if (!validation.isValid) {
-      return sendResponse(false, 'File validation failed', { errors: validation.errors }, 400)
+      return errorResponse('File validation failed', { errors: validation.errors }, 400)
     }
   }
 
   try {
     const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.MATERIALS)
     if (!uploadResult.success) {
-      return sendResponse(false, 'Image upload failed', { error: uploadResult.error }, 500)
+      return errorResponse('Image upload failed', { error: uploadResult.error }, 500)
     }
 
     body.image = uploadResult.data?.url ?? ''
   } catch (error) {
     console.error('Cloudinary upload error:', error)
-    return sendResponse(false, 'Image upload failed', null, 500)
+    return errorResponse('Image upload failed', null, 500)
   }
 
   const material = await createMaterial(body)
   const transform = transformMaterial(material)
 
-  return sendResponse(true, 'Material created successfully', transform, 201)
+  return sendResponse('Material created successfully', transform, 201)
 }
 
 export async function GET(req: NextRequest) {
   const authUser = await getAuthUser(req)
   if (authUser?.role !== 'admin') {
-    return sendResponse(false, 'Forbidden', null, 403)
+    return errorResponse('Forbidden', null, 403)
   }
   const materials = await getAllMaterials()
   const transforms = transformMaterials(materials)
-  return sendResponse(true, 'Materials fetched successfully', transforms, 200)
+  return sendResponse('Materials fetched successfully', transforms, 200)
 }
