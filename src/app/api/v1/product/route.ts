@@ -1,3 +1,4 @@
+'use server'
 import { uploadToCloudinary } from '@lib/cloudinary'
 import { CLOUDINARY_FOLDERS } from '@lib/folder'
 import { getAuthUser } from '@middleware/auth'
@@ -5,7 +6,7 @@ import { getMaterialById, updateMaterial } from '@services/material'
 import { createProduct, getAllProducts } from '@services/product'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { errorResponse, sendResponse } from '@utils/response/api.response'
-import { transformProducts, transfromProduct } from '@utils/transform/product.transform'
+import { transformProducts, transformProduct } from '@utils/transform/product.transform'
 import { CreateProductDto, createProductSchema } from '@utils/validation/product'
 import { NextRequest } from 'next/server'
 import mongoose from 'mongoose'
@@ -77,7 +78,6 @@ export async function POST(req: NextRequest) {
     sizes: JSON.parse((formData.get('sizes') as string) || '[]')
   }
 
-  // Now validate the product data
   const result = createProductSchema.safeParse(productData)
   if (!result.success) {
     const validationErrors = result.error.issues.map((detail) => ({
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     await session.commitTransaction()
     session.endSession()
 
-    const transform = transfromProduct(product)
+    const transform = transformProduct(product)
     return sendResponse('Product created successfully', transform, 201)
   } catch (error) {
     await session.abortTransaction()
@@ -105,10 +105,4 @@ export async function POST(req: NextRequest) {
     console.error('Transaction error:', error)
     return errorResponse('Product creation failed', null, 500)
   }
-
-  //   console.log('sizes: ', JSON.parse((formData.get('sizes') as string) || '[]'))
-
-  //   console.log(formData.getAll('sizes'))
-  //   console.log(formData)
-  //   return sendResponse('Product created successfully')
 }

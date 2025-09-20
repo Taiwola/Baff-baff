@@ -1,7 +1,7 @@
 import { Product } from '@index'
 import { IProduct } from '@models/product.model'
 
-export function transfromProduct(data: IProduct): Product {
+export function transformProduct(data: IProduct): Product {
   const prices = data.sizes.map((size) => size.price)
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
@@ -26,5 +26,5 @@ export function transfromProduct(data: IProduct): Product {
 }
 
 export function transformProducts(data: IProduct[]): Product[] {
-  return data.map(transfromProduct)
+  return data.map(transformProduct)
 }

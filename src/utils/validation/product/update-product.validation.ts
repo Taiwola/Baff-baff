@@ -25,12 +25,7 @@ export const updateProductSchema = z.object({
     .max(50, 'Category type must be at most 50 characters long')
     .nonempty('Category type is required')
     .optional(),
-  material: z
-    .string()
-    .min(2, 'Material must be at least 2 characters long')
-    .max(50, 'Material must be at most 50 characters long')
-    .nonempty('Material is required')
-    .optional(),
+  material: z.string().min(2, 'Material must be at least 2 characters long').max(50, 'Material must be at most 50 characters long').optional(),
   yard: z
     .number()
     .min(1, 'Yard must be at least 1')
@@ -49,7 +44,9 @@ export const updateProductSchema = z.object({
         size: z.enum(['s', 'm', 'l', 'xl', 'xxl', 'xxxl'], {
           message: 'Size is required'
         }),
-        price: z.number().min(0, 'Price must be at least 0').nonnegative('Price must be a non-negative number')
+        price: z.number().min(0, 'Price must be at least 0').nonnegative('Price must be a non-negative number'),
+        quantity: z.number().min(0, 'Quantity must be at least 0').nonnegative('Quantity must be a non-negative number'),
+        _id: z.string().optional()
       })
     )
     .min(1, 'At least one size variant is required')
