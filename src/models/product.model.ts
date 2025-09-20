@@ -17,16 +17,16 @@ export enum Status {
 export interface ISizeVariant {
   size: Size
   price: number
+  quantity: number
 }
 
 export interface IProduct extends Document {
   _id: string
-  range?: string
   images: string[]
   description: string
   category: string
   category_type: string
-  material: string
+  material: mongoose.Types.ObjectId | string
   yard: number
   name: string
   status: Status
@@ -37,19 +37,19 @@ export interface IProduct extends Document {
 
 const productSchema: Schema = new Schema<IProduct>(
   {
-    range: { type: String, default: null },
     images: { type: [String], required: true },
     category: { type: String, required: true },
     category_type: { type: String, required: true },
     description: { type: String, required: true },
-    material: { type: String, required: true },
+    material: { type: Schema.Types.ObjectId, ref: 'Material', required: true },
     yard: { type: Number, required: true },
     name: { type: String, required: true },
     status: { type: String, required: true, enum: Object.values(Status), default: Status.IN_STOCK },
     sizes: [
       {
         size: { type: String, required: true, enum: Object.values(Size) },
-        price: { type: Number, required: true, default: 0 }
+        price: { type: Number, required: true, default: 0 },
+        quantity: { type: Number, required: true, default: 0 }
       }
     ]
   },
@@ -58,6 +58,6 @@ const productSchema: Schema = new Schema<IProduct>(
   }
 )
 
-const Product: Model<IProduct> = mongoose.model<IProduct>('Product', productSchema)
+const ProductModel: Model<IProduct> = mongoose.model<IProduct>('Product', productSchema)
 
-export default Product
+export default ProductModel

@@ -97,7 +97,8 @@ interface Product {
   description: string
   category: string
   category_type: string
-  material: string
+  material: mongoose.Types.ObjectId | string
+  price: number
   yard: number
   name: string
   status: Status

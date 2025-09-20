@@ -2,7 +2,7 @@ import { IMaterial } from '@models/material.model'
 
 export function transformMaterial(data: IMaterial): Material {
   return {
-    id: data.id,
+    id: data._id,
     name: data.name,
     stock: data.stock,
     image: data.image,
