@@ -120,3 +120,18 @@ interface ISizeDetails {
   price: number
   quantity: number
 }
+
+interface Address {
+  id: string
+  userId: mongoose.Types.ObjectId | string
+  fullName: string
+  email: string
+  phoneNumber: string
+  altPhoneNumber: string
+  city: string
+  state: string
+  address: string
+  active: boolean
+  createdAt: string
+  updatedAt: string
+}

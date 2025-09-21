@@ -1,3 +1,4 @@
+import { isValidObjectId } from 'mongoose'
 import { z } from 'zod'
 
 // Define the size details schema
@@ -31,6 +32,7 @@ export const createProductSchema = z
       .nonempty('Category type is required'),
     material: z
       .string()
+      .refine((val) => isValidObjectId(val), { message: 'Invalid material ID' })
       .min(2, 'Material must be at least 2 characters long')
       .max(50, 'Material must be at most 50 characters long')
       .nonempty('Material is required'),
