@@ -14,8 +14,7 @@ export enum Status {
   OUT_OF_STOCK = 'out_of_stock'
 }
 
-export interface ISizeVariant {
-  size: Size
+export interface ISizeDetails {
   price: number
   quantity: number
 }
@@ -30,10 +29,20 @@ export interface IProduct extends Document {
   yard: number
   name: string
   status: Status
-  sizes: ISizeVariant[]
+  s: ISizeDetails
+  m: ISizeDetails
+  l: ISizeDetails
+  xl: ISizeDetails
+  xxl: ISizeDetails
+  xxxl: ISizeDetails
   createdAt: Date
   updatedAt: Date
 }
+
+const sizeDetailsSchema: Schema = new Schema<ISizeDetails>({
+  price: { type: Number, required: true, default: 0 },
+  quantity: { type: Number, required: true, default: 0 }
+})
 
 const productSchema: Schema = new Schema<IProduct>(
   {
@@ -45,13 +54,12 @@ const productSchema: Schema = new Schema<IProduct>(
     yard: { type: Number, required: true },
     name: { type: String, required: true },
     status: { type: String, required: true, enum: Object.values(Status), default: Status.IN_STOCK },
-    sizes: [
-      {
-        size: { type: String, required: true, enum: Object.values(Size) },
-        price: { type: Number, required: true, default: 0 },
-        quantity: { type: Number, required: true, default: 0 }
-      }
-    ]
+    s: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } },
+    m: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } },
+    l: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } },
+    xl: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } },
+    xxl: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } },
+    xxxl: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } }
   },
   {
     timestamps: true

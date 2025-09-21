@@ -1,4 +1,4 @@
-import { ISizeVariant, Status } from '@models/product.model'
+import { Status } from '@models/product.model'
 
 interface MenuItem {
   href: string
@@ -98,11 +98,25 @@ interface Product {
   category: string
   category_type: string
   material: mongoose.Types.ObjectId | string
-  price: number
   yard: number
   name: string
   status: Status
-  sizes: ISizeVariant[]
+  sizes?: ISizeDetails[]
   createdAt: Date
   updatedAt: Date
+}
+
+interface IProductSizes {
+  s?: ISizeDetails
+  m?: ISizeDetails
+  l?: ISizeDetails
+  xl?: ISizeDetails
+  xxl?: ISizeDetails
+  xxxl?: ISizeDetails
+}
+
+interface ISizeDetails {
+  size: string
+  price: number
+  quantity: number
 }

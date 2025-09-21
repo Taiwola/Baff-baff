@@ -40,8 +40,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     return errorResponse('Product not found', null, 404)
   }
 
-  console.log('form data: ', formData)
-
   const materialId = (formData.get('material') as string) || product.material
   const newYardStr = formData.get('yard')
   const newYard = newYardStr ? Number(newYardStr) : product.yard
@@ -82,8 +80,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
   }
 
-  const updatedSizes = JSON.parse((formData.get('sizes') as string) || '[]')
-
   // Build update data
   const updateData: Partial<UpdateProductDto> = {
     name: (formData.get('name') as string) || product.name,
@@ -94,7 +90,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     yard: newYard,
     status: (formData.get('status') as 'in_stock' | 'out_of_stock') || product.status,
     images,
-    sizes: updatedSizes
+    s: JSON.parse(formData.get('s') as string) || product.s,
+    m: JSON.parse(formData.get('m') as string) || product.m,
+    l: JSON.parse(formData.get('l') as string) || product.l,
+    xl: JSON.parse(formData.get('xl') as string) || product.xl,
+    xxl: JSON.parse(formData.get('xxl') as string) || product.xxl,
+    xxxl: JSON.parse(formData.get('xxxl') as string) || product.xxxl
   }
 
   const result = updateProductSchema.safeParse(updateData)
@@ -106,15 +107,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     return errorResponse('Validation failed', validationErrors, 400)
   }
 
-  if (result.data.sizes === undefined) {
-    result.data.sizes = product.sizes
-  }
-
   const session = await mongoose.startSession()
   session.startTransaction()
 
   try {
-    console.log('result: ', result.data)
     const updatedProduct = await updateProduct(productId, result.data, session)
 
     if (!updatedProduct) {

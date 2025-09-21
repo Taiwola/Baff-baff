@@ -1,5 +1,11 @@
 import { z } from 'zod'
 
+// Define the size details schema with optional fields for partial updates
+const sizeDetailsSchema = z.object({
+  price: z.number().min(0, 'Price must be at least 0').nonnegative('Price must be a non-negative number').optional(),
+  quantity: z.number().min(0, 'Quantity must be at least 0').nonnegative('Quantity must be a non-negative number').optional()
+})
+
 export const updateProductSchema = z.object({
   name: z
     .string()
@@ -38,21 +44,12 @@ export const updateProductSchema = z.object({
     })
     .optional(),
   images: z.array(z.string()).min(1, 'At least one image is required').max(5, 'Maximum 5 images allowed').optional(),
-  sizes: z
-    .array(
-      z.object({
-        size: z.enum(['s', 'm', 'l', 'xl', 'xxl', 'xxxl'], {
-          message: 'Size is required'
-        }),
-        price: z.number().min(0, 'Price must be at least 0').nonnegative('Price must be a non-negative number'),
-        quantity: z.number().min(0, 'Quantity must be at least 0').nonnegative('Quantity must be a non-negative number'),
-        _id: z.string().optional()
-      })
-    )
-    .min(1, 'At least one size variant is required')
-    .max(6, 'Maximum 6 size variants allowed')
-    .optional(),
-  range: z.string().optional()
+  s: sizeDetailsSchema.optional(),
+  m: sizeDetailsSchema.optional(),
+  l: sizeDetailsSchema.optional(),
+  xl: sizeDetailsSchema.optional(),
+  xxl: sizeDetailsSchema.optional(),
+  xxxl: sizeDetailsSchema.optional()
 })
 
 export type UpdateProductDto = z.infer<typeof updateProductSchema>

@@ -75,7 +75,12 @@ export async function POST(req: NextRequest) {
     material: materialId,
     yard,
     images,
-    sizes: JSON.parse((formData.get('sizes') as string) || '[]')
+    s: formData.get('s') ? JSON.parse(formData.get('s') as string) : undefined,
+    m: formData.get('m') ? JSON.parse(formData.get('m') as string) : undefined,
+    l: formData.get('l') ? JSON.parse(formData.get('l') as string) : undefined,
+    xl: formData.get('xl') ? JSON.parse(formData.get('xl') as string) : undefined,
+    xxl: formData.get('xxl') ? JSON.parse(formData.get('xxl') as string) : undefined,
+    xxxl: formData.get('xxxl') ? JSON.parse(formData.get('xxxl') as string) : undefined
   }
 
   const result = createProductSchema.safeParse(productData)
