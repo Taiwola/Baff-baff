@@ -10,6 +10,11 @@ export const updateCartSchema = z.object({
     .string()
     .refine((val) => isValidObjectId(val), { message: 'Invalid User ID' })
     .nonempty('User ID is required')
+    .optional(),
+  product: z
+    .string()
+    .refine((val) => isValidObjectId(val), { message: 'Invalid Product ID' })
+    .nonempty('Product ID is required')
     .optional()
 })
 

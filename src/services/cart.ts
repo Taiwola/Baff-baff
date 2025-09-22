@@ -13,15 +13,15 @@ export async function createCart(data: CreateCartDto, session?: ClientSession): 
 }
 
 export async function getAllCarts(filter?: FilterQuery<ICart>): Promise<ICart[]> {
-  return await CartModel.find(filter || {})
+  return await CartModel.find(filter || {}).populate('product')
 }
 
 export async function getOneCartById(id: string): Promise<ICart | null> {
-  return await CartModel.findById(id)
+  return await CartModel.findById(id).populate('product')
 }
 
 export async function getCartByFilter(filter: FilterQuery<ICart>): Promise<ICart | null> {
-  return await CartModel.findOne(filter)
+  return await CartModel.findOne(filter).populate('product')
 }
 
 export async function updateCart(id: string, data: UpdateCartDto, session?: ClientSession): Promise<ICart | null> {

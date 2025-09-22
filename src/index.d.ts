@@ -166,7 +166,15 @@ interface Cart {
   price: number
   size: string
   quantity: string
+  subtotal: number
   userId: mongoose.Types.ObjectId | string
+  product:
+    | string
+    | {
+        id: string
+        name: string
+        image: string
+      }
   createdAt: Date
   updatedAt: Date
 }

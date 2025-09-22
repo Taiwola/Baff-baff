@@ -9,7 +9,11 @@ export const createCartSchema = z.object({
   userId: z
     .string()
     .refine((val) => isValidObjectId(val), { message: 'Invalid User ID' })
-    .nonempty('User ID is required')
+    .nonempty('User ID is required'),
+  product: z
+    .string()
+    .refine((val) => isValidObjectId(val), { message: 'Invalid Product ID' })
+    .nonempty('Product ID is required')
 })
 
 export type CreateCartDto = z.infer<typeof createCartSchema>
