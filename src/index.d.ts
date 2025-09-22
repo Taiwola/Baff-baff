@@ -135,3 +135,20 @@ interface Address {
   createdAt: string
   updatedAt: string
 }
+
+interface Measurement {
+  id: string
+  userId: mongoose.Types.ObjectId | string
+  chest: string
+  arm: string
+  sleeve: string
+  shoulder: string
+  length: string
+  neck: string
+  waist: string
+  lap: string
+  trouserLength: string
+  knee: string
+  createdAt: Date
+  updatedAt: Date
+}
