@@ -5,10 +5,12 @@ import { Input, Select, SelectItem } from '@heroui/react'
 
 type BaseProps = {
   name: string
-  label: string
+  label?: string
   value?: string | number
+  placeholder?: string
   onChange?: (val: string) => void
   endContent?: string | ReactNode
+  startContent?: string | ReactNode
 }
 
 type TextOrNumberProps = BaseProps & {
@@ -29,19 +31,22 @@ export default function DynamicInput({
   type = 'text',
   options,
   value,
+  placeholder,
   onChange,
-  endContent
+  endContent,
+  startContent
 }: Props) {
   const id = React.useId()
   const normalizedValue = value != null ? String(value) : ''
   const endContentComponent = typeof endContent === 'string' ? (<span className="text-xs text-black/70 pr-2">{endContent}</span>) : endContent
+  const startContentComponent = typeof startContent === 'string' ? (<span className="text-xs text-black/70 pr-2">{startContent}</span>) : startContent
 
   return (
     <div className="flex flex-col gap-2 w-full">
       {/* Label */}
-      <label htmlFor={id} className="text-sm font-medium text-black">
+      {label ? <label htmlFor={id} className="text-sm font-medium text-black">
         {label}
-      </label>
+      </label> : null}
 
       {/* Input / Select */}
       {type === 'select' ? (
@@ -75,6 +80,7 @@ export default function DynamicInput({
           id={id}
           name={name}
           type={type}
+          placeholder={placeholder}
           defaultValue={normalizedValue}
           onChange={(e) => onChange?.(e.target.value)}
           classNames={{
@@ -84,6 +90,7 @@ export default function DynamicInput({
               'text-black placeholder:text-transparent outline-none p-2',
           }}
           endContent={endContentComponent}
+          startContent={startContentComponent}
         />
       )}
     </div>

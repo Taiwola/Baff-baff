@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: Props) {
                <Topbar />
             </header>
 
-            <main>
+            <main className='px-7.5 py-6.5'>
                {children}
             </main>
          </div>

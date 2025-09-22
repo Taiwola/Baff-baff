@@ -26,7 +26,7 @@ export default function Sidebar() {
               <Link
                 href={path}
                 className={`flex items-center gap-3 h-[3.125rem] w-full rounded-[0.625rem] px-2.5 transition-colors capitalize text-sm
-                    ${pathname.startsWith(path) ? 'bg-white text-brand-dark font-medium' : 'text-white hover:bg-white/10'}
+                    ${pathname.endsWith(path) ? 'bg-white text-brand-dark font-medium' : 'text-white hover:bg-white/10'}
                   `}
               >
                 <Icon className="w-6 h-6" />

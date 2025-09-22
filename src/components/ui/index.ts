@@ -1,6 +1,8 @@
 export { default as Button } from './Button'
 export { default as Input } from './Input'
 export { default as BreadCrumbs } from './BreadCrumbs'
+export { default as Pagination } from './Pagination'
+export { default as DatePicker } from './DatePicker'
 
 export { default as ExploreCard } from './Cards/ExploreCard'
 
