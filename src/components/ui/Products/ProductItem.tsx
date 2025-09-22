@@ -20,6 +20,8 @@ export default function ProductItem({ product }: Props) {
           fill
           className="object-fill"
           quality={100}
+          // placeholder='blur'
+          // sizes='' 
         />
       </div>
 
