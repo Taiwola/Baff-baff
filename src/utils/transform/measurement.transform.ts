@@ -3,18 +3,22 @@ import { IMeasurement } from '@models/measurement.model'
 
 export function transformMeasurement(data: IMeasurement): Measurement {
   return {
-    id: data._id?.toString() || data.id,
-    arm: data.arm,
-    chest: data.chest,
-    knee: data.knee,
-    lap: data.lap,
-    length: data.length,
-    neck: data.neck,
-    shoulder: data.shoulder,
-    sleeve: data.sleeve,
-    trouserLength: data.trouserLength,
+    id: data.id,
     userId: data.userId,
-    waist: data.waist,
+    shirt: {
+      arm: data.arm,
+      chest: data.chest,
+      length: data.length,
+      neck: data.neck,
+      shoulder: data.shoulder,
+      sleeve: data.sleeve
+    },
+    trouser: {
+      knee: data.knee,
+      lap: data.lap,
+      length: data.trouserLength,
+      waist: data.waist
+    },
     createdAt: data.createdAt,
     updatedAt: data.updatedAt
   }

@@ -139,16 +139,24 @@ interface Address {
 interface Measurement {
   id: string
   userId: mongoose.Types.ObjectId | string
+  shirt: Shirt
+  trouser: Trouser
+  createdAt: Date
+  updatedAt: Date
+}
+
+interface Trouser {
+  waist: string
+  lap: string
+  length: string
+  knee: string
+}
+
+interface Shirt {
   chest: string
   arm: string
   sleeve: string
   shoulder: string
   length: string
   neck: string
-  waist: string
-  lap: string
-  trouserLength: string
-  knee: string
-  createdAt: Date
-  updatedAt: Date
 }
