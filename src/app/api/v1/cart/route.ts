@@ -1,0 +1,40 @@
+'use server'
+
+import { getAuthUser } from '@middleware/auth'
+import { createCart, getAllCarts } from '@services/cart'
+import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { transformCart, transformCarts } from '@utils/transform/cart.transform'
+import { createCartSchema } from '@utils/validation/cart'
+import { NextRequest } from 'next/server'
+
+export async function GET(req: NextRequest) {
+  const user = await getAuthUser(req)
+
+  const measurement = await getAllCarts({ userId: user?.id })
+  const transform = transformCarts(measurement)
+
+  return sendResponse('Request was successful', transform, 200)
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json()
+
+    const result = createCartSchema.safeParse(body)
+    if (!result.success) {
+      const validationErrors = result.error.issues.map((detail) => ({
+        field: detail.path.join('.'),
+        message: detail.message
+      }))
+      return errorResponse('Validation failed', validationErrors, 400)
+    }
+
+    const measurement = await createCart(result.data)
+    const transform = transformCart(measurement)
+
+    return sendResponse('Cart created successfully', transform, 201)
+  } catch (error) {
+    console.error('Cart creation error:', error)
+    return errorResponse('Internal server error', null, 500)
+  }
+}

@@ -160,3 +160,13 @@ interface Shirt {
   length: string
   neck: string
 }
+
+interface Cart {
+  id: string
+  price: number
+  size: string
+  quantity: string
+  userId: mongoose.Types.ObjectId | string
+  createdAt: Date
+  updatedAt: Date
+}
