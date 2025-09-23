@@ -8,7 +8,7 @@ export default function UsersPage() {
   return (
     <div className="w-full h-full p-4">
       {/* Header */}
-      <Header>
+      <Header title='Users'>
         <Filters />
       </Header>
 

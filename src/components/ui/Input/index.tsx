@@ -11,6 +11,7 @@ type BaseProps = {
   onChange?: (val: string) => void
   endContent?: string | ReactNode
   startContent?: string | ReactNode
+  disabled?: boolean
 }
 
 type TextOrNumberProps = BaseProps & {
@@ -34,7 +35,8 @@ export default function DynamicInput({
   placeholder,
   onChange,
   endContent,
-  startContent
+  startContent,
+  disabled
 }: Props) {
   const id = React.useId()
   const normalizedValue = value != null ? String(value) : ''
@@ -81,11 +83,12 @@ export default function DynamicInput({
           name={name}
           type={type}
           placeholder={placeholder}
+          disabled={disabled}
           defaultValue={normalizedValue}
           onChange={(e) => onChange?.(e.target.value)}
           classNames={{
             inputWrapper:
-              'border border-black/50 rounded-md w-full',
+              `border border-black/50 rounded-md w-full ${disabled ? 'bg-[#EDECEC]' : ''}`,
             input:
               'text-black placeholder:text-transparent outline-none p-2',
           }}

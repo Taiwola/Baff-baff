@@ -8,7 +8,7 @@ import Link, { LinkProps } from "next/link";
 interface BaseButtonProps {
   variant?: "filled" | "bordered";
   size?: "sm" | "md" | "lg";
-  rounded?: "none" | "md" | "full";
+  rounded?: "none" | 'sm' | "md" | "full";
   fullWidth?: boolean;
   className?: string;
   children: React.ReactNode;

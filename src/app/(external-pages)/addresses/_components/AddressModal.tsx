@@ -35,7 +35,7 @@ export default function AddressFormModal({ isOpen, onOpenChange }: Props) {
               <h3 className="text-lg font-semibold">New Address</h3>
 
               <Button
-                className="p-1 rounded-full hover:bg-gray-100 bg-none"
+                className="p-1 rounded-full hover:bg-gray-100 bg-transparent"
                 onClick={onClose}
               >
                 <X className="icon-button bg-none" />

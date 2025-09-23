@@ -3,16 +3,16 @@
 import React, { ReactNode } from 'react'
 
 type Props = {
+   title: string
    children: ReactNode
 }
 
-export default function Header({ children }: Props) {
-   
+export default function Header({ title, children }: Props) {
 
    return (
       <>
          <div className="w-full flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-extrabold">Users</h1>
+            <h1 className="text-2xl font-extrabold">{title}</h1>
 
             <div className="flex items-center gap-2.5">
                {children}

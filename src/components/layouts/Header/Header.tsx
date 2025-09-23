@@ -24,7 +24,8 @@ export default function Header() {
 
   const { isOpen: searchOpen, onOpen, onClose } = useDisclosure();
 
-  const isAuth = false
+  const isAuth = true
+  const isAdmin = true
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +42,10 @@ export default function Header() {
 
     else if (item.key === 'profile' && !isAuth) {
       router.push('/login')
+    }
+
+    else if(item.key === 'profile' && isAuth && isAdmin) {
+      router.push('/dashboard')
     }
 
     else router.push(item.href)

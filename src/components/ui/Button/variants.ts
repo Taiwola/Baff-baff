@@ -5,7 +5,7 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        filled: 'bg-brand text-white hover:bg-brand-dark cursor-pointer flex outline-none focus:outline:none',
+        filled: 'bg-brand-dark text-white hover:bg-brand-dark/80 cursor-pointer flex outline-none focus:outline:none focus:border:none',
         bordered: 'border border-brand-dark text-brand-dark bg-transparent hover:bg-gray-50 cursor-pointer flex outline-none focus:outline-none'
       },
       size: {
@@ -15,6 +15,7 @@ export const buttonVariants = cva(
       },
       rounded: {
         none: 'rounded-none',
+        sm: 'rounded-[0.625rem]',
         md: 'rounded-md',
         full: 'rounded-full'
       },

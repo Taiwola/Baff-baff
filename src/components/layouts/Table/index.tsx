@@ -13,15 +13,12 @@ type Column = {
 
 type DataTableProps = {
    columns: Column[];
-   rows: Record<string, string | number>[];
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   rows: Record<string, any>[];
    rowsPerPage?: number;
 };
 
-export default function DataTable({
-   columns,
-   rows,
-   rowsPerPage = 10,
-}: DataTableProps) {
+export default function DataTable({ columns, rows, rowsPerPage = 10 }: DataTableProps) {
    const [page, setPage] = useState(1);
 
    const pages = Math.ceil(rows.length / rowsPerPage);
