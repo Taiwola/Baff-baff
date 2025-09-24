@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Status } from '@models/product.model'
 
 interface MenuItem {
@@ -177,4 +178,49 @@ interface Cart {
       }
   createdAt: Date
   updatedAt: Date
+}
+
+export type Currency = 'NGN' | 'USD' | 'GHS' | 'ZAR' | 'KES' | 'XOF'
+
+interface InitiatePayment {
+  amount: number
+  email: string
+  currency?: Currency
+  reference?: string
+  callback_url?: string
+  metadata?: Record<string, any>
+}
+
+interface InitiatePaymentResponse {
+  checkoutUrl: string // for web
+  reference: string
+  checkoutCode: string // for mobile
+}
+
+enum OrderStatusEnum {
+  'NOT_START' = 'not_start',
+  'PROCESSING' = 'processing',
+  'DELIVERED' = 'delivered'
+}
+
+interface Order {
+  id: string
+  datePlaced: Date
+  fullName: string
+  email: string
+  phoneNumber: string
+  deliveryZone: string
+  orderStatus: string
+  subTotal: number
+  deliveryFee: number
+  totalAmount: number
+  products: {
+    id: string
+    name: string
+    image: string
+    category: string
+    quantity: string
+    size: string
+    price: number
+  }[]
 }
