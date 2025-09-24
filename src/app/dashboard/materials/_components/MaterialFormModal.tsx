@@ -73,23 +73,10 @@ export default function MaterialFormModal({ isOpen, onOpenChange, type = 'create
                            placeholder="Enter material name"
                         />
 
-                        {/* Add Stock */}
-                        {type === 'edit' ? (
-                           <Input
-                              name="stock"
-                              type="number"
-                              label="Current Stock"
-                              placeholder="Enter stock quantity"
-                              value={60}
-                              endContent='YRD'
-                              disabled
-                           />
-                        ) : null}
-
                         <Input
                            name="stock"
                            type="number"
-                           label="Add stock"
+                           label="Stock"
                            placeholder="Enter stock quantity"
                            endContent='YRD'
                         />

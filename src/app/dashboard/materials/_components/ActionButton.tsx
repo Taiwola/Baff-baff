@@ -17,10 +17,9 @@ export default function ActionButton({ }: Props) {
    function handleChange(item: Item) {
       if (item.key === 'delete') {
          onOpenDelete()
-         return
+      } else {
+         onOpenEdit()
       }
-
-      else onOpenEdit()
    }
 
    return (
@@ -51,7 +50,6 @@ export default function ActionButton({ }: Props) {
 }
 
 const items: Item[] = [
-   { key: 'addStock', value: 'Add Stock' },
-   { key: 'substractStock', value: 'Substract Stock' },
+   { key: 'edit', value: 'Edit Material' },
    { key: 'delete', value: 'Delete', color: 'danger' },
 ]
