@@ -29,8 +29,8 @@ export async function POST(req: NextRequest) {
       return errorResponse('Validation failed', validationErrors, 400)
     }
 
-    const measurement = await createCart(result.data)
-    const transform = transformCart(measurement)
+    const cart = await createCart(result.data)
+    const transform = transformCart(cart)
 
     return sendResponse('Cart created successfully', transform, 201)
   } catch (error) {

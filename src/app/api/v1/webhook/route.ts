@@ -1,5 +1,5 @@
 import { PaystackChargeSuccess, PaystackWebhook } from '@payment/payment.interface'
-import { getOrderByFilter } from '@services/order'
+import { getOrderByFilter, updateOrder } from '@services/order'
 import { getOneProductById } from '@services/product'
 import { NextRequest } from 'next/server'
 import mongoose, { ClientSession } from 'mongoose'
@@ -77,13 +77,13 @@ export async function POST(req: NextRequest) {
         console.log(`Updated product ID: ${product.id}, size: ${size}, yard: ${updatedYard}`)
       }
 
-      // Commit the transaction
+      await updateOrder(order.id, { paymentStatus: 'paid' }, session)
+
       await session.commitTransaction()
       session.endSession()
 
       return sendResponse('Webhook processed successfully')
     } catch (error) {
-      // Abort the transaction on error
       await session.abortTransaction()
       session.endSession()
       console.error('Transaction aborted due to error:', error)
