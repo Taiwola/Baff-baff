@@ -3,13 +3,16 @@
 import { getAuthUser } from '@middleware/auth'
 import { createRegion, getAllRegions } from '@services/region'
 import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { transformRegion, transformRegions } from '@utils/transform/region.transform'
 import { CreateRegionSchema } from '@utils/validation/region/create-region.validation'
 import { NextRequest } from 'next/server'
 
 export async function GET() {
   const region = await getAllRegions()
 
-  return sendResponse('regions fetched successfully', region, 200)
+  const transform = transformRegions(region)
+
+  return sendResponse('regions fetched successfully', transform, 200)
 }
 
 export async function POST(req: NextRequest) {
@@ -31,8 +34,9 @@ export async function POST(req: NextRequest) {
     }
 
     const region = await createRegion(result.data)
+    const transfrom = transformRegion(region)
 
-    return sendResponse('Category created successfully', region, 201)
+    return sendResponse('Category created successfully', transfrom, 201)
   } catch (error) {
     console.error('region creation error:', error)
     return errorResponse('Internal server error', null, 500)

@@ -11,6 +11,7 @@ export function transformOrder(data: IOrder): Order {
     deliveryZone: data.region,
     email: data.email,
     fullName: data.fullName,
+    paymentStatus: data.paymentStatus,
     orderStatus: data.status,
     phoneNumber: data.phoneNumber,
     products: data.products.map((product) => {

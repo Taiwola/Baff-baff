@@ -9,6 +9,9 @@ export function middleware(request: NextRequest) {
   if (pathname === '/api/v1/product' && method === 'GET') {
     return NextResponse.next()
   }
+  if (pathname === '/api/v1/webhook' && method === 'POST') {
+    return NextResponse.next()
+  }
 
   if (request.nextUrl.pathname.startsWith('/api/v1/')) {
     return authMiddleware(request)

@@ -208,6 +208,7 @@ interface Order {
   datePlaced: Date
   fullName: string
   email: string
+  paymentStatus: string
   phoneNumber: string
   deliveryZone: string
   orderStatus: string
@@ -223,4 +224,13 @@ interface Order {
     size: string
     price: number
   }[]
+}
+
+interface Region {
+  id: string
+  region: string
+  state: string
+  price: number
+  createdAt: Date
+  updatedAt: Date
 }

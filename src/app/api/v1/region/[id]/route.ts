@@ -3,6 +3,7 @@
 import { getAuthUser } from '@middleware/auth'
 import { deleteRegion, getOneRegionById, updateRegion } from '@services/region'
 import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { transformRegion } from '@utils/transform/region.transform'
 import { UpdateRegionSchema } from '@utils/validation/region/update-region.validation'
 import { NextRequest } from 'next/server'
 
@@ -52,7 +53,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return errorResponse('Region does not exist', null, 404)
   }
 
-  return sendResponse('Region found', region, 200)
+  const transform = transformRegion(region)
+
+  return sendResponse('Region found', transform, 200)
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {

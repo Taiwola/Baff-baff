@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       totalAmount: amount + region.price,
       fullName: result.data.fullName,
       phoneNumber: result.data.phoneNumber,
-      paymentStatus: 'paid',
+      paymentStatus: 'unpaid',
       status: 'not_start',
       products
     }
