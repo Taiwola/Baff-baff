@@ -13,17 +13,17 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const searchQuery = searchParams.get('search') || ''
 
-    const filters: { userId?: string; search?: string } = {
+    const filters: { userId?: string; id?: string } = {
       userId: user?.id
     }
 
     if (searchQuery) {
-      filters.search = searchQuery
+      filters.id = searchQuery
     }
 
     let orders
     if (user?.role === 'admin') {
-      orders = await getAllOrders(filters.search ? { search: filters.search } : {})
+      orders = await getAllOrders(filters.id ? { id: filters.id } : {})
     } else {
       orders = await getAllOrders(filters)
     }

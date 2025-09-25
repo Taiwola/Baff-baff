@@ -2,6 +2,7 @@
 
 import { getAuthUser } from '@middleware/auth'
 import { createCart, getAllCarts } from '@services/cart'
+import { getUserById } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/response/api.response'
 import { transformCart, transformCarts } from '@utils/transform/cart.transform'
 import { createCartSchema } from '@utils/validation/cart'
@@ -17,6 +18,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const user = await getAuthUser(req)
+
+  const findUser = await getUserById(user?.id as string)
+
+  if (!findUser) {
+    return errorResponse('User does not exist', null, 404)
+  }
   try {
     const body = await req.json()
 
@@ -28,6 +36,8 @@ export async function POST(req: NextRequest) {
       }))
       return errorResponse('Validation failed', validationErrors, 400)
     }
+
+    result.data.userId = user?.id
 
     const cart = await createCart(result.data)
     const transform = transformCart(cart)

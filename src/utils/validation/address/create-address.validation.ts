@@ -5,7 +5,7 @@ export const CreateaddressSchema = z.object({
   userId: z
     .string()
     .refine((val) => isValidObjectId(val), { message: 'Invalid User ID' })
-    .nonempty('User ID is required'),
+    .optional(),
   fullName: z
     .string()
     .min(2, 'Full name must be at least 2 characters long')

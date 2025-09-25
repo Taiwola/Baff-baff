@@ -11,8 +11,35 @@ import { CreateProductDto, createProductSchema } from '@utils/validation/product
 import { NextRequest } from 'next/server'
 import mongoose from 'mongoose'
 
-export async function GET() {
-  const products = await getAllProducts()
+export async function GET(req: NextRequest) {
+  const user = await getAuthUser(req)
+  const { searchParams } = new URL(req.url)
+  const searchQuery = searchParams.get('search') || ''
+  const categoryQuery = searchParams.get('category') || ''
+  const categoryTypeQuery = searchParams.get('category_type') || ''
+  const statusQuery = searchParams.get('status') || ''
+
+  const filters: { category?: string; name?: { $regex: string; $options: string }; category_type?: string; status: string } = {
+    status: user?.role === 'admin' ? '' : 'in_stock'
+  }
+
+  if (searchQuery) {
+    filters.name = { $regex: searchQuery, $options: 'i' } // 'i' for case-insensitive
+  }
+
+  if (categoryQuery) {
+    filters.category = categoryQuery
+  }
+
+  if (categoryTypeQuery) {
+    filters.category_type = categoryTypeQuery
+  }
+
+  if (statusQuery) {
+    filters.status = statusQuery
+  }
+
+  const products = await getAllProducts(filters)
 
   const transform = transformProducts(products)
 

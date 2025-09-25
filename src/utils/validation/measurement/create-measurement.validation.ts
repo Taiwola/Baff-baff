@@ -5,7 +5,7 @@ export const createMeasurementSchema = z.object({
   userId: z
     .string()
     .refine((val) => !val || isValidObjectId(val), { message: 'Invalid USER ID' })
-    .nonempty('User id is required'),
+    .optional(),
   chest: z
     .string()
     .regex(/^\d*\.?\d*$|^$/, 'Chest must be a valid number or empty')
