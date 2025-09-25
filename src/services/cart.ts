@@ -32,3 +32,8 @@ export async function updateCart(id: string, data: UpdateCartDto, session?: Clie
 export async function deleteCart(id: string): Promise<ICart | null> {
   return await CartModel.findByIdAndDelete(id)
 }
+
+export async function deleteManyCarts(filter: FilterQuery<ICart>, session?: ClientSession): Promise<{ deletedCount: number }> {
+  const result = await CartModel.deleteMany(filter, { session })
+  return { deletedCount: result.deletedCount }
+}

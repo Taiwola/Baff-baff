@@ -5,6 +5,7 @@ import { NextRequest } from 'next/server'
 import mongoose, { ClientSession } from 'mongoose'
 import ProductModel, { IProduct, ISizeDetails, Status } from '@models/product.model'
 import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { deleteManyCarts, getAllCarts } from '@services/cart'
 
 export async function POST(req: NextRequest) {
   console.log('webhook ran')
@@ -14,12 +15,10 @@ export async function POST(req: NextRequest) {
   if (body.event === 'charge.success') {
     const data = body.data
     const order = await getOrderByFilter({ reference: data.reference })
+    const carts = await getAllCarts({ userId: order?.userId })
 
     if (!order || !order.products || order.products.length <= 0) {
-      return new Response(JSON.stringify({ message: 'Order or products not found' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      })
+      return errorResponse('Order or products not found', null, 404)
     }
 
     const session: ClientSession = await mongoose.startSession()
@@ -78,6 +77,11 @@ export async function POST(req: NextRequest) {
       }
 
       await updateOrder(order.id, { paymentStatus: 'paid' }, session)
+
+      if (carts && carts.length > 0) {
+        const { deletedCount } = await deleteManyCarts({ _id: { $in: carts.map((cart) => cart._id) } }, session)
+        console.log(`Deleted ${deletedCount} carts for user ID: ${order.userId}`)
+      }
 
       await session.commitTransaction()
       session.endSession()
