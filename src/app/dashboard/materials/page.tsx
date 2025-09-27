@@ -1,7 +1,6 @@
 import React from 'react'
-import { Header } from '@components/features/dashboard'
+import { FilterButton, Header } from '@components/features/dashboard'
 import MaterialsList from './_components/MaterialsList'
-import FilterButton from './_components/FilterButton'
 import AddButton from './_components/AddButton'
 
 export default function MaterialsPage() {

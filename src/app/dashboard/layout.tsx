@@ -12,12 +12,12 @@ export default function DashboardLayout({ children }: Props) {
             <Sidebar />
          </aside>
 
-         <div className="w-[82%] flex flex-col border border-red-900">
+         <div className="w-[82%] flex flex-col">
             <header>
                <Topbar />
             </header>
 
-            <main className='px-7.5 py-6.5'>
+            <main className='px-7.5 py-6.5 h-screen overflow-scroll no-scrollbar'>
                {children}
             </main>
          </div>

@@ -9,18 +9,19 @@ export default function DateSelector() {
 
    return (
       <DatePicker
+      calendarWidth={400}
          classNames={{
             selectorButton: 'mr-3 w-5 h-5 p-0 birder border-blue-900',
-            innerWrapper: '',
-            popoverContent: 'bg-white',
+            // innerWrapper: '',
+            popoverContent: 'bg-red-900',
 
             // base: "base-classes border border-red-900",
-            // calendar: "calendar-classes border border-red-900",
+            calendar: "bg-blue-900",
             selectorIcon: "w-5 h-5",
-            // calendarContent: "calendar-content-classes border border-red-900",
+            calendarContent: "bg-blue-900",
             // inputWrapper: "input-wrapper-classes border border-red-900",
             input: "flex justify-center item-center",
-            segment: "flex justify-center item-center focus:border",
+            // segment: "flex justify-center item-center focus:border",
          }}
          hideTimeZone
          aria-label="Select date"
@@ -29,7 +30,8 @@ export default function DateSelector() {
          onChange={setDate}
          className="w-[154px] gap-2 border border-[#121212] py-2.5 rounded-[8px] text-sm text-[#121212] h-10"
          selectorButtonPlacement="start"
-         showMonthAndYearPickers
+         showMonthAndYearPickers={false}
+         placeholderValue={null}
       />
    )
 }

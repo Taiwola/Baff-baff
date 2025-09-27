@@ -14,7 +14,7 @@ export default function Header({ title, children }: Props) {
          <div className="w-full flex justify-between items-center mb-6">
             <h1 className="text-2xl font-extrabold">{title}</h1>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center justify-end gap-2.5 flex-1">
                {children}
             </div>
          </div>

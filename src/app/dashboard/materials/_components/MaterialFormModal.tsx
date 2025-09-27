@@ -54,7 +54,7 @@ export default function MaterialFormModal({ isOpen, onOpenChange, type = 'create
                         {/* Image Picker */}
                         <div
                            onClick={handleImageClick}
-                           className="border-2 border-dashed border-gray-400 h-[125px] w-[95px] rounded-[10px] flex items-center justify-center cursor-pointer"
+                           className="border-2 border-dashed border-gray-400 h-[7.8125rem] w-[5.9375rem] rounded-[0.625rem] flex items-center justify-center cursor-pointer"
                         >
                            <Plus className="w-[54px] h-[54px] text-gray-500" />
                            <input

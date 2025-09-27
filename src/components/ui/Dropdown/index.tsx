@@ -10,9 +10,10 @@ type Props = {
    items: Item[]
    onChange: (selected: Item) => void
    markSelected?: boolean
+   defaultSelectedKeys?: string[]
 }
 
-export default function CustomDropdown({ children, items, onChange, markSelected = true }: Props) {
+export default function CustomDropdown({ children, items, onChange, markSelected = true, defaultSelectedKeys = [] }: Props) {
 
    function handleSelectionChange(keys: Selection) {
       const key = Array.from(keys)[0]
@@ -27,6 +28,7 @@ export default function CustomDropdown({ children, items, onChange, markSelected
          </DropdownTrigger>
 
          <DropdownMenu
+            defaultSelectedKeys={defaultSelectedKeys}
             aria-label="Sorting Actions"
             selectionMode="single"
             disallowEmptySelection
