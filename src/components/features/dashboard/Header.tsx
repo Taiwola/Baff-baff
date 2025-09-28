@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react'
 
 type Props = {
    title: string
-   children: ReactNode
+   children?: ReactNode
 }
 
 export default function Header({ title, children }: Props) {
