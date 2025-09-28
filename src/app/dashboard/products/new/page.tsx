@@ -9,8 +9,8 @@ export default function CreateProductPage() {
   }
 
   return (
-    <div className='w-full h-full'>
-      <form className='w-full h-full' action={handleSubmit}>
+    <div className="w-full h-auto">
+      <form className='w-full h-auto' action={handleSubmit}>
         <div className='w-full flex justify-between items-start'>
           <Button as={'link'} href={'/dashboard/products'} className='bg-transparent text-brand-dark p-0 hover:p-2 hover:text-white gap-5 font-bold'>
             <ArrowLeftIcon className='w-5 h-5' />
@@ -40,7 +40,7 @@ export default function CreateProductPage() {
 
         <hr className='border border-brand-dark/40 my-5' />
 
-        <section className='w-full h-auto rounded-xl px-5 py-2.5 bg-white'>
+        <section className='w-full rounded-xl px-5 py-2.5 bg-white'>
 
           {/* PRODUCT IAMGES */}
           <div className='w-full'>

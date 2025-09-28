@@ -51,7 +51,7 @@ export default function DynamicInput({
       type={type}
       placeholder={placeholder}
       disabled={disabled}
-      defaultValue={normalizedValue}
+      value={normalizedValue}
       onChange={(e) => onChange?.(e.target.value)}
       classNames={{
         inputWrapper:
