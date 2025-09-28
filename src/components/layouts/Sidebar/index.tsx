@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, Box, Package, UsersRound, ShoppingCart, Settings } from 'lucide-react'
+import { LayoutDashboard, Users, Box, Package, UsersRound, ShoppingCart, Settings, MapIcon } from 'lucide-react'
 
 import Logo from '@assets/images/Dashboard-logo.png'
 
@@ -12,7 +12,7 @@ export default function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <div className="w-full h-full overflow-y-auto no-scrollbar bg-brand-dark px-5">
+    <div className="w-full h-full bg-brand-dark px-5">
 
       <Link href="/" className="h-20 mb-5 flex justify-center items-center">
         <Image src={Logo} alt="dashboard-logo" quality={100} />
@@ -45,6 +45,7 @@ const routes = [
   { name: 'users', path: '/dashboard/users', icon: Users },
   { name: 'materials', path: '/dashboard/materials', icon: Box },
   { name: 'products', path: '/dashboard/products', icon: Package },
+  { name: 'region', path: '/dashboard/region', icon: MapIcon },
   { name: 'collaborators', path: '/dashboard/collaborators', icon: UsersRound },
   { name: 'orders', path: '/dashboard/orders', icon: ShoppingCart },
   { name: 'settings', path: '/dashboard/settings', icon: Settings },

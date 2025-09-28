@@ -5,7 +5,7 @@ import AddButton from './_components/AddButton'
 
 export default function MaterialsPage() {
   return (
-    <div className="w-full h-full p-4">
+    <div className="w-full h-auto">
       {/* Header */}
       <Header title='Materials'>
         <FilterButton />

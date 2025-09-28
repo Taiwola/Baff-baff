@@ -39,7 +39,7 @@ export default function DynamicInput({
   disabled
 }: Props) {
   const id = React.useId()
-  const normalizedValue = value != null ? String(value) : ''
+  const normalizedValue = value != null ? String(value) : undefined
   const endContentComponent = typeof endContent === 'string' ? (<span className="text-xs text-black/70 pr-2">{endContent}</span>) : endContent
   const startContentComponent = typeof startContent === 'string' ? (<span className="text-xs text-black/70 pr-2">{startContent}</span>) : startContent
 
@@ -57,7 +57,7 @@ export default function DynamicInput({
         inputWrapper:
           `border border-black/50 rounded-md w-full ${disabled ? 'bg-[#EDECEC]' : ''}`,
         input:
-          'text-black placeholder:text-transparent outline-none p-2',
+          'text-black placeholder:text-brand-dark/40 outline-none p-2',
       }}
       endContent={endContentComponent}
       startContent={startContentComponent}

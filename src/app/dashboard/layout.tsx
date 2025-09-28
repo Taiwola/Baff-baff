@@ -7,8 +7,8 @@ type Props = Readonly<{
 
 export default function DashboardLayout({ children }: Props) {
    return (
-      <div className="w-full min-h-screen flex">
-         <aside className="w-[18%]">
+      <div className="w-full h-screen flex overflow-hidden">
+         <aside className="w-[18%] h-screen overflow-y-auto no-scrollbar">
             <Sidebar />
          </aside>
 
@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: Props) {
                <Topbar />
             </header>
 
-            <main className='px-7.5 py-6.5 h-screen overflow-scroll no-scrollbar'>
+            <main className='px-7.5 py-6.5 h-full overflow-y-auto'>
                {children}
             </main>
          </div>

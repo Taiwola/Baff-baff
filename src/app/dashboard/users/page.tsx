@@ -6,7 +6,7 @@ import { Header } from '@components/features/dashboard'
 
 export default function UsersPage() {
   return (
-    <div className="w-full h-full p-4">
+    <div className="w-full h-auto">
       {/* Header */}
       <Header title='Users'>
         <Filters />

@@ -33,7 +33,7 @@ export default function CustomDropdown({ children, items, onChange, markSelected
             selectionMode="single"
             disallowEmptySelection
             onSelectionChange={handleSelectionChange}
-            className="bg-brand-light w-max max-w-[12.75rem] rounded-[1.25rem] border border-[#BCBCBC] overflow-hidden"
+            className="bg-brand-light w-max min-w-[7.5rem] max-w-[12.75rem] rounded-[1.25rem] border border-[#BCBCBC] overflow-hidden p-0"
             itemClasses={{
                base: [
                   'py-3.5 px-4 text-base text-black transition-colors',
