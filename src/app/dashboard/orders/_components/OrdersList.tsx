@@ -1,7 +1,7 @@
 import React from 'react'
-import { DataTable } from '@components/layouts';
 import Link from 'next/link';
-// import { Order, OrderStatus } from '@types/order';
+
+import { DataTable } from '@components/layouts';
 
 export default function OrdersList() {
    return <DataTable columns={columns} rows={rowsForTable} />;

@@ -85,6 +85,10 @@ body {
     @apply scale-110;
   }
 
+  .graph-label {
+    @apply text-[0.5rem] text-red-900;
+  }
+
   .nav-link {
     @apply relative font-medium text-brand-dark transition-colors duration-300 ease-in-out;
   }
