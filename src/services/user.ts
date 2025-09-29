@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { RegisterDto } from '@utils/validation/auth'
 import UserModel, { IUser } from '@models/user.model'
 
 export async function getUserByEmail(email: string): Promise<IUser | null> {
@@ -10,7 +11,7 @@ export async function getUserByEmail(email: string): Promise<IUser | null> {
   return user
 }
 
-export async function createUser(data: User): Promise<IUser> {
+export async function createUser(data: RegisterDto): Promise<IUser> {
   const newUser = new UserModel({
     ...data
   })

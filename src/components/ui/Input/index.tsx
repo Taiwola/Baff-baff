@@ -43,10 +43,10 @@ export default function DynamicInput({
 }: Props) {
   const id = React.useId()
   const [showPassword, setShowPassword] = useState(false)
-  const [isTyping, setIsTyping] = useState(false)
+  const [focused, setFocused] = useState(false)
 
-  const currentError = isTyping ? undefined : error
-
+  // Show errors only when the user is not actively editing
+  const currentError = focused ? undefined : error
 
   const normalizedValue = value != null ? String(value) : ''
 
@@ -65,26 +65,30 @@ export default function DynamicInput({
     )
 
   const labelContent = label ? (
-    <label htmlFor={id} className={`text-sm font-medium ${currentError ? "text-red-600" : "text-black"}`}>
+    <label
+      htmlFor={id}
+      className={`text-sm font-medium ${currentError ? 'text-red-600' : 'text-black'}`}
+    >
       {label}
     </label>
   ) : null
 
   const handleChange = (val: string) => {
-    // Clear internal error when user types
-    setIsTyping(true) // user started typing → hide error
     onChange?.(val)
   }
 
   let inputContent: ReactNode = null
 
-  const borderClass = currentError
-    ? 'border-red-500'
-    : 'border-black/50'
+  const borderClass = currentError ? 'border-red-500' : 'border-black/50'
 
   const textClass = currentError
     ? 'text-red-600 placeholder:text-red-300'
     : 'text-black placeholder:text-brand-dark/40'
+
+  const commonHandlers = {
+    onFocus: () => setFocused(true),
+    onBlur: () => setFocused(false)
+  }
 
   if (type === 'select') {
     inputContent = (
@@ -93,22 +97,21 @@ export default function DynamicInput({
         name={name}
         defaultSelectedKeys={normalizedValue ? [normalizedValue] : []}
         onChange={(e) => handleChange(e.target.value)}
+        {...commonHandlers}
         classNames={{
           trigger: `border ${borderClass} rounded-md py-5 px-2.5 w-full text-sm ${textClass} min-h-[40px] flex items-center justify-between`,
           listbox:
             'border border-foreground rounded-md bg-light text-black text-sm py-2 w-full',
           listboxWrapper: 'w-full',
-          selectorIcon:
-            'absolute right-3 text-brand-dark w-5 h-5 pointer-events-none',
+          selectorIcon: 'absolute right-3 text-brand-dark w-5 h-5 pointer-events-none'
         }}
       >
         {options!.map((opt, idx) => (
           <SelectItem
             key={opt.key}
             textValue={opt.label}
-            className={`${
-              options!.length - 1 === idx ? 'border-none' : 'border-b border-foreground'
-            }`}
+            className={`${options!.length - 1 === idx ? 'border-none' : 'border-b border-foreground'
+              }`}
           >
             {opt.label}
           </SelectItem>
@@ -125,13 +128,13 @@ export default function DynamicInput({
         disableAutosize
         defaultValue={normalizedValue}
         onChange={(e) => handleChange(e.target.value)}
+        {...commonHandlers}
         endContent={endContentComponent}
         startContent={startContentComponent}
         classNames={{
-          inputWrapper: `border ${borderClass} rounded-md w-full ${
-            disabled ? 'bg-[#EDECEC]' : ''
-          }`,
-          input: `outline-none p-2 ${textClass}`,
+          inputWrapper: `border ${borderClass} rounded-md w-full ${disabled ? 'bg-[#EDECEC]' : ''
+            }`,
+          input: `outline-none p-2 ${textClass}`
         }}
       />
     )
@@ -160,13 +163,13 @@ export default function DynamicInput({
         type={resolvedType}
         placeholder={placeholder}
         disabled={disabled}
-        value={normalizedValue}
+        defaultValue={normalizedValue}
         onChange={(e) => handleChange(e.target.value)}
+        {...commonHandlers}
         classNames={{
-          inputWrapper: `border ${borderClass} rounded-md w-full ${
-            disabled ? 'bg-[#EDECEC]' : ''
-          }`,
-          input: `outline-none p-2 ${textClass}`,
+          inputWrapper: `border ${borderClass} rounded-md w-full ${disabled ? 'bg-[#EDECEC]' : ''
+            }`,
+          input: `outline-none p-2 ${textClass}`
         }}
         endContent={isPassword ? passwordToggle : endContentComponent}
         startContent={startContentComponent}

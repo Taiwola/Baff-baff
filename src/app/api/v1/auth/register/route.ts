@@ -6,11 +6,11 @@ import { createUser, getUserByEmail } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { registerSchema } from '@utils/validation/auth'
 
-async function loadDb() {
-  await dbConnect()
-}
+// async function loadDb() {
+// }
 
-loadDb()
+await dbConnect()
+// loadDb()
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const json: User = await req.json()
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const user = await createUser(json)
+    const user = await createUser(result.data)
     const token = await generateToken({ id: user.id, email: user.email, role: user.role })
     return sendResponse('User registered successfully', { token }, 201)
   } catch (error) {

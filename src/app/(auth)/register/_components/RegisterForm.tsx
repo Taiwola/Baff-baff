@@ -1,8 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { Spinner } from '@heroui/react'
-import React, { useActionState } from 'react'
+import { addToast, Spinner } from '@heroui/react'
+import React, { useActionState, useEffect } from 'react'
 
 import { Button, Input } from '@components/ui'
 import TermsAndCondition from './TermsAndCondition'
@@ -13,18 +13,26 @@ import { RegisterFormState } from '@utils/validation/auth'
 
 const initialState: RegisterFormState = {
   values: {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: 'user'
+    firstName: 'Tobi',
+    lastName: 'Olanitori',
+    email: 'tobiolanitori@gmail.com',
+    password: 'Alicemojisola1.',
+    confirmPassword: 'Alicemojisola1.',
+    role: 'user',
+    termsAndCondition: false
   },
+  error: '',
   errors: {}
 }
 
 export default function RegisterForm() {
-  const [{ errors }, dispatch, isPending] = useActionState(register, initialState)
+  const [{ error, errors, values }, dispatch, isPending] = useActionState(register, initialState)
+
+  useEffect(() => {
+    if(error) {
+      addToast({title: 'Error', description: error})
+    }
+  }, [error])
 
   return (
     <form action={dispatch} className='grid grid-cols-1 gap-5'>
@@ -33,6 +41,7 @@ export default function RegisterForm() {
           name='firstName'
           label='First Name'
           type='text'
+          value={values.firstName}
           error={errors.firstName}
         />
 
@@ -40,6 +49,7 @@ export default function RegisterForm() {
           name='lastName'
           label='Last Name'
           type='text'
+          value={values.lastName}
           error={errors.lastName}
         />
       </div>
@@ -48,6 +58,7 @@ export default function RegisterForm() {
         name='email'
         label='Email Address'
         type='email'
+        value={values.email}
         error={errors.email}
       />
 
@@ -55,6 +66,7 @@ export default function RegisterForm() {
         name='password'
         label='Password'
         type='password'
+        value={values.password}
         error={errors.password}
       />
 
@@ -62,10 +74,11 @@ export default function RegisterForm() {
         name='confirmPassword'
         label='Confirm Password'
         type='password'
+        value={values.confirmPassword}
         error={errors.confirmPassword}
       />
 
-      <TermsAndCondition />
+      <TermsAndCondition defaultValue={values.termsAndCondition} />
 
       <Button rounded='md' size='md' className='bg-black mt-5'>Sign up</Button>
 

@@ -16,7 +16,9 @@ export const registerSchema = z
 
     email: z.string().email('Please enter a valid email address').nonempty('Email is required'),
 
-    role: z.enum(['user', 'admin']).optional(),
+    role: z.enum(['user', 'admin']),
+
+    termsAndCondition: z.boolean(),
 
     password: z
       .string()

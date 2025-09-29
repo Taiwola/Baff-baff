@@ -1,3 +1,4 @@
+import 'server-only'
 import { v2 as cloudinary, UploadApiResponse, TransformationOptions } from 'cloudinary'
 import { CLOUDINARY_FOLDERS } from './folder'
 

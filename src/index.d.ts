@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Status } from '@models/product.model'
+// import { Status } from '@models/product.model'
 
 interface MenuItem {
   href: string
@@ -14,10 +14,7 @@ interface NavLinkProps {
   onClick?: () => void
 }
 
-interface MongooseCache {
-  conn: typeof mongoose | null
-  promise: Promise<typeof mongoose> | null
-}
+
 
 interface User {
   id: string

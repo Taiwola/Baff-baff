@@ -1,6 +1,6 @@
 import { z, ZodError } from 'zod'
 
-export function formatError<T>(error: ZodError<T>): T {
+export function formatError<T, K>(error: ZodError<K>): T {
   const tree = z.treeifyError(error)
 
   if (!('properties' in tree && tree.properties)) {

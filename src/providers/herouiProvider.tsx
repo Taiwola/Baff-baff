@@ -1,10 +1,15 @@
 "use client"
-import { HeroUIProvider } from "@heroui/react"
+import { HeroUIProvider, ToastProvider } from "@heroui/react"
 
-export default function HeroUiProvider({
-  children,
-}: {
+type Props = {
   children: React.ReactNode
-}) {
-  return <HeroUIProvider>{children}</HeroUIProvider>
+}
+
+export default function HeroUiProvider({ children }: Props) {
+  return (
+    <HeroUIProvider>
+      <ToastProvider placement="top-center"/>
+      {children}
+    </HeroUIProvider>
+  )
 }

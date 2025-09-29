@@ -1,3 +1,5 @@
+import 'server-only'
+
 import mongoose from 'mongoose'
 
 const MONGODB_URI = process.env.MONGO_URI as string
@@ -73,7 +75,7 @@ async function dbConnect(): Promise<typeof mongoose> {
 
   // Set up event listeners for connection issues
   mongoose.connection.on('error', (err) => {
-    console.error('MongoDB connection error:', err.message)
+    console.log('MongoDB connection error:', err.message)
   })
 
   mongoose.connection.on('disconnected', () => {

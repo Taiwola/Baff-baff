@@ -7,6 +7,7 @@ export interface IUser extends Document {
   firstName: string
   lastName: string
   role: 'user' | 'admin'
+  termsAndCondition: boolean
   password: string
   createdAt: Date
   updatedAt: Date
@@ -19,7 +20,8 @@ const usersSchema: Schema<IUser> = new Schema(
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['user', 'admin'], default: 'user' }
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    termsAndCondition: { type: Boolean, default: false }
   },
   {
     timestamps: true
