@@ -2,7 +2,7 @@
 
 import { getAuthUser } from '@middleware/auth'
 import { deleteCategoryType, getCategoryTypeById, updateCategoryType } from '@services/category-type'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformCategoryType } from '@utils/transform/category-type.transfrom'
 import { updateCategoryTypeSchema } from '@utils/validation/category-type/update.category-type.validation'
 import { NextRequest } from 'next/server'

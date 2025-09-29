@@ -3,7 +3,7 @@
 import { getAuthUser } from '@middleware/auth'
 import { createMeasurement, getAllMeasurements } from '@services/measurement'
 import { getUserById } from '@services/user'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformMeasurement, transformMeasurements } from '@utils/transform/measurement.transform'
 import { createMeasurementSchema } from '@utils/validation/measurement'
 import { NextRequest } from 'next/server'

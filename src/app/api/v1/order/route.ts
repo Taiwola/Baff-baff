@@ -2,7 +2,7 @@
 
 import { getAuthUser } from '@middleware/auth'
 import { getAllOrders } from '@services/order'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformOrders } from '@utils/transform/order.transform'
 import { NextRequest } from 'next/server'
 

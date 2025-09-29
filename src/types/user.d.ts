@@ -1,10 +1,12 @@
-export type User = {
+type User = {
   id: string
   firstName: string
   lastName: string
   email: string
-  role: 'user' | 'admin'
+  role: UserRole
   password: string
   createdAt: string
   updatedAt: string
 }
+
+type UserRole = 'user' | 'admin'

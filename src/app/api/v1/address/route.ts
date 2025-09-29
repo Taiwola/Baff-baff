@@ -1,7 +1,7 @@
 import { getAuthUser } from '@middleware/auth'
 import { createAddress, getAllAddresss } from '@services/address'
 import { getUserById } from '@services/user'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformAddress, transformAddresses } from '@utils/transform/address.transform'
 import { CreateaddressSchema } from '@utils/validation/address'
 import { NextRequest } from 'next/server'

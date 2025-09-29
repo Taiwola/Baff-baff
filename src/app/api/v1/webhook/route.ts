@@ -4,7 +4,7 @@ import { getOneProductById } from '@services/product'
 import { NextRequest } from 'next/server'
 import mongoose, { ClientSession } from 'mongoose'
 import ProductModel, { IProduct, ISizeDetails, Status } from '@models/product.model'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 import { deleteManyCarts, getAllCarts } from '@services/cart'
 
 export async function POST(req: NextRequest) {

@@ -1,4 +1,5 @@
-'use server'
+import 'server-only'
+
 import UserModel, { IUser } from '@models/user.model'
 
 export async function getUserByEmail(email: string): Promise<IUser | null> {

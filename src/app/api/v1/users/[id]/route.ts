@@ -3,7 +3,7 @@ import { IUser } from '@models/user.model'
 import { transformUser } from '@utils/transform/user.transform'
 import { validateUpdateUser } from '@utils/validation/users-validation'
 import { NextRequest } from 'next/server'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const user = await getUserById(params.id)

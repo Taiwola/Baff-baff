@@ -2,7 +2,7 @@
 
 import { getAuthUser } from '@middleware/auth'
 import { createRegion, getAllRegions } from '@services/region'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformRegion, transformRegions } from '@utils/transform/region.transform'
 import { CreateRegionSchema } from '@utils/validation/region/create-region.validation'
 import { NextRequest } from 'next/server'

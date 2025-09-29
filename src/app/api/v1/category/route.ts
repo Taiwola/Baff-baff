@@ -2,7 +2,7 @@
 
 import { getAuthUser } from '@middleware/auth'
 import { createCategory, getAllCategories, getCategoryByFilter } from '@services/category'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformCategories, transformCategory } from '@utils/transform/category.transform'
 import { createCategorySchema } from '@utils/validation/category'
 import { NextRequest } from 'next/server'

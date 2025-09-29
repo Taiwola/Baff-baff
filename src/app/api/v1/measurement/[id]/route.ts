@@ -1,7 +1,7 @@
 'use server'
 
 import { deleteMeasurement, getOneMeasurementById, updateMeasurement } from '@services/measurement'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformMeasurement } from '@utils/transform/measurement.transform'
 import { updateMeasurementSchema } from '@utils/validation/measurement'
 import { NextRequest } from 'next/server'

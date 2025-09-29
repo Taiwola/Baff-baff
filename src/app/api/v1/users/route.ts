@@ -3,7 +3,7 @@ import { getAllUsers } from '@services/user'
 import { getAuthUser } from '@middleware/auth'
 import { transformUsers } from '@utils/transform/user.transform'
 import { NextRequest } from 'next/server'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 
 export async function GET(req: NextRequest) {
   const authUser = await getAuthUser(req)

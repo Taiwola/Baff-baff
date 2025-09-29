@@ -3,7 +3,7 @@ import { generateToken } from '@utils/jwt'
 import { loginSchema } from '@utils/validation/auth'
 import { compareUserPassword, getUserByEmail } from '@services/user'
 import dbConnect from '@lib/database'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 
 async function loadDb() {
   await dbConnect()

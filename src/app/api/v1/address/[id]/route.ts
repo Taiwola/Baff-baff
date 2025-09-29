@@ -1,5 +1,5 @@
 import { deleteAddress, getOneAddressById, updateAddress } from '@services/address'
-import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformAddress } from '@utils/transform/address.transform'
 import { updateAddressSchema } from '@utils/validation/address'
 import { NextRequest } from 'next/server'

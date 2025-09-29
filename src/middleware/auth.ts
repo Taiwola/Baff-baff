@@ -1,5 +1,6 @@
 'use server'
 import { verifyToken } from '@utils/jwt'
+import { authUserSchema } from '@utils/validation/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function authMiddleware(req: NextRequest) {
@@ -29,17 +30,15 @@ export async function authMiddleware(req: NextRequest) {
 }
 
 export async function getAuthUser(req: NextRequest) {
-  const userId = req.headers.get('x-id')
-  const userEmail = req.headers.get('x-email')
-  const role = req.headers.get('x-role') as 'user' | 'admin' | null
+  const result = authUserSchema.safeParse({
+    id: req.headers.get('x-id'),
+    email: req.headers.get('x-email'),
+    role: req.headers.get('x-role') || 'user'
+  })
 
-  if (!userId || !userEmail) {
+  if (!result.success) {
     return null
   }
 
-  return {
-    id: userId,
-    email: userEmail,
-    role: role
-  }
+  return result.data
 }
