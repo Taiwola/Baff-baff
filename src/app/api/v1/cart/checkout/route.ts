@@ -1,0 +1,115 @@
+import { getAuthUser } from '@middleware/auth'
+import { InitiatePaystackPayment } from '@payment/payment'
+import { getAllCarts } from '@services/cart'
+import { getOneRegionById } from '@services/region'
+import { errorResponse, sendResponse } from '@utils/response/api.response'
+import { transformCart } from '@utils/transform/cart.transform'
+import { createCheckoutSchema } from '@utils/validation/checkout/create-checkout.validation'
+import { CreateOrderDto, CreateOrderSchema } from '@utils/validation/order'
+import { NextRequest } from 'next/server'
+import { getOneProductById } from '@services/product'
+import { createOrder } from '@services/order'
+
+export async function POST(req: NextRequest) {
+  // Validate user
+  const user = await getAuthUser(req)
+  if (!user || !user.id) {
+    return errorResponse('Unauthorized: User not found', null, 401)
+  }
+
+  // Parse and validate request body
+  const body = await req.json()
+  const result = createCheckoutSchema.safeParse(body)
+  if (!result.success) {
+    const validationErrors = result.error.issues.map((detail) => ({
+      field: detail.path.join('.'),
+      message: detail.message
+    }))
+    return errorResponse('Validation failed', validationErrors, 400)
+  }
+
+  // Fetch user carts
+  const userCarts = await getAllCarts({ userId: user.id })
+  console.log(userCarts)
+  if (userCarts.length <= 0) {
+    return errorResponse('You currently have no cart items', null, 404)
+  }
+
+  // Fetch region
+  const region = await getOneRegionById(result.data.regionId)
+  if (!region) {
+    return errorResponse('Region does not exist', null, 404)
+  }
+
+  // Calculate amount from carts
+  const amount = userCarts.reduce((sum, cart) => {
+    const quantity = parseInt(cart.quantity)
+    if (isNaN(quantity)) {
+      throw new Error(`Invalid quantity for cart item ${cart.id}`)
+    }
+    return sum + cart.price * quantity
+  }, 0)
+
+  const products = await Promise.all(
+    userCarts.map(async (cart) => {
+      const transformed = transformCart(cart)
+      const product = await getOneProductById(cart.product as string)
+      return {
+        id: product?.id as string,
+        name: product?.name as string,
+        price: transformed.price,
+        image: product?.images[0] as string,
+        category: ((product?.category as string) + ' - ' + product?.category_type) as string,
+        size: transformed.size,
+        quantity: transformed.quantity
+      }
+    })
+  )
+
+  try {
+    // Initiate Paystack payment
+    const paymentData = {
+      amount,
+      email: result.data.email,
+      reference: `ORDER_${Date.now()}_${user.id}`
+    }
+    const paymentResult = await InitiatePaystackPayment(paymentData)
+
+    // Create order data
+    const orderData: Partial<CreateOrderDto> = {
+      reference: paymentResult.reference,
+      userId: user.id.toString(),
+      address: result.data.address,
+      state: result.data.state,
+      region: result.data.region,
+      deliveryFee: region.price,
+      email: result.data.email,
+      amount,
+      totalAmount: amount + region.price,
+      fullName: result.data.fullName,
+      phoneNumber: result.data.phoneNumber,
+      paymentStatus: 'unpaid',
+      status: 'not_start',
+      products
+    }
+    const orderResult = CreateOrderSchema.safeParse(orderData)
+    if (!orderResult.success) {
+      const validationErrors = orderResult.error.issues.map((detail) => ({
+        field: detail.path.join('.'),
+        message: detail.message
+      }))
+      return errorResponse('Validation failed', validationErrors, 400)
+    }
+    const saveOrder = await createOrder(orderResult.data)
+
+    return sendResponse('Checkout completed', {
+      id: saveOrder.id,
+      reference: saveOrder.reference,
+      checkoutUrl: paymentResult.checkoutUrl,
+      checkoutCode: paymentResult.checkoutCode
+    })
+  } catch (error) {
+    console.error(error)
+    return errorResponse('Failed to create order', null, 500)
+  }
+}

@@ -13,8 +13,10 @@
     "@fontsource/poppins": "^5.2.6",
     "@heroicons/react": "^2.2.0",
     "@heroui/react": "^2.8.2",
+    "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.7.0",
     "framer-motion": "^12.23.12",
     "joi": "^18.0.1",
     "jose": "^6.1.0",
@@ -26,6 +28,7 @@
     "react-dom": "19.1.0",
     "recharts": "^3.2.1",
     "swiper": "^11.2.10",
+    "uuid": "^13.0.0",
     "zod": "^4.1.8"
   },
   "devDependencies": {
