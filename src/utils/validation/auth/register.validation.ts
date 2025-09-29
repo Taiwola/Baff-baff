@@ -27,7 +27,7 @@ export const registerSchema = z
     confirmPassword: z.string().nonempty('Please confirm your password')
   })
   .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'], // attach error to confirmPassword
+    path: ['confirmPassword'], 
     message: 'Passwords do not match'
   })
 

@@ -1,3 +1,4 @@
+import { formatError } from '@utils/formatting'
 import { RegisterFormState, registerSchema } from '@utils/validation/auth'
 
 export async function register(state: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
@@ -9,11 +10,9 @@ export async function register(state: RegisterFormState, formData: FormData): Pr
     password: formData.get('password')
   })
 
-  if (!validatedFields.success) {
-    return {
-      ...state,
-      errors: validatedFields.error.flatten().fieldErrors
-    }
+  if (!validatedFields.success && validatedFields.error) {
+    const errors = formatError<RegisterFormState['errors']>(validatedFields.error)
+    return { ...state, errors }
   }
 
   return state
