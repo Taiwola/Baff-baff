@@ -4,13 +4,13 @@
 @source '@node_modules/@heroui/theme/dist*.{js,ts,jsx,tsx}';
 
 @theme inline {
-   --font-sans: var(--font-sans);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-montserrat: var(--font-montserrat);
   --font-roboto: var(--font-roboto);
   --font-poppins: var(--font-poppins);
   --font-lexend: var(--font-lexend-deca);
-  
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-brand: var(--color-brand);
@@ -41,13 +41,13 @@ body {
     @apply text-base md:text-4xl text-black font-normal md:font-medium;
   }
   h4 {
-     @apply text-base md:text-[2rem] font-medium text-brand-dark;
+    @apply text-base md:text-[2rem] font-medium text-brand-dark;
   }
   h5 {
     @apply text-3xl font-medium text-brand-dark;
   }
   h6 {
-     @apply text-sm md:text-2xl font-medium text-brand-dark;
+    @apply text-sm md:text-2xl font-medium text-brand-dark;
   }
   p {
     @apply text-base font-normal text-brand-dark;
@@ -56,10 +56,10 @@ body {
     @apply text-xs font-normal text-black;
   }
   a {
-    @apply text-[0.75rem] text-brand-dark font-medium
+    @apply text-[0.75rem] text-brand-dark font-medium;
   }
   button {
-    @apply cursor-pointer
+    @apply cursor-pointer;
   }
 }
 
@@ -69,8 +69,20 @@ body {
     @apply px-4 md:px-[4.375rem];
   }
 
+  .text-button {
+    @apply cursor-pointer transition-transform duration-300 ease-in-out;
+  }
+
+  .text-button:hover {
+    @apply scale-110;
+  }
+
   .icon-button {
     @apply cursor-pointer text-brand-dark w-6 h-6 md:w-8 md:h-8 transition-transform duration-300 ease-in-out;
+  }
+
+  .icon-button:hover {
+    @apply scale-110;
   }
 
   .nav-link {
@@ -96,10 +108,6 @@ body {
 
   .home-label {
     @apply font-montserrat font-black text-black uppercase;
-  }
-
-  .icon-button:hover {
-    @apply scale-110;
   }
 
   /* Mobile dropdown animation */

@@ -6,7 +6,8 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         filled: 'bg-brand-dark text-white hover:bg-brand-dark/80 cursor-pointer flex outline-none focus:outline:none focus:border:none',
-        bordered: 'border border-brand-dark text-brand-dark bg-transparent hover:bg-gray-50 cursor-pointer flex outline-none focus:outline-none'
+        bordered: 'border border-brand-dark text-brand-dark bg-transparent hover:bg-gray-50 cursor-pointer flex outline-none focus:outline-none',
+        text: 'cursor-pointer transition-transform duration-300 ease-in-out text-brand-dark hover:scale-110'
       },
       size: {
         sm: 'px-3 py-1.5 text-sm rounded-md',

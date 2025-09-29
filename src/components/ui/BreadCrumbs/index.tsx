@@ -20,7 +20,7 @@ export default function BreadCrumbsComp({ separator, items }: Props) {
                isCurrent={i.isCurrent}
                isDisabled={i.isDisabled}
                classNames={{
-                  item: `cursor-pointer transition-colors text-xs px-2 ${i.isCurrent ? 'text-black font-bold' : 'text-[#00000080]'}`,
+                  item: `cursor-pointer transition-colors text-xs ${i.isCurrent ? 'text-black font-bold' : 'text-[#00000080]'}`,
                   separator: `px-2 text-black`
                }}
             >

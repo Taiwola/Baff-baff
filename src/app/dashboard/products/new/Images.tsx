@@ -29,7 +29,7 @@ export default function Images() {
          </div>
 
          <>
-            {[...Array(4).keys().map((idx) => (
+            {[...Array(4).keys()].map((idx) => (
                <div
                   key={idx}
                   onClick={handleImageClick}
@@ -44,7 +44,7 @@ export default function Images() {
                      className="hidden"
                   />
                </div>
-            ))]}
+            ))}
          </>
       </div>
    )

@@ -6,7 +6,7 @@ import { buttonVariants } from "./variants";
 import Link, { LinkProps } from "next/link";
 
 interface BaseButtonProps {
-  variant?: "filled" | "bordered";
+  variant?: "filled" | "bordered" | 'text';
   size?: "sm" | "md" | "lg";
   rounded?: "none" | 'sm' | "md" | "full";
   fullWidth?: boolean;
