@@ -43,6 +43,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
+        suppressHydrationWarning
         className={`${poppins.variable} ${montserrat.variable} ${roboto.variable} ${lexendDeca.variable} min:h-screen w-full`}
       >
         <ToastProvider>

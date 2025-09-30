@@ -8,31 +8,19 @@ type Props = {
 }
 
 export default function Header({ title, children }: Props) {
-
    return (
       <>
-         <div className="w-full flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-extrabold">{title}</h1>
+         <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-1 md:mb-6">
+            {/* Title */}
+            <h1 className="text-xl sm:text-2xl font-extrabold">{title}</h1>
 
-            <div className="flex items-center justify-end gap-2.5 flex-1">
+            {/* Actions */}
+            <div className="flex flex-wrap gap-2.5 justify-start sm:justify-end">
                {children}
             </div>
          </div>
 
-         <hr className='w-full bg-foreground mb-5' />
+         <hr className="w-full bg-foreground mb-5" />
       </>
    )
 }
-
-/**
- * Utility to append ordinal suffix to day numbers
- */
-// function getDaySuffix(day: number) {
-//    if (day > 3 && day < 21) return 'th'
-//    switch (day % 10) {
-//       case 1: return 'st'
-//       case 2: return 'nd'
-//       case 3: return 'rd'
-//       default: return 'th'
-//    }
-// }

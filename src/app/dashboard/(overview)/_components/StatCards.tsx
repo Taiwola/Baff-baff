@@ -24,7 +24,7 @@ type StatCardProps = {
 
 function StatCard({ title, value }: StatCardProps) {
    return (
-      <div className="bg-white rounded-[10px] p-4 flex flex-col items-center justify-start text-center w-full max-w-xs">
+      <div className="bg-white rounded-[10px] p-4 flex flex-col items-center justify-start text-center w-full max-w-md mx-auto">
          <span className="text-xs text-black">{title}</span>
          <span className="text-2xl font-medium text-black mt-2">{value}</span>
       </div>
