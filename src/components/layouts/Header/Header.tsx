@@ -9,6 +9,8 @@ import { Modal, ModalContent, ModalBody, useDisclosure, Dropdown, DropdownTrigge
 
 import LargeLogoSvg from "@assets/svg/largeLogoSvg";
 import SmallLogoSvg from "@assets/svg/smallLogoSvg";
+import { logout } from "@actions/auth.action";
+import { Loading } from "@components/ui";
 
 type UserAccount = {
   key: string
@@ -16,16 +18,21 @@ type UserAccount = {
   href: string
 }
 
-export default function Header() {
+type Props = {
+  user?: User | null
+}
+
+export default function Header({ user }: Props) {
   const router = useRouter();
 
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false); // mobile menu
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const { isOpen: searchOpen, onOpen, onClose } = useDisclosure();
 
-  const isAuth = true
-  const isAdmin = true
+  const isAuth = !!user
+  const isAdmin = user?.role === 'admin'
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,8 +42,12 @@ export default function Header() {
     }
   };
 
-  function handlePressUserItem(item: UserAccount) {
+  async function handlePressUserItem(item: UserAccount) {
     if (item.key === 'sign-out') {
+      setIsLoggingOut(true)
+      await logout()
+      setIsLoggingOut(false)
+      router.refresh()
       return;
     }
 
@@ -44,11 +55,15 @@ export default function Header() {
       router.push('/login')
     }
 
-    else if(item.key === 'profile' && isAuth && isAdmin) {
+    else if (item.key === 'profile' && isAuth && isAdmin) {
       router.push('/dashboard')
     }
 
     else router.push(item.href)
+  }
+
+  if (isLoggingOut) {
+    return <Loading />
   }
 
   return (
@@ -134,8 +149,8 @@ export default function Header() {
                             name: "text-black text-sm font-lexend",
                             description: "text-[11px] font-light text-black font-lexend",
                           }}
-                          description="ogbokojoshua77@gmail.com"
-                          name="Jane Doe"
+                          description={user?.email}
+                          name={user?.fullName}
                         />
                       </DropdownItem>
 

@@ -284,7 +284,6 @@ export const products: Product[] = [
   // }
 ]
 
-
 export enum Size {
   S = 's',
   M = 'm',
@@ -351,6 +350,6 @@ const productSchema: Schema = new Schema<IProduct>(
   }
 )
 
-const ProductModel: Model<IProduct> = mongoose.model<IProduct>('Product', productSchema)
+const ProductModel: Model<IProduct> = mongoose.models.Product || mongoose.model<IProduct>('Product', productSchema)
 
 export default ProductModel

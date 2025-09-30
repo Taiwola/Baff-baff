@@ -1,17 +1,33 @@
-import { deleteUser, getUserById, updateUser } from '@services/user'
+import { NextRequest } from 'next/server'
+
+import dbConnect from '@lib/database'
 import { IUser } from '@models/user.model'
 import { adaptUser } from '@adapters/user.adapter'
-import { validateUpdateUser } from '@utils/validation/users-validation'
-import { NextRequest } from 'next/server'
+import { deleteUser, getUserById, updateUser } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
+import { updateUserSchema } from '@validations/users/update-user.validation'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const user = await getUserById(params.id)
-  if (!user) {
-    return errorResponse('User not found', null, 404)
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
+
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
+  try {
+    const user = await getUserById(id)
+
+    if (!user) {
+      return errorResponse('User not found', null, 404)
+    }
+    const transformedUser = adaptUser(user)
+    return sendResponse('User fetched successfully', transformedUser, 200)
+  } catch (error) {
+    console.log('GET /users/id error', error)
+    return errorResponse('Internal server error', null, 500)
   }
-  const transformedUser = adaptUser(user)
-  return sendResponse('User fetched successfully', transformedUser, 200)
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
@@ -21,12 +37,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 
   const json: Partial<IUser> = await req.json()
-  const { error } = validateUpdateUser(json)
-  if (error) {
-    const validationErrors = error.details.map((detail) => ({
+
+  const result = updateUserSchema.safeParse(json)
+
+  if (!result.success) {
+    const validationErrors = result.error.issues.map((detail) => ({
       field: detail.path.join('.'),
       message: detail.message
     }))
+
     return errorResponse('Validation failed', validationErrors, 400)
   }
   try {

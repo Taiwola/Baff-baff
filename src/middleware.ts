@@ -12,11 +12,11 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.includes(path)
 
-  if (path === '/api/v1/product' && method === 'GET') {
+  if (path === '/api/v1/products' && method === 'GET') {
     return NextResponse.next()
   }
 
-  if (path === '/api/v1/webhook' && method === 'POST') {
+  if (path === '/api/v1/webhooks' && method === 'POST') {
     return NextResponse.next()
   }
 

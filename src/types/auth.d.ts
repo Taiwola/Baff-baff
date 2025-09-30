@@ -1,6 +1,8 @@
 type LoginResponseType = {
-  user: AuthUser
-  token: string
+  id: string
+  fullName: string
+  email: string
+  role: UserRole
 }
 
 type AuthUser = {

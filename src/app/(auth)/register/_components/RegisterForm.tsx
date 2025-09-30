@@ -7,7 +7,7 @@ import React, { useActionState } from 'react'
 import { Button, Input } from '@components/ui'
 import TermsAndCondition from './TermsAndCondition'
 
-import { register } from '@actions/auth'
+import { register } from '@actions/auth.action'
 import GoogleIcon from '@assets/svg/google-icon.svg'
 import { RegisterFormState } from '@validations/auth'
 

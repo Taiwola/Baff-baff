@@ -56,14 +56,17 @@ export async function login(state: LoginFormState, formData: FormData): Promise<
 
   toast.success({ title: 'Login success', description: response.message })
 
-  const { user } = response.data
+  const { role } = response.data
 
-  if (user.role === 'admin') {
+  if (role === 'admin') {
     redirect('/dashboard')
   } else redirect('/')
 }
 
 export async function logout() {
-  // await deleteSession()
-  // redirect('/login')
+  const response = await ApiClient.delete<LoginResponseType>('/auth/logout')
+  if (response.code >= 400) {
+    toast.error({ title: 'Logout Failed', description: response.message })
+    return { error: response.message }
+  }
 }

@@ -25,7 +25,7 @@ export async function updateUser(id: string, updateData: Partial<IUser>): Promis
 }
 
 export async function getUserById(id: string): Promise<IUser | null> {
-  return UserModel.findById(id)
+  return await UserModel.findById(id)
 }
 
 export async function getAllUsers(): Promise<IUser[]> {

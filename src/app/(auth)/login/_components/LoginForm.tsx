@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { Spinner } from '@heroui/react'
 import React, { useActionState } from 'react'
 
-import { login } from '@actions/auth'
+import { login } from '@actions/auth.action'
 import { Button, Input } from '@components/ui'
 import { LoginFormState } from '@validations/auth'
 import GoogleIcon from '@assets/svg/google-icon.svg'

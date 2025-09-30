@@ -1,11 +1,10 @@
 import { NextRequest } from 'next/server'
 
 import dbConnect from '@lib/database'
-import { generateToken } from '@utils/jwt'
+import { createSession } from '@lib/session'
 import { LoginDto, loginSchema } from '@validations/auth'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { compareUserPassword, getUserByEmail } from '@services/user'
-import { createSession } from '@lib/session'
 
 async function loadDb() {
   await dbConnect()
@@ -43,20 +42,11 @@ export async function POST(req: NextRequest) {
       return errorResponse('Invalid email or password', null, 400)
     }
 
-    const token = await generateToken({
-      email: user.email,
-      id: user.id,
-      role: user.role
-    })
-
     const response: LoginResponseType = {
-      user: {
-        id: user._id.toString() || user.id,
-        fullName: user.firstName + ' ' + user.lastName,
-        email: user.email,
-        role: user.role
-      },
-      token
+      id: user._id.toString() || user.id,
+      fullName: user.firstName + ' ' + user.lastName,
+      email: user.email,
+      role: user.role
     }
 
     await createSession({ id: user.id, role: user.role })
