@@ -1,18 +1,19 @@
-'use server'
-import { uploadToCloudinary } from '@lib/cloudinary'
-import { CLOUDINARY_FOLDERS } from '@lib/folder'
-import { getAuthUser } from '@middleware/auth'
-import { getMaterialById, updateMaterial } from '@services/material'
-import { createProduct, getAllProducts } from '@services/product'
-import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
-import { errorResponse, sendResponse } from '@utils/api-response'
-import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
-import { CreateProductDto, createProductSchema } from '@validations/product'
 import { NextRequest } from 'next/server'
+
+import { CLOUDINARY_FOLDERS } from '@lib/folder'
+import { uploadToCloudinary } from '@lib/cloudinary'
+import { createProduct, getAllProducts } from '@services/product'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { getMaterialById, updateMaterial } from '@services/material'
+import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
+import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
+import { CreateProductDto, createProductSchema } from '@validations/product'
 import mongoose from 'mongoose'
+import { Status } from '@models/product.model'
+import { verifySession } from '@lib/dal'
 
 export async function GET(req: NextRequest) {
-  const user = await getAuthUser(req)
+  const session = await verifySession()
   const { searchParams } = new URL(req.url)
   const searchQuery = searchParams.get('search') || ''
   const categoryQuery = searchParams.get('category') || ''
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
   const statusQuery = searchParams.get('status') || ''
 
   const filters: { category?: string; name?: { $regex: string; $options: string }; category_type?: string; status: string } = {
-    status: user?.role === 'admin' ? '' : 'in_stock'
+    status: session?.role === 'admin' ? '' : Status.IN_STOCK
   }
 
   if (searchQuery) {
@@ -47,7 +48,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const auth = await getAuthUser(req)
+  const auth = await verifySession()
 
   if (auth?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)

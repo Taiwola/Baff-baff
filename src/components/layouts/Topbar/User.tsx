@@ -4,9 +4,18 @@ import React, { useState } from 'react'
 import { ChevronDownIcon } from 'lucide-react'
 import { UserIcon } from '@heroicons/react/24/outline'
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/react'
+import { logout } from '@actions/auth.action'
 
-export default function User() {
+type Props = {
+   name: string
+}
+
+export default function User({ name }: Props) {
    const [open, setOpen] = useState(false)
+
+   async function handleLogout() {
+      await logout()
+   }
 
    return (
       <div className="flex justify-start items-center">
@@ -23,7 +32,7 @@ export default function User() {
                   </div>
 
                   {/* Username */}
-                  <p className="font-medium text-brand-dark">Joshua</p>
+                  <p className="font-medium text-brand-dark">{name}</p>
 
                   {/* Chevron with rotation */}
                   <ChevronDownIcon
@@ -40,7 +49,7 @@ export default function User() {
                variant="flat"
                className="bg-white w-[150px] rounded-sm border border-foreground shadow-md transition-all"
             >
-               <DropdownItem key="logout" className="text-red-600">
+               <DropdownItem key="logout" className="text-red-600" onClick={handleLogout}>
                   Log Out
                </DropdownItem>
             </DropdownMenu>
