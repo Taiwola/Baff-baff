@@ -1,6 +1,6 @@
 'use server'
 import CartModel, { ICart } from '@models/cart.model'
-import { CreateCartDto, UpdateCartDto } from '@utils/validation/cart'
+import { CreateCartDto, UpdateCartDto } from '@validations/cart'
 import { FilterQuery, ClientSession } from 'mongoose'
 
 export async function createCart(data: CreateCartDto, session?: ClientSession): Promise<ICart> {

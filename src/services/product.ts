@@ -1,5 +1,5 @@
 import ProductModel, { IProduct } from '@models/product.model'
-import { CreateProductDto, UpdateProductDto } from '@utils/validation/product'
+import { CreateProductDto, UpdateProductDto } from '@validations/product'
 import { FilterQuery, ClientSession } from 'mongoose'
 
 export async function createProduct(data: CreateProductDto, session?: ClientSession): Promise<IProduct> {

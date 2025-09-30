@@ -1,18 +1,19 @@
-import { Order } from '@index'
 import { IOrder } from '@models/order.model'
 
 export function transformOrder(data: IOrder): Order {
   return {
     id: data.id,
-    datePlaced: data.datePlaced,
+    orderId: 'ORDER-' + data.id.substring(0, 5),
+    date: data.datePlaced.toISOString(),
     deliveryFee: data.deliveryFee,
     subTotal: data.amount,
     totalAmount: data.totalAmount,
     deliveryZone: data.region,
+    address: data.address,
     email: data.email,
     fullName: data.fullName,
     paymentStatus: data.paymentStatus,
-    orderStatus: data.status,
+    status: data.status,
     phoneNumber: data.phoneNumber,
     products: data.products.map((product) => {
       return {

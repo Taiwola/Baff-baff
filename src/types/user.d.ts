@@ -2,9 +2,9 @@ type User = {
   id: string
   firstName: string
   lastName: string
+  fullName: string
   email: string
   role: UserRole
-  password: string
   createdAt: string
   updatedAt: string
 }

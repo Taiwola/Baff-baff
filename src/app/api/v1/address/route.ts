@@ -2,8 +2,8 @@ import { getAuthUser } from '@middleware/auth'
 import { createAddress, getAllAddresss } from '@services/address'
 import { getUserById } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformAddress, transformAddresses } from '@utils/transform/address.transform'
-import { CreateaddressSchema } from '@utils/validation/address'
+import { adaptAddress, adaptAddresses } from '@adapters/address.adapter'
+import { CreateaddressSchema } from '@validations/address'
 import { NextRequest } from 'next/server'
 
 export async function GET(req: NextRequest) {
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
 
   const address = await getAllAddresss({ userId: user?.id })
 
-  const transform = transformAddresses(address)
+  const transform = adaptAddresses(address)
 
   return sendResponse('Request successfull', transform)
 }
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   try {
     result.data.userId = user?.id
     const address = await createAddress(result.data)
-    const transform = transformAddress(address)
+    const transform = adaptAddress(address)
     return sendResponse('Request successfull', transform, 201)
   } catch (error) {
     console.log(error)

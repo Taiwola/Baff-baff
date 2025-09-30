@@ -1,7 +1,6 @@
-import { ISizeDetails, Product } from '@index'
 import { IProduct } from '@models/product.model'
 
-export function transformProduct(data: IProduct): Product {
+export function adaptProduct(data: IProduct): Product {
   const prices = [data.s?.price, data.m?.price, data.l?.price, data.xl?.price, data.xxl?.price, data.xxxl?.price].filter(
     (price): price is number => price !== undefined && price !== null && price > 0
   )
@@ -21,21 +20,22 @@ export function transformProduct(data: IProduct): Product {
 
   return {
     id: data._id,
+    slug: data.id,
     images: data.images,
     category: data.category,
-    category_type: data.category_type,
+    categoryType: data.category_type,
     yard: data.yard,
     range: range,
     description: data.description,
     name: data.name,
     sizes: sizes,
     status: data.status,
-    material: data.material,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt
+    material: data.material.toString(),
+    createdAt: data.createdAt.toISOString(),
+    updatedAt: data.updatedAt.toISOString()
   }
 }
 
-export function transformProducts(data: IProduct[]): Product[] {
-  return data.map(transformProduct)
+export function adaptProducts(data: IProduct[]): Product[] {
+  return data.map(adaptProduct)
 }

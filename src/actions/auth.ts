@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { ApiClient } from '@utils/api'
 import { toast } from '@hooks/useToast'
 import { formatError } from '@utils/formatting'
-import { RegisterFormState, registerSchema } from '@utils/validation/auth'
+import { RegisterFormState, registerSchema } from '@validations/auth'
 
 export async function register(state: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
   const parsedValues = {

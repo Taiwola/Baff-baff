@@ -1,5 +1,5 @@
 import OrderModel, { IOrder } from '@models/order.model'
-import { CreateOrderDto, UpdateOrderDto } from '@utils/validation/order'
+import { CreateOrderDto, UpdateOrderDto } from '@validations/order'
 import { FilterQuery, ClientSession } from 'mongoose'
 
 export async function createOrder(data: CreateOrderDto, session?: ClientSession): Promise<IOrder> {

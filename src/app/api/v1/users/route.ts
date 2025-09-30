@@ -1,7 +1,7 @@
 'use server'
 import { getAllUsers } from '@services/user'
 import { getAuthUser } from '@middleware/auth'
-import { transformUsers } from '@utils/transform/user.transform'
+import { adaptUsers } from '@adapters/user.adapter'
 import { NextRequest } from 'next/server'
 import { errorResponse, sendResponse } from '@utils/api-response'
 
@@ -13,6 +13,6 @@ export async function GET(req: NextRequest) {
   }
 
   const users = await getAllUsers()
-  const transformedUsers = transformUsers(users)
+  const transformedUsers = adaptUsers(users)
   return sendResponse('Users fetched successfully', transformedUsers, 200)
 }

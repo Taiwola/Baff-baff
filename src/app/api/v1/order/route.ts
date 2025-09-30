@@ -3,7 +3,7 @@
 import { getAuthUser } from '@middleware/auth'
 import { getAllOrders } from '@services/order'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformOrders } from '@utils/transform/order.transform'
+import { transformOrders } from '@adapters/order.adapter'
 import { NextRequest } from 'next/server'
 
 export async function GET(req: NextRequest) {

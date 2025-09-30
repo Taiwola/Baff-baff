@@ -6,8 +6,8 @@ import { getMaterialById, updateMaterial } from '@services/material'
 import { createProduct, getAllProducts } from '@services/product'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformProducts, transformProduct } from '@utils/transform/product.transform'
-import { CreateProductDto, createProductSchema } from '@utils/validation/product'
+import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
+import { CreateProductDto, createProductSchema } from '@validations/product'
 import { NextRequest } from 'next/server'
 import mongoose from 'mongoose'
 
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
 
   const products = await getAllProducts(filters)
 
-  const transform = transformProducts(products)
+  const transform = adaptProducts(products)
 
   return sendResponse('Product was successfully found', transform)
 }
@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
     await session.commitTransaction()
     session.endSession()
 
-    const transform = transformProduct(product)
+    const transform = adaptProduct(product)
     return sendResponse('Product created successfully', transform, 201)
   } catch (error) {
     await session.abortTransaction()

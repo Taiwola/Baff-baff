@@ -4,15 +4,15 @@ import { getAuthUser } from '@middleware/auth'
 import { createCart, getAllCarts } from '@services/cart'
 import { getUserById } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformCart, transformCarts } from '@utils/transform/cart.transform'
-import { createCartSchema } from '@utils/validation/cart'
+import { adaptCart, adaptCarts } from '@adapters/cart.adapter'
+import { createCartSchema } from '@validations/cart'
 import { NextRequest } from 'next/server'
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser(req)
 
   const measurement = await getAllCarts({ userId: user?.id })
-  const transform = transformCarts(measurement)
+  const transform = adaptCarts(measurement)
 
   return sendResponse('Request was successful', transform, 200)
 }
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     result.data.userId = user?.id
 
     const cart = await createCart(result.data)
-    const transform = transformCart(cart)
+    const transform = adaptCart(cart)
 
     return sendResponse('Cart created successfully', transform, 201)
   } catch (error) {

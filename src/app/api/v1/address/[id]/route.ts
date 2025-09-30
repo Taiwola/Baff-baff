@@ -1,7 +1,7 @@
 import { deleteAddress, getOneAddressById, updateAddress } from '@services/address'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformAddress } from '@utils/transform/address.transform'
-import { updateAddressSchema } from '@utils/validation/address'
+import { adaptAddress } from '@adapters/address.adapter'
+import { updateAddressSchema } from '@validations/address'
 import { NextRequest } from 'next/server'
 
 export async function GET(__req: NextRequest, { params }: { params: { id: string } }) {
@@ -13,7 +13,7 @@ export async function GET(__req: NextRequest, { params }: { params: { id: string
     return errorResponse('Address not found', null, 404)
   }
 
-  const transform = transformAddress(address)
+  const transform = adaptAddress(address)
   return sendResponse('Request successfull', transform)
 }
 

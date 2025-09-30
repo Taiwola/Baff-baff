@@ -3,9 +3,9 @@ import { InitiatePaystackPayment } from '@payment/payment'
 import { getAllCarts } from '@services/cart'
 import { getOneRegionById } from '@services/region'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformCart } from '@utils/transform/cart.transform'
-import { createCheckoutSchema } from '@utils/validation/checkout/create-checkout.validation'
-import { CreateOrderDto, CreateOrderSchema } from '@utils/validation/order'
+import { adaptCart } from '@adapters/cart.adapter'
+import { createCheckoutSchema } from '@validations/checkout/create-checkout.validation'
+import { CreateOrderDto, CreateOrderSchema } from '@validations/order'
 import { NextRequest } from 'next/server'
 import { getOneProductById } from '@services/product'
 import { createOrder } from '@services/order'
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
 
   const products = await Promise.all(
     userCarts.map(async (cart) => {
-      const transformed = transformCart(cart)
+      const transformed = adaptCart(cart)
       const product = await getOneProductById(cart.product as string)
       return {
         id: product?.id as string,

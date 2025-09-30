@@ -1,8 +1,8 @@
 'use server'
 
 import CategoryTypeModel, { ICategoryType } from '@models/category.type.model'
-import { CreateCategoryTypeDto } from '@utils/validation/category-type'
-import { UpdateCategoryTypeDto } from '@utils/validation/category-type/update.category-type.validation'
+import { CreateCategoryTypeDto } from '@validations/category-type'
+import { UpdateCategoryTypeDto } from '@validations/category-type/update.category-type.validation'
 import { FilterQuery } from 'mongoose'
 
 export async function createCategoryType(data: CreateCategoryTypeDto): Promise<ICategoryType> {

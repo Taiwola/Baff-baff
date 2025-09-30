@@ -1,5 +1,5 @@
 import { IMeasurement, MeasurementModel } from '@models/measurement.model'
-import { CreateMeasurementDto, UpdateMeasurementDto } from '@utils/validation/measurement'
+import { CreateMeasurementDto, UpdateMeasurementDto } from '@validations/measurement'
 import { FilterQuery, ClientSession } from 'mongoose'
 
 export async function createMeasurement(data: CreateMeasurementDto, session?: ClientSession): Promise<IMeasurement> {

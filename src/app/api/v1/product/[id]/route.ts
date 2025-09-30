@@ -7,8 +7,8 @@ import { getMaterialById, updateMaterial } from '@services/material'
 import { deleteProduct, getOneProductById, updateProduct } from '@services/product'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformProduct } from '@utils/transform/product.transform'
-import { UpdateProductDto, updateProductSchema } from '@utils/validation/product'
+import { adaptProduct } from '@adapters/product.adapter'
+import { UpdateProductDto, updateProductSchema } from '@validations/product'
 import mongoose from 'mongoose'
 import { NextRequest } from 'next/server'
 
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return errorResponse('Product not found', null, 404)
   }
 
-  const transform = transformProduct(product)
+  const transform = adaptProduct(product)
   return sendResponse('Product successfully found', transform)
 }
 
@@ -125,7 +125,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     await session.commitTransaction()
     session.endSession()
 
-    const transform = transformProduct(updatedProduct)
+    const transform = adaptProduct(updatedProduct)
     return sendResponse('Product updated successfully', transform, 200)
   } catch (error) {
     await session.abortTransaction()

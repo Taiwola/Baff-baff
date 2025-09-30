@@ -1,6 +1,6 @@
 import { deleteUser, getUserById, updateUser } from '@services/user'
 import { IUser } from '@models/user.model'
-import { transformUser } from '@utils/transform/user.transform'
+import { adaptUser } from '@adapters/user.adapter'
 import { validateUpdateUser } from '@utils/validation/users-validation'
 import { NextRequest } from 'next/server'
 import { errorResponse, sendResponse } from '@utils/api-response'
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   if (!user) {
     return errorResponse('User not found', null, 404)
   }
-  const transformedUser = transformUser(user)
+  const transformedUser = adaptUser(user)
   return sendResponse('User fetched successfully', transformedUser, 200)
 }
 
@@ -34,7 +34,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (!updatedUser) {
       return errorResponse('User not found after update', null, 404)
     }
-    const transformedUser = transformUser(updatedUser)
+    const transformedUser = adaptUser(updatedUser)
     return sendResponse('User updated successfully', transformedUser, 200)
   } catch (error) {
     console.error('Error updating user:', error)

@@ -3,13 +3,13 @@
 import { getAuthUser } from '@middleware/auth'
 import { createCategoryType, getAllCategoryTypes, getCategoryTypeByFilter } from '@services/category-type'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformCategoryType, transformCategoryTypes } from '@utils/transform/category-type.transfrom'
-import { createCategoryTypeSchema } from '@utils/validation/category-type'
+import { adaptCategoryType, adaptCategoryTypes } from '@adapters/category-type.adapter'
+import { createCategoryTypeSchema } from '@validations/category-type'
 import { NextRequest } from 'next/server'
 
 export async function GET() {
   const categoryTypes = await getAllCategoryTypes()
-  const transformedCategories = transformCategoryTypes(categoryTypes)
+  const transformedCategories = adaptCategoryTypes(categoryTypes)
 
   return sendResponse('Categories fetched successfully', transformedCategories, 200)
 }
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     }
 
     const categoryType = await createCategoryType(result.data)
-    const transform = transformCategoryType(categoryType)
+    const transform = adaptCategoryType(categoryType)
 
     return sendResponse('Category type created successfully', transform, 201)
   } catch (error) {

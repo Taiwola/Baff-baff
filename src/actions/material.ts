@@ -1,4 +1,4 @@
-import { CreateMaterialFormState, createMaterialSchema } from '@utils/validation/material'
+import { CreateMaterialFormState, createMaterialSchema } from '@validations/material'
 
 export async function material(state: CreateMaterialFormState, formData: FormData): Promise<CreateMaterialFormState> {
   const validatedFields = createMaterialSchema.safeParse({

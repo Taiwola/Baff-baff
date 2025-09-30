@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { RegisterDto } from '@utils/validation/auth'
+import { RegisterDto } from '@validations/auth'
 import UserModel, { IUser } from '@models/user.model'
 
 export async function getUserByEmail(email: string): Promise<IUser | null> {

@@ -1,6 +1,6 @@
 import RegionModel, { IRegion } from '@models/region.model'
-import { CreateRegionDto } from '@utils/validation/region/create-region.validation'
-import { UpdateRegionDto } from '@utils/validation/region/update-region.validation'
+import { CreateRegionDto } from '@validations/region/create-region.validation'
+import { UpdateRegionDto } from '@validations/region/update-region.validation'
 import { FilterQuery, ClientSession } from 'mongoose'
 
 export async function createRegion(data: CreateRegionDto, session?: ClientSession): Promise<IRegion> {

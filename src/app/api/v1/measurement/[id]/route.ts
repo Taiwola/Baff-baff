@@ -2,8 +2,8 @@
 
 import { deleteMeasurement, getOneMeasurementById, updateMeasurement } from '@services/measurement'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformMeasurement } from '@utils/transform/measurement.transform'
-import { updateMeasurementSchema } from '@utils/validation/measurement'
+import { transformMeasurement } from '@adapters/measurement.adapter'
+import { updateMeasurementSchema } from '@validations/measurement'
 import { NextRequest } from 'next/server'
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {

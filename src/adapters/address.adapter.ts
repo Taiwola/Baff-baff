@@ -1,7 +1,6 @@
-import { Address } from '@index'
 import { IAddress } from '@models/address.model'
 
-export function transformAddress(data: IAddress): Address {
+export function adaptAddress(data: IAddress): Address {
   return {
     id: data._id?.toString() || data.id,
     userId: data.userId.toString(),
@@ -18,6 +17,6 @@ export function transformAddress(data: IAddress): Address {
   }
 }
 
-export function transformAddresses(data: IAddress[]): Address[] {
-  return data.map(transformAddress)
+export function adaptAddresses(data: IAddress[]): Address[] {
+  return data.map(adaptAddress)
 }

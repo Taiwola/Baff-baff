@@ -9,7 +9,7 @@ import TermsAndCondition from './TermsAndCondition'
 
 import { register } from '@actions/auth'
 import GoogleIcon from '@assets/svg/google-icon.svg'
-import { RegisterFormState } from '@utils/validation/auth'
+import { RegisterFormState } from '@validations/auth'
 
 const initialState: RegisterFormState = {
   values: {

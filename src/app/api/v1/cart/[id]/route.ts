@@ -2,8 +2,8 @@
 
 import { deleteCart, getOneCartById, updateCart } from '@services/cart'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformCart } from '@utils/transform/cart.transform'
-import { updateCartSchema } from '@utils/validation/cart'
+import { adaptCart } from '@adapters/cart.adapter'
+import { updateCartSchema } from '@validations/cart'
 import { NextRequest } from 'next/server'
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return errorResponse('Cart does not exist', null, 404)
   }
 
-  const transfromData = transformCart(Cart)
+  const transfromData = adaptCart(Cart)
 
   return sendResponse('Cart found', transfromData, 200)
 }

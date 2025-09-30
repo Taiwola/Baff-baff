@@ -3,14 +3,14 @@
 import { getAuthUser } from '@middleware/auth'
 import { createRegion, getAllRegions } from '@services/region'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformRegion, transformRegions } from '@utils/transform/region.transform'
-import { CreateRegionSchema } from '@utils/validation/region/create-region.validation'
+import { adaptRegion, adaptRegions } from '@adapters/region.adapter'
+import { CreateRegionSchema } from '@validations/region/create-region.validation'
 import { NextRequest } from 'next/server'
 
 export async function GET() {
   const region = await getAllRegions()
 
-  const transform = transformRegions(region)
+  const transform = adaptRegions(region)
 
   return sendResponse('regions fetched successfully', transform, 200)
 }
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     }
 
     const region = await createRegion(result.data)
-    const transfrom = transformRegion(region)
+    const transfrom = adaptRegion(region)
 
     return sendResponse('Category created successfully', transfrom, 201)
   } catch (error) {

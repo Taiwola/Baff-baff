@@ -1,6 +1,6 @@
 import AddressModel, { IAddress } from '@models/address.model'
-import { CreateAddressDto } from '@utils/validation/address/create-address.validation'
-import { UpdateAddressDto } from '@utils/validation/address/update-address.validation'
+import { CreateAddressDto } from '@validations/address/create-address.validation'
+import { UpdateAddressDto } from '@validations/address/update-address.validation'
 import { FilterQuery, ClientSession } from 'mongoose'
 
 export async function createAddress(data: CreateAddressDto, session?: ClientSession): Promise<IAddress> {

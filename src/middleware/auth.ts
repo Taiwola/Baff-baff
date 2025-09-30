@@ -1,6 +1,6 @@
 'use server'
 import { verifyToken } from '@utils/jwt'
-import { authUserSchema } from '@utils/validation/auth'
+import { authUserSchema } from '@validations/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function authMiddleware(req: NextRequest) {

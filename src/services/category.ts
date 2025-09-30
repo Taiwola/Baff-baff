@@ -1,7 +1,7 @@
 'use server'
 
 import CategoryModel, { ICategories } from '@models/categories.model'
-import { CreateCategoryDto, updateCategoryDto } from '@utils/validation/category'
+import { CreateCategoryDto, updateCategoryDto } from '@validations/category'
 import { FilterQuery } from 'mongoose'
 
 export async function createCategory(data: CreateCategoryDto): Promise<ICategories> {

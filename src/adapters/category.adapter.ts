@@ -1,6 +1,6 @@
 import { ICategories } from '@models/categories.model'
 
-export function transformCategory(data: ICategories): Category {
+export function adaptCategory(data: ICategories): Category {
   return {
     id: data._id?.toString() || data.id,
     name: data.name,
@@ -9,6 +9,6 @@ export function transformCategory(data: ICategories): Category {
   }
 }
 
-export function transformCategories(data: ICategories[]): Category[] {
-  return data.map(transformCategory)
+export function adaptCategories(data: ICategories[]): Category[] {
+  return data.map(adaptCategory)
 }

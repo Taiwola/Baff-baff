@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { generateToken } from '@utils/jwt'
-import { loginSchema } from '@utils/validation/auth'
+import { loginSchema } from '@validations/auth'
 import { compareUserPassword, getUserByEmail } from '@services/user'
 import dbConnect from '@lib/database'
 import { errorResponse, sendResponse } from '@utils/api-response'

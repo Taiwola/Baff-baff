@@ -4,7 +4,7 @@ import dbConnect from '@lib/database'
 import { generateToken } from '@utils/jwt'
 import { createUser, getUserByEmail } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { registerSchema } from '@utils/validation/auth'
+import { registerSchema } from '@validations/auth'
 
 async function loadDb() {
   await dbConnect()

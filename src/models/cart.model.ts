@@ -5,7 +5,7 @@ export interface ICart extends Document {
   id: string
   price: number
   size: string
-  product: mongoose.Types.ObjectId | string | IProduct
+  product: IProduct
   quantity: string
   userId: mongoose.Types.ObjectId | string
   createdAt: Date

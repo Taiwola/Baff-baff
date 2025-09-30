@@ -24,7 +24,7 @@ export interface IOrder extends Document {
   region: string
   fullName: string
   paymentStatus: string
-  status: string
+  status: OrderStatus
   phoneNumber: string
   products: IOrderProduct[]
 }
@@ -61,8 +61,8 @@ const orderSchema: Schema<IOrder> = new Schema(
     status: {
       type: String,
       required: true,
-      enum: ['not_start', 'processing', 'delivered'],
-      default: 'not_start'
+      enum: ['notStart', 'processing', 'delivered'],
+      default: 'notStart'
     },
     phoneNumber: { type: String, required: true },
     products: [productSchema]

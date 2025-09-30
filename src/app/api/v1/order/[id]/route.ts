@@ -3,8 +3,8 @@
 import { getAuthUser } from '@middleware/auth'
 import { deleteOrder, getOneOrderById, updateOrder } from '@services/order'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformOrder } from '@utils/transform/order.transform'
-import { UpdateOrderSchema } from '@utils/validation/order'
+import { transformOrder } from '@adapters/order.adapter'
+import { UpdateOrderSchema } from '@validations/order'
 import { NextRequest } from 'next/server'
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {

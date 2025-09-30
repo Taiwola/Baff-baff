@@ -5,8 +5,8 @@ import { getAuthUser } from '@middleware/auth'
 import { createMaterial, getAllMaterials } from '@services/material'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformMaterial, transformMaterials } from '@utils/transform/material.transform'
-import { CreateMaterialDto, createMaterialSchema } from '@utils/validation/material'
+import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
+import { CreateMaterialDto, createMaterialSchema } from '@validations/material'
 import { NextRequest } from 'next/server'
 
 export async function POST(req: NextRequest) {
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   }
 
   const material = await createMaterial(body)
-  const transform = transformMaterial(material)
+  const transform = adaptMaterial(material)
 
   return sendResponse('Material created successfully', transform, 201)
 }
@@ -64,6 +64,6 @@ export async function GET(req: NextRequest) {
     return errorResponse('Forbidden', null, 403)
   }
   const materials = await getAllMaterials()
-  const transforms = transformMaterials(materials)
+  const transforms = adaptMaterials(materials)
   return sendResponse('Materials fetched successfully', transforms, 200)
 }

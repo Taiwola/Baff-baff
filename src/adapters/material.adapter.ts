@@ -1,8 +1,8 @@
 import { IMaterial } from '@models/material.model'
 
-export function transformMaterial(data: IMaterial): Material {
+export function adaptMaterial(data: IMaterial): Material {
   return {
-    id: data._id,
+    id: data.id,
     name: data.name,
     stock: data.stock,
     image: data.image,
@@ -11,6 +11,6 @@ export function transformMaterial(data: IMaterial): Material {
   }
 }
 
-export function transformMaterials(data: IMaterial[]): Material[] {
-  return data.map(transformMaterial)
+export function adaptMaterials(data: IMaterial[]): Material[] {
+  return data.map(adaptMaterial)
 }

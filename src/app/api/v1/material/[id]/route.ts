@@ -5,8 +5,8 @@ import { getAuthUser } from '@middleware/auth'
 import { deleteMaterial, getMaterialById, updateMaterial } from '@services/material'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformMaterial } from '@utils/transform/material.transform'
-import { UpdateMaterialDto, updateMaterialSchema } from '@utils/validation/material'
+import { adaptMaterial } from '@adapters/material.adapter'
+import { UpdateMaterialDto, updateMaterialSchema } from '@validations/material'
 import { NextRequest } from 'next/server'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   if (!material) {
     return errorResponse('Material not found', null, 404)
   }
-  const transform = transformMaterial(material)
+  const transform = adaptMaterial(material)
   return sendResponse('Material fetched successfully', transform, 200)
 }
 
@@ -77,7 +77,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (!update) {
       return errorResponse('Material not found after update', null, 404)
     }
-    const transform = transformMaterial(update)
+    const transform = adaptMaterial(update)
 
     return sendResponse('Material updated successfully', transform, 200)
   } catch (error) {

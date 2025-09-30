@@ -3,8 +3,8 @@
 import { getAuthUser } from '@middleware/auth'
 import { deleteCategory, getCategoryById, updateCategory } from '@services/category'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformCategory } from '@utils/transform/category.transform'
-import { updateCategorySchema } from '@utils/validation/category'
+import { adaptCategory } from '@adapters/category.adapter'
+import { updateCategorySchema } from '@validations/category'
 import { NextRequest } from 'next/server'
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return errorResponse('Category does not exist', null, 404)
   }
 
-  const transfromData = transformCategory(category)
+  const transfromData = adaptCategory(category)
 
   return sendResponse('Category found', transfromData, 200)
 }

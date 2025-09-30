@@ -1,6 +1,6 @@
 'use server'
 import MaterialModel, { IMaterial } from '@models/material.model'
-import { CreateMaterialDto, UpdateMaterialDto } from '@utils/validation/material'
+import { CreateMaterialDto, UpdateMaterialDto } from '@validations/material'
 import { ClientSession } from 'mongoose'
 
 export async function createMaterial(data: CreateMaterialDto): Promise<IMaterial> {

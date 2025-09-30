@@ -1,4 +1,3 @@
-import { Measurement } from '@index'
 import { IMeasurement } from '@models/measurement.model'
 
 export function transformMeasurement(data: IMeasurement): Measurement {
@@ -19,8 +18,8 @@ export function transformMeasurement(data: IMeasurement): Measurement {
       length: data.trouserLength,
       waist: data.waist
     },
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt
+    createdAt: data.createdAt.toISOString(),
+    updatedAt: data.updatedAt.toISOString()
   }
 }
 

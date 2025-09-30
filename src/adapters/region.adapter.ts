@@ -1,7 +1,6 @@
-import { Region } from '@index'
 import { IRegion } from '@models/region.model'
 
-export function transformRegion(data: IRegion): Region {
+export function adaptRegion(data: IRegion): Region {
   return {
     id: data.id,
     price: data.price,
@@ -12,6 +11,6 @@ export function transformRegion(data: IRegion): Region {
   }
 }
 
-export function transformRegions(data: IRegion[]): Region[] {
-  return data.map(transformRegion)
+export function adaptRegions(data: IRegion[]): Region[] {
+  return data.map(adaptRegion)
 }

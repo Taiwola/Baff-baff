@@ -1,5 +1,7 @@
 import mongoose, { Document, Schema, model } from 'mongoose'
 
+export const measurements: Measurement[] = []
+
 export interface IMeasurement extends Document {
   id: string
   userId: mongoose.Types.ObjectId | string

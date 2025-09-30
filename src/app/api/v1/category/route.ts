@@ -3,13 +3,13 @@
 import { getAuthUser } from '@middleware/auth'
 import { createCategory, getAllCategories, getCategoryByFilter } from '@services/category'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformCategories, transformCategory } from '@utils/transform/category.transform'
-import { createCategorySchema } from '@utils/validation/category'
+import { adaptCategories, adaptCategory } from '@adapters/category.adapter'
+import { createCategorySchema } from '@validations/category'
 import { NextRequest } from 'next/server'
 
 export async function GET() {
   const categories = await getAllCategories()
-  const transformedCategories = transformCategories(categories)
+  const transformedCategories = adaptCategories(categories)
 
   return sendResponse('Categories fetched successfully', transformedCategories, 200)
 }
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     }
 
     const category = await createCategory(result.data)
-    const transform = transformCategory(category)
+    const transform = adaptCategory(category)
 
     return sendResponse('Category created successfully', transform, 201)
   } catch (error) {
