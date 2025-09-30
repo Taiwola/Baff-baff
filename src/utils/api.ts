@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation'
+
 import config from './config'
 import { catchError, createFailure, createSuccess } from './result'
 
@@ -26,6 +28,18 @@ async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<
   if (error || !response?.ok) {
     // Try to parse error response if available
     const errorData = error ? error : { ...(await response?.json()), status: response?.status }
+
+    // 401 Unauthorized → redirect automatically
+    if (response?.status === 401) {
+      // If server, use next.js redirect
+      if (typeof window === 'undefined') {
+        redirect('/login')
+      } else {
+        // Client-side
+        window.location.href = '/login'
+      }
+      return createFailure<T>({ message: 'Unauthorized', status: 401 })
+    }
 
     return createFailure<T>(errorData)
   }

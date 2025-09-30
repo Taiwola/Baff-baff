@@ -1,4 +1,17 @@
-import z from "zod";
-import { authUserSchema } from "@validations/auth";
+type LoginResponseType = {
+  user: AuthUser
+  token: string
+}
 
-type AuthUser = z.infer<typeof authUserSchema>
+type AuthUser = {
+  id: string
+  fullName: string
+  email: string
+  role: UserRole
+}
+
+type SessionPayload = {
+  id: string
+  role: UserRole
+  expiresAt: Date
+}

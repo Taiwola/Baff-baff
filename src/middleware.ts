@@ -1,26 +1,39 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { authMiddleware } from './middleware/auth'
 
-export function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
+import { cookies } from 'next/headers'
+import { decrypt } from '@lib/session'
+
+const protectedRoutes = ['/dashboard', '/profile', '/api/v1/']
+// const publicRoutes = ['/login', '/register', '/']
+
+export async function middleware(request: NextRequest) {
   const method = request.method
+  const path = request.nextUrl.pathname
+  const isProtectedRoute = protectedRoutes.includes(path)
 
-  if (pathname === '/api/v1/product' && method === 'GET') {
-    return NextResponse.next()
-  }
-  
-  if (pathname === '/api/v1/webhook' && method === 'POST') {
+  if (path === '/api/v1/product' && method === 'GET') {
     return NextResponse.next()
   }
 
-  if (request.nextUrl.pathname.startsWith('/api/v1/')) {
-    return authMiddleware(request)
+  if (path === '/api/v1/webhook' && method === 'POST') {
+    return NextResponse.next()
+  }
+
+  const cookie = (await cookies()).get('session')?.value
+  const session = await decrypt(cookie)
+
+  if (isProtectedRoute && !session?.id) {
+    return NextResponse.redirect(new URL('/login', request.nextUrl))
+  }
+
+  if(path.includes('/dashboard') && session?.role !== 'admin') {
+    return NextResponse.redirect(new URL('/', request.nextUrl))
   }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/api/v1/((?!auth/).*)']
+  // matcher: ['/api/v1/((?!auth/).*)']
 }

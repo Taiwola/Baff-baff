@@ -13,11 +13,11 @@ import { RegisterFormState } from '@validations/auth'
 
 const initialState: RegisterFormState = {
   values: {
-    firstName: 'Tobi',
-    lastName: 'Olanitori',
-    email: 'tobiolanitori@gmail.com',
-    password: 'Alicemojisola1.',
-    confirmPassword: 'Alicemojisola1.',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
     role: 'user',
     termsAndCondition: false
   },

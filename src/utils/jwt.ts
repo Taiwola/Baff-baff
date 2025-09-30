@@ -1,4 +1,4 @@
-'use server'
+import 'server-only'
 import { SignJWT, jwtVerify, decodeJwt } from 'jose'
 
 const JWT_SECRET = process.env.JWT_SECRET as string

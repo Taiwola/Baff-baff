@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { ApiClient } from '@utils/api'
 import { toast } from '@hooks/useToast'
 import { formatError } from '@utils/formatting'
-import { RegisterFormState, registerSchema } from '@validations/auth'
+import { LoginFormState, loginSchema, RegisterFormState, registerSchema } from '@validations/auth'
 
 export async function register(state: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
   const parsedValues = {
@@ -20,7 +20,6 @@ export async function register(state: RegisterFormState, formData: FormData): Pr
 
   if (!result.success) {
     const errors = formatError<RegisterFormState['errors'], RegisterFormState['values']>(result.error)
-    console.log('an error occured', errors)
     return { ...state, errors, values: parsedValues }
   }
 
@@ -33,4 +32,38 @@ export async function register(state: RegisterFormState, formData: FormData): Pr
 
   toast.success({ title: 'Registration success', description: response.message })
   redirect('/login')
+}
+
+export async function login(state: LoginFormState, formData: FormData): Promise<LoginFormState> {
+  const parsedValues = {
+    email: String(formData.get('email') || ''),
+    password: String(formData.get('password') || '')
+  }
+
+  const result = loginSchema.safeParse(parsedValues)
+
+  if (!result.success) {
+    const errors = formatError<LoginFormState['errors'], LoginFormState['values']>(result.error)
+    return { ...state, errors, values: parsedValues }
+  }
+
+  const response = await ApiClient.post<LoginResponseType>('/auth/login', result.data)
+
+  if (response.code >= 400) {
+    toast.error({ title: 'Login Failed', description: response.message })
+    return { ...state, error: response.message }
+  }
+
+  toast.success({ title: 'Login success', description: response.message })
+
+  const { user } = response.data
+
+  if (user.role === 'admin') {
+    redirect('/dashboard')
+  } else redirect('/')
+}
+
+export async function logout() {
+  // await deleteSession()
+  // redirect('/login')
 }

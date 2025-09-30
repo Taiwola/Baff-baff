@@ -1,32 +1,19 @@
-'use server'
-import { verifyToken } from '@utils/jwt'
+import 'server-only'
+
 import { authUserSchema } from '@validations/auth'
 import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { decrypt } from '@lib/session'
 
 export async function authMiddleware(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '')
+  const cookie = (await cookies()).get('session')?.value
+  const session = await decrypt(cookie)
 
-  if (!token) {
-    return NextResponse.json({ message: 'Authentication token required' }, { status: 401 })
+  if (!session?.id) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
 
-  try {
-    const decoded = await verifyToken(token)
-
-    const headers = new Headers(req.headers)
-    headers.set('x-id', decoded.id)
-    headers.set('x-email', decoded.email)
-    headers.set('x-role', decoded.role || 'user')
-
-    return NextResponse.next({
-      request: {
-        headers: headers
-      }
-    })
-  } catch (error: unknown) {
-    console.error('Auth middleware error:', error)
-    return NextResponse.json({ message: 'Invalid or expired token' }, { status: 401 })
-  }
+  return NextResponse.next()
 }
 
 export async function getAuthUser(req: NextRequest) {
