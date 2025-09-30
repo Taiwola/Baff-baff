@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import { ApiClient } from '@utils/api'
+import { toast } from '@hooks/useToast'
 import { formatError } from '@utils/formatting'
 import { RegisterFormState, registerSchema } from '@utils/validation/auth'
 
@@ -26,10 +27,10 @@ export async function register(state: RegisterFormState, formData: FormData): Pr
   const response = await ApiClient.post<void>('/auth/register', result.data)
 
   if (response.code >= 400) {
-    console.log("response", response.message);
-
+    toast.error({ title: 'Registration Failed', description: response.message })
     return { ...state, error: response.message }
   }
 
+  toast.success({ title: 'Registration success', description: response.message })
   redirect('/login')
 }

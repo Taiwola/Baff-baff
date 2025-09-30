@@ -53,7 +53,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="pt-4 pb-0 md:pb-4 w-full sticky backdrop-blur-sm top-0 z-50 border-b border-foreground bg-white">
+      <header className="pt-4 pb-0 md:pb-4 w-full sticky backdrop-blur-sm top-0 z-40 border-b border-foreground bg-white">
         <nav className="app-container flex items-center justify-between pb-8 md:pb-0">
           {/* Left side */}
           <div className="flex items-center gap-7 flex-1">
@@ -193,7 +193,7 @@ export default function Header() {
         backdrop="transparent"
         classNames={{ base: "w-full", body: "p-0" }}
       >
-        <ModalContent className="fixed top-27 left-0 right-0 z-50 bg-background border-b border-foreground">
+        <ModalContent className="fixed top-27 left-0 right-0 z-40 bg-background border-b border-foreground">
           <ModalBody>
             <form
               onSubmit={handleSearchSubmit}

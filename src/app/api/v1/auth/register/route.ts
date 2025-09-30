@@ -6,11 +6,11 @@ import { createUser, getUserByEmail } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { registerSchema } from '@utils/validation/auth'
 
-// async function loadDb() {
-// }
+async function loadDb() {
+  await dbConnect()
+}
 
-await dbConnect()
-// loadDb()
+loadDb()
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const json: User = await req.json()
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const userExist = await getUserByEmail(json.email)
   if (userExist) {
-    return errorResponse('User with this email already exists', null, 404)
+    return errorResponse('User with this email already exists', null, 409)
   }
 
   try {

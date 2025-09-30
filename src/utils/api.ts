@@ -24,7 +24,6 @@ async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<
 
   // Handle error or non-OK response
   if (error || !response?.ok) {
-    console.log("error >>>", response)
     // Try to parse error response if available
     const errorData = error ? error : { ...(await response?.json()), status: response?.status }
 

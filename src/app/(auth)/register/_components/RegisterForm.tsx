@@ -1,8 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { addToast, Spinner } from '@heroui/react'
-import React, { useActionState, useEffect } from 'react'
+import { Spinner } from '@heroui/react'
+import React, { useActionState } from 'react'
 
 import { Button, Input } from '@components/ui'
 import TermsAndCondition from './TermsAndCondition'
@@ -26,13 +26,7 @@ const initialState: RegisterFormState = {
 }
 
 export default function RegisterForm() {
-  const [{ error, errors, values }, dispatch, isPending] = useActionState(register, initialState)
-
-  useEffect(() => {
-    if(error) {
-      addToast({title: 'Error', description: error})
-    }
-  }, [error])
+  const [{ errors, values }, dispatch, isPending] = useActionState(register, initialState)
 
   return (
     <form action={dispatch} className='grid grid-cols-1 gap-5'>
@@ -80,7 +74,13 @@ export default function RegisterForm() {
 
       <TermsAndCondition defaultValue={values.termsAndCondition} />
 
-      <Button rounded='md' size='md' className='bg-black mt-5'>Sign up</Button>
+      <Button
+        rounded='md'
+        size='md'
+        className='bg-black mt-5'
+      >
+        {isPending ? <Spinner size="sm" color="default" /> : 'Sign up'}
+      </Button>
 
       <div className='flex justify-center items-center mt-5'>
         <small className='text-sm text-[#464646]'>OR</small>
@@ -105,7 +105,7 @@ export default function RegisterForm() {
         variant='bordered'
         className='gap-1 text-[#464646]'
       >
-        {isPending ? <Spinner size="sm" color="default" /> : 'Register'}
+        Log In
       </Button>
     </form>
   )

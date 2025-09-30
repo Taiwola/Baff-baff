@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
-import { Poppins, Montserrat, Roboto, Lexend_Deca  } from "next/font/google"
+import { Poppins, Montserrat, Roboto, Lexend_Deca } from "next/font/google"
 import HeroUiProvider from "../providers/herouiProvider"
+import ToastProvider from "@providers/ToastProvider"
 
 import "@styles/globals.css"
-import dbConnect from "@lib/database"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,7 +26,7 @@ const roboto = Roboto({
 const lexendDeca = Lexend_Deca({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-lexend-deca",       
+  variable: "--font-lexend-deca",
 });
 
 export const metadata: Metadata = {
@@ -39,22 +39,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  try {
-    await dbConnect()
-  } catch (error) {
-    throw new Error(
-      error instanceof Error
-        ? error.message
-        : 'Unknown database connection error'
-    )
-  }
 
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
         className={`${poppins.variable} ${montserrat.variable} ${roboto.variable} ${lexendDeca.variable} min:h-screen w-full`}
       >
-        <HeroUiProvider>{children}</HeroUiProvider>
+        <ToastProvider>
+          <HeroUiProvider>{children}</HeroUiProvider>
+        </ToastProvider>
       </body>
     </html>
   )
