@@ -11,9 +11,9 @@ export async function encrypt(payload: SessionPayload) {
 }
 
 export async function decrypt(session: string | undefined = ''): Promise<SessionPayload | undefined> {
-  if(!session) return
-  
-   try {
+  if (!session) return
+
+  try {
     const { payload } = await jwtVerify<SessionPayload>(session, encodedKey, {
       algorithms: ['HS256']
     })
@@ -60,4 +60,12 @@ export async function updateSession() {
 export async function deleteSession() {
   const cookieStore = await cookies()
   cookieStore.delete('session')
+}
+
+export async function getServerCookies() {
+  const store = await cookies()
+  return store
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join('; ')
 }

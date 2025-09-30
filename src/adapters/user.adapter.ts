@@ -7,6 +7,7 @@ export function adaptUser(user: IUser): User {
     lastName: user.lastName,
     fullName: `${user.firstName} ${user.lastName}`.trim(),
     email: user.email,
+    phoneNumber: user.phoneNumber,
     role: user.role || 'user',
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString()

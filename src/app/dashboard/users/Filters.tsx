@@ -1,24 +1,26 @@
 'use client'
 
 import React from 'react'
-
 import { SearchIcon } from 'lucide-react'
 import { DatePicker, Input } from '@components/ui'
 
 export default function Filters() {
-   return (
-      <>
-         <DatePicker />
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
+      {/* Date Picker */}
+      <div className="w-full sm:w-[154px]">
+        <DatePicker />
+      </div>
 
-         {/* Search input */}
-         <div className='w-[17.5rem]'>
-            <Input
-               name='seach'
-               placeholder="Search users"
-               aria-label="Search users"
-               startContent={<SearchIcon className="w-5 h-5 text-gray-400" />}
-            />
-         </div>
-      </>
-   )
+      {/* Search input */}
+      <div className="w-full sm:w-[17.5rem]">
+        <Input
+          name="search"
+          placeholder="Search users"
+          aria-label="Search users"
+          startContent={<SearchIcon className="w-5 h-5 text-gray-400" />}
+        />
+      </div>
+    </div>
+  )
 }
