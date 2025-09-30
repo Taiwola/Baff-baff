@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UserIcon, ShoppingBagIcon, MagnifyingGlassIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Modal, ModalContent, ModalBody, useDisclosure, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User } from "@heroui/react";
 
@@ -24,6 +24,7 @@ type Props = {
 
 export default function Header({ user }: Props) {
   const router = useRouter();
+  const pathname = usePathname()
 
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false); // mobile menu
@@ -47,7 +48,7 @@ export default function Header({ user }: Props) {
       setIsLoggingOut(true)
       await logout()
       setIsLoggingOut(false)
-      router.refresh()
+      router.push('/login')
       return;
     }
 
@@ -94,7 +95,7 @@ export default function Header({ user }: Props) {
             <ul className="hidden md:flex items-center gap-6">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="nav-link">
+                  <Link href={link.href} className={`nav-link ${link.href.endsWith(pathname) ? 'border-b border-brand-dark' : ''}`}>
                     {link.label}
                   </Link>
                 </li>
@@ -208,7 +209,7 @@ export default function Header({ user }: Props) {
         backdrop="transparent"
         classNames={{ base: "w-full", body: "p-0" }}
       >
-        <ModalContent className="fixed top-27 left-0 right-0 z-40 bg-background border-b border-foreground">
+        <ModalContent className="fixed top-20 left-0 right-0 z-40 bg-background border-b border-foreground">
           <ModalBody>
             <form
               onSubmit={handleSearchSubmit}
