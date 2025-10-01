@@ -2,6 +2,7 @@
 
 import { ServerApiClient } from '@utils/api-server'
 import { formatError } from '@utils/formatting'
+import { emptyMetaData } from '@utils/pagination'
 import {
   CreateRegionDto,
   CreateRegionErrors,
@@ -41,12 +42,12 @@ export async function createRegion(state: CreateRegionFormState, formData: FormD
   redirect('/dashboard/regions', RedirectType.replace)
 }
 
-export async function getRegions() {
-  const response = await ServerApiClient.get<Region[]>('/regions')
+export async function getRegions(options: PaginationParams = { }): Promise<Pagination<Region>> {
+  const response = await ServerApiClient.get<Pagination<Region>>(`/regions?page=${options.page ?? 1}&limit=${10}`)
 
   if (response.code >= 400) {
     console.log('regions error: ', response)
-    return []
+    return emptyMetaData
   }
 
   return response.data

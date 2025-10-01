@@ -16,6 +16,7 @@ import {
   updateMaterialSchema,
   UpdateMaterialValues
 } from '@validations/material'
+import { emptyMetaData } from '@utils/pagination'
 
 export async function createMaterial(state: CreateMaterialFormState, formData: FormData): Promise<CreateMaterialFormState> {
   const parsedValues: CreateMaterialDto = {
@@ -40,12 +41,12 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
   redirect('/dashboard/materials', RedirectType.replace)
 }
 
-export async function getMaterials(): Promise<Material[]> {
-  const response = await ServerApiClient.get<Material[]>('/materials')
+export async function getMaterials(options: PaginationParams = { }): Promise<Pagination<Material>> {
+  const response = await ServerApiClient.get<Pagination<Material>>(`/materials?page=${options.page ?? 1}&limit=${10}`)
 
   if (response.code >= 400) {
     console.log('materials error: ', response)
-    return []
+    return emptyMetaData
   }
 
   return response.data

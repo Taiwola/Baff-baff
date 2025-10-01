@@ -2,6 +2,7 @@
 
 import React, { use, useState } from "react";
 import { Chip, useDisclosure } from "@heroui/react";
+import { usePathname, useRouter } from "next/navigation";
 
 import ActionButton from "./ActionButton";
 import EditMaterial from "./EditMaterial";
@@ -10,30 +11,32 @@ import { DeleteModal } from "@components/ui/Modals";
 import { deleteMaterial } from "@actions/materials.action";
 
 type Props = {
-   promise: Promise<Material[]>
+   promise: Promise<Pagination<Material>>
 }
 
 export default function MaterialsList({ promise }: Props) {
+   const router = useRouter()
+   const pathname = usePathname()
    const materials = use(promise)
    const [activeMaterial, setActiveMaterial] = useState<Material | null>(null)
    const { isOpen: isOpenEdit, onOpenChange: onChangeEdit, onOpen: onOpenEdit } = useDisclosure()
    const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpenChange: onChangeDelete, onOpen: onOpenDelete } = useDisclosure()
 
    function handleShowEditModal(id: string) {
-      const foundMaterial = materials.find(m => m.id === id)
+      const foundMaterial = materials.items.find(m => m.id === id)
       if (!foundMaterial) return
       setActiveMaterial(foundMaterial)
       onOpenEdit()
    }
 
    function handleShowDeleteModal(id: string) {
-      const foundMaterial = materials.find(m => m.id === id)
+      const foundMaterial = materials.items.find(m => m.id === id)
       if (!foundMaterial) return
       setActiveMaterial(foundMaterial)
       onOpenDelete()
    }
 
-   const rows = materials.map((material) => ({
+   const rows = materials.items.map((material) => ({
       key: material.id,
       product: material.name,
       yardLeft: material.stock,
@@ -57,9 +60,18 @@ export default function MaterialsList({ promise }: Props) {
       )
    }));
 
+   function handleChangePage(page: number) {
+      router.replace(pathname + `?page=${page}`)
+   }
+
    return (
       <>
-         <DataTable columns={columns} rows={rows} />
+         <DataTable
+            columns={columns}
+            rows={rows}
+            metadata={materials.metadata}
+            onChange={handleChangePage}
+         />
 
          {activeMaterial && isOpenEdit ? (
             <EditMaterial

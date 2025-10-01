@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue } from "@heroui/react";
 
 import { Pagination } from '@components/ui';
@@ -14,20 +14,15 @@ type Column = {
 type DataTableProps = {
    columns: Column[];
    rows: Record<string, unknown>[];
-   rowsPerPage?: number;
+   metadata?: PaginationMetadata
+   onChange?: (page: number) => void
 };
 
-export default function DataTable({ columns, rows, rowsPerPage = 10 }: DataTableProps) {
-   const [page, setPage] = useState(1);
-
-   const pages = Math.ceil(rows.length / rowsPerPage);
-   const start = (page - 1) * rowsPerPage;
-   const paginatedRows = rows.slice(start, start + rowsPerPage);
-
+export default function DataTable({ columns, rows, metadata, onChange }: DataTableProps) {
 
    let paginationContent;
-   if (pages > 1) {
-      paginationContent = <Pagination total={pages} page={page} onChange={setPage} />
+   if (metadata && metadata.totalItems > metadata.pageSize && onChange) {
+      paginationContent = <Pagination metadata={metadata} onChange={onChange} />
    }
 
    return (
@@ -54,14 +49,13 @@ export default function DataTable({ columns, rows, rowsPerPage = 10 }: DataTable
                         width: column.width || "auto",
                         whiteSpace: "nowrap",
                      }}
-                     //  className="whitespace-normal break-words"
                   >
                      {column.label}
                   </TableColumn>
                )}
             </TableHeader>
 
-            <TableBody emptyContent={"No rows to display."} items={paginatedRows}>
+            <TableBody emptyContent={"No rows to display."} items={rows}>
                {(item) => (
                   <TableRow key={item.key as string}>
                      {(columnKey) => (

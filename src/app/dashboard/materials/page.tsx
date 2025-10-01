@@ -8,8 +8,13 @@ import { FilterButton, Header } from '@components/features/dashboard'
 
 import { getMaterials } from '@actions/materials.action'
 
-export default async function MaterialsPage() {
-  const promise = getMaterials()
+type Props = {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function MaterialsPage({ searchParams }: Props) {
+  const { page } = await searchParams
+  const promise = getMaterials({ page })
 
   return (
     <div className="w-full h-auto">

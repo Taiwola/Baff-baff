@@ -1,12 +1,21 @@
+'use client'
+
+import { use } from "react";
 import { format } from "date-fns";
 
-import { getUsers } from "@actions/users.action";
 import { DataTable } from "@components/layouts";
+import { usePathname, useRouter } from "next/navigation";
 
-export default async function UsersList() {
-   const users = await getUsers()
+type Props = {
+   promise: Promise<Pagination<User>>
+}
 
-   const rows = users.map((user) => ({
+export default function UsersList({ promise }: Props) {
+   const users = use(promise)
+   const router = useRouter()
+   const pathname = usePathname()
+
+   const rows = users.items.map((user) => ({
       key: user.id,
       dateJoined: format(new Date(user.createdAt), "do MMM, yyyy"),
       firstName: user.firstName,
@@ -16,11 +25,16 @@ export default async function UsersList() {
       goodsPurchased: 0
    }))
 
+   function handleChangePage(page: number) {
+      router.replace(pathname + `?page=${page}`)
+   }
+
    return (
       <DataTable
          columns={columns}
          rows={rows}
-         rowsPerPage={10}
+         metadata={users.metadata}
+         onChange={handleChangePage}
       />
    );
 }

@@ -2,6 +2,7 @@
 
 import React, { use, useState } from 'react'
 import { useDisclosure } from '@heroui/react'
+import { usePathname, useRouter } from 'next/navigation'
 
 import EditRegion from './EditRegion'
 import ActionButton from './ActionButton'
@@ -11,32 +12,35 @@ import { DeleteModal } from '@components/ui/Modals'
 import { deleteRegion } from '@actions/regions.action'
 
 type Props = {
-  promise: Promise<Region[]>
+  promise: Promise<Pagination<Region>>
 }
 
 export default function RegionsList({ promise }: Props) {
   const regions = use(promise)
-  
+
+  const router = useRouter()
+  const pathname = usePathname()
+
   const [activeRegion, setActiveRegion] = useState<Region | null>(null)
 
   const { isOpen: isOpenEdit, onOpenChange: onChangeEdit, onOpen: onOpenEdit } = useDisclosure()
   const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpenChange: onChangeDelete, onOpen: onOpenDelete } = useDisclosure()
 
   function handleShowEditModal(id: string) {
-    const foundRegion = regions.find(m => m.id === id)
+    const foundRegion = regions.items.find(m => m.id === id)
     if (!foundRegion) return
     setActiveRegion(foundRegion)
     onOpenEdit()
   }
 
   function handleShowDeleteModal(id: string) {
-    const foundRegion = regions.find(m => m.id === id)
+    const foundRegion = regions.items.find(m => m.id === id)
     if (!foundRegion) return
     setActiveRegion(foundRegion)
     onOpenDelete()
   }
 
-  const rows = regions.map((region) => ({
+  const rows = regions.items.map((region) => ({
     key: region.id,
     state: region.state,
     region: region.region,
@@ -50,11 +54,17 @@ export default function RegionsList({ promise }: Props) {
     )
   }))
 
+  function handleChangePage(page: number) {
+    router.replace(pathname + `?page=${page}`)
+  }
+
   return (
     <>
       <DataTable
         columns={columns}
         rows={rows}
+        metadata={regions.metadata}
+        onChange={handleChangePage}
       />
 
       {isOpenEdit && activeRegion ? (

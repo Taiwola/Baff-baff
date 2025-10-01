@@ -6,8 +6,13 @@ import { Header, Search } from '@components/features/dashboard'
 
 import { getRegions } from '@actions/regions.action'
 
-export default function RegionPage() {
-  const promise = getRegions()
+type Props = {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function RegionPage({ searchParams }: Props) {
+  const { page } = await searchParams
+  const promise = getRegions({ page })
 
   return (
     <div className="w-full h-auto">

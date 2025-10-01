@@ -22,3 +22,16 @@ export function paginate<T>({ data, page = 1, pageSize = 10 }: PaginationOptions
     }
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const emptyMetaData: Pagination<any> = {
+  items: [],
+  metadata: {
+    totalItems: 0,
+    totalPages: 0,
+    currentPage: 1,
+    pageSize: 1,
+    hasNextPage: false,
+    hasPrevPage: false
+  }
+}
