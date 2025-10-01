@@ -11,9 +11,11 @@ export const createMaterialSchema = z.object({
     .min(0, 'stock must be at least 0')
     .max(1000000, 'stock must be at most 1,000,000')
     .nonnegative('stock must be a non-negative number'),
-  image: z.string().optional()
+  image: z.instanceof(File).or(z.string()).optional()
 })
 
 export type CreateMaterialDto = z.infer<typeof createMaterialSchema>
 
 export type CreateMaterialFormState = FormState<CreateMaterialDto>
+export type CreateMaterialErrors = CreateMaterialFormState['errors']
+export type CreateMaterialValues = CreateMaterialFormState['values']

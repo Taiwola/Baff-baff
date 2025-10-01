@@ -1,8 +1,7 @@
 import 'server-only'
 
-// lib/server-api-client.ts
-import { cookies } from 'next/headers'
 import { ApiClient } from './api'
+import { cookies } from 'next/headers'
 
 async function withServerCookies(headers: HeadersInit = {}): Promise<HeadersInit> {
   const cookieStore = await cookies()
