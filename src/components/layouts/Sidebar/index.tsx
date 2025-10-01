@@ -73,7 +73,7 @@ const routes = [
   { name: 'users', path: '/dashboard/users', icon: Users },
   { name: 'materials', path: '/dashboard/materials', icon: Box },
   { name: 'products', path: '/dashboard/products', icon: Package },
-  { name: 'region', path: '/dashboard/region', icon: MapIcon },
+  { name: 'regions', path: '/dashboard/regions', icon: MapIcon },
   { name: 'collaborators', path: '/dashboard/collaborators', icon: UsersRound },
   { name: 'orders', path: '/dashboard/orders', icon: ShoppingCart },
   { name: 'settings', path: '/dashboard/settings', icon: Settings },

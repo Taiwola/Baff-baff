@@ -55,7 +55,7 @@ export async function getMaterial(id: string): Promise<Material | null> {
   const response = await ServerApiClient.get<Material>(`/materials/${id}`)
 
   if (response.code >= 400) {
-    console.log('materials error: ', response)
+    console.log('material error: ', response)
     return null
   }
 

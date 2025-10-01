@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 
+import { TableSkeleton } from '@components/ui'
 import { RegionsList, AddNewRegion } from './_components'
 import { Header, Search } from '@components/features/dashboard'
 
+import { getRegions } from '@actions/regions.action'
+
 export default function RegionPage() {
+  const promise = getRegions()
+
   return (
     <div className="w-full h-auto">
       {/* Header */}
@@ -21,7 +26,9 @@ export default function RegionPage() {
 
       {/* Page content */}
       <div className="w-full">
-        <RegionsList />
+        <Suspense fallback={<TableSkeleton columns={3} rows={5} />}>
+          <RegionsList promise={promise} />
+        </Suspense>
       </div>
     </div>
   )
