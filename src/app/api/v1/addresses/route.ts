@@ -6,7 +6,7 @@ import { CreateaddressSchema } from '@validations/address'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
-import { paginate } from '@pagination/paginate'
+import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()

@@ -11,7 +11,7 @@ import { CreateProductDto, createProductSchema } from '@validations/product'
 import mongoose from 'mongoose'
 import { Status } from '@models/product.model'
 import { verifySession } from '@lib/dal'
-import { paginate } from '@pagination/paginate'
+import { paginate } from '@utils/pagination'
 import dbConnect from '@lib/database'
 
 async function loadDb() {

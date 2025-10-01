@@ -7,7 +7,7 @@ import { createCategorySchema } from '@validations/category'
 import { NextRequest } from 'next/server'
 import { verifySession } from '@lib/dal'
 import dbConnect from '@lib/database'
-import { paginate } from '@pagination/paginate'
+import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()

@@ -11,7 +11,7 @@ import { createMaterial, getAllMaterials } from '@services/material'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
 import { CreateMaterialDto, createMaterialSchema } from '@validations/material'
-import { paginate } from '@pagination/paginate'
+import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()

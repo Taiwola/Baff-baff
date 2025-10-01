@@ -5,7 +5,7 @@ import { getAllUsers } from '@services/user'
 import { adaptUsers } from '@adapters/user.adapter'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { NextRequest } from 'next/server'
-import { paginate } from '@pagination/paginate'
+import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()

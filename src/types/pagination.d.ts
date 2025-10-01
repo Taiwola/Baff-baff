@@ -9,3 +9,9 @@ interface Pagination<T> {
     hasPrevPage: boolean
   }
 }
+
+type PaginationOptions<T> = {
+  data: T[]
+  page?: number
+  pageSize?: number
+}
