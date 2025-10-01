@@ -1,11 +1,10 @@
 import 'server-only'
 
-import { cache } from 'react'
 import { cookies } from 'next/headers'
 
 import { decrypt } from './session'
 
-export const verifySession = cache(async () => {
+export const verifySession = async () => {
   const cookie = (await cookies()).get('session')?.value
   const session = await decrypt(cookie)
 
@@ -14,4 +13,4 @@ export const verifySession = cache(async () => {
   }
 
   return { isAuth: true, userId: session.id, role: session.role }
-})
+}

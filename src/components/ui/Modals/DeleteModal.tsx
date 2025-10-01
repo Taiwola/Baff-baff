@@ -6,6 +6,7 @@ import { Modal, ModalContent, ModalBody } from "@heroui/react";
 
 import { Button } from "@components/ui";
 import WarningIcon from '@assets/svg/warning-icon.png'
+import Form from "next/form";
 
 interface Props {
    isOpen: boolean;
@@ -14,9 +15,10 @@ interface Props {
    btnConfirmTxt?: string
    onClose: () => void
    onOpenChange: () => void
+   onConfirm: () => void
 }
 
-export default function DeleteModal({ isOpen, confirm, onOpenChange, btnCloseTxt = 'No', btnConfirmTxt = 'Yes' }: Props) {
+export default function DeleteModal({ isOpen, confirm, onOpenChange, btnCloseTxt = 'No', btnConfirmTxt = 'Yes', onConfirm }: Props) {
 
    return (
       <Modal
@@ -39,7 +41,9 @@ export default function DeleteModal({ isOpen, confirm, onOpenChange, btnCloseTxt
 
                   <div className="flex justify-center items-center gap-2.5">
                      <Button onClick={onClose} variant="bordered" className="py-2.5 px-12.5 rounded-[2.1875rem]">{btnCloseTxt}</Button>
-                     <Button onClick={onClose} className="py-2.5 px-12.5 rounded-[2.1875rem] bg-black">{btnConfirmTxt}</Button>
+                     <Form action={onConfirm}>
+                        <Button type="submit" className="py-2.5 px-12.5 rounded-[2.1875rem] bg-black">{btnConfirmTxt}</Button>
+                     </Form>
                   </div>
                </ModalBody>
             )}

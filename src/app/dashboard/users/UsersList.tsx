@@ -1,8 +1,21 @@
-'use client'
+import { format } from "date-fns";
 
+import { getUsers } from "@actions/users.action";
 import { DataTable } from "@components/layouts";
 
-export default function UsersList() {
+export default async function UsersList() {
+   const users = await getUsers()
+
+   const rows = users.map((user) => ({
+      key: user.id,
+      dateJoined: format(new Date(user.createdAt), "do MMM, yyyy"),
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phoneNumber || <div className="w-full text-center">-</div>,
+      goodsPurchased: 0
+   }))
+
    return (
       <DataTable
          columns={columns}
@@ -21,53 +34,4 @@ const columns = [
    { key: "email", label: "EMAIL", width: '20px' },
    { key: "phone", label: "PHONE NUMBER" },
    { key: "goodsPurchased", label: "No of Goods Purchased" },
-];
-
-// Mock data
-const rows = [
-   {
-      key: "1",
-      dateJoined: "15th Apr, 2024",
-      firstName: "Joshua",
-      lastName: "Adeyemi",
-      email: "joshua.adeyemi@example.com",
-      phone: "+44 7123 456 789",
-      goodsPurchased: 12,
-   },
-   {
-      key: "2",
-      dateJoined: "2nd May, 2024",
-      firstName: "Amara",
-      lastName: "Okafor",
-      email: "amara.okafor@example.com",
-      phone: "+44 7987 654 321",
-      goodsPurchased: 7,
-   },
-   {
-      key: "3",
-      dateJoined: "19th Jun, 2024",
-      firstName: "Michael",
-      lastName: "Smith",
-      email: "m.smith@example.com",
-      phone: "+44 7700 900 123",
-      goodsPurchased: 20,
-   },
-   {
-      key: "4",
-      dateJoined: "5th Jul, 2024",
-      firstName: "Sophia",
-      lastName: "Brown",
-      email: "sophia.brown@example.com",
-      phone: "+44 7456 111 222",
-      goodsPurchased: 4,
-   },
-   {
-      key: "5",
-      dateJoined: "25th Aug, 2024",
-      firstName: "David",
-      lastName: "Wilson",
-      email: "david.wilson@example.com",
-      phone: "+44 7012 334 556",
-      goodsPurchased: 15,
-   },
 ];

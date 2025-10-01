@@ -6,6 +6,7 @@ export function adaptMaterial(data: IMaterial): Material {
     name: data.name,
     stock: data.stock,
     image: data.image,
+    status: data.stock > 0 ? 'In Stock' : 'Out of Stock',
     createdAt: data.createdAt,
     updatedAt: data.updatedAt
   }

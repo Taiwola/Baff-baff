@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 
 import Filters from './Filters'
 import UsersList from './UsersList'
+import { TableSkeleton } from '@components/ui'
 import { Header } from '@components/features/dashboard'
 
 export default function UsersPage() {
@@ -14,7 +15,9 @@ export default function UsersPage() {
 
       {/* Page content */}
       <div className="w-full">
-        <UsersList />
+        <Suspense fallback={<TableSkeleton columns={6} rows={6} />}>
+          <UsersList />
+        </Suspense>
       </div>
     </div>
   )

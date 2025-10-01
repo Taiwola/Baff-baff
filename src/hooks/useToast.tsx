@@ -8,7 +8,7 @@ import errorAnimation from '@lib/failed-task.json'
 import successAnimation from '@lib/success-animation.json'
 
 interface ToastContentProps {
-   title: string
+   title?: string
    description?: string
 }
 
@@ -64,7 +64,7 @@ export const toast = {
          }
       ),
 
-   error: ({ title, description }: ToastContentProps, options?: ToastOptions) =>
+   error: ({ title = 'An Error Occured', description }: ToastContentProps, options?: ToastOptions) =>
       hotToast.custom(
          <div
             className="

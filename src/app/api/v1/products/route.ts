@@ -1,21 +1,22 @@
-'use server'
-import { uploadToCloudinary } from '@lib/cloudinary'
-import { CLOUDINARY_FOLDERS } from '@lib/folder'
-import { getMaterialById, updateMaterial } from '@services/material'
-import { createProduct, getAllProducts } from '@services/product'
-import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
-import { errorResponse, sendResponse } from '@utils/api-response'
-import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
-import { CreateProductDto, createProductSchema } from '@validations/product'
 import { NextRequest } from 'next/server'
+
+import { CLOUDINARY_FOLDERS } from '@lib/folder'
+import { uploadToCloudinary } from '@lib/cloudinary'
+import { createProduct, getAllProducts } from '@services/product'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { getMaterialById, updateMaterial } from '@services/material'
+import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
+import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
+import { CreateProductDto, createProductSchema } from '@validations/product'
 import mongoose from 'mongoose'
+import { Status } from '@models/product.model'
+import { verifySession } from '@lib/dal'
 import { paginate } from '@pagination/paginate'
 import { cookies } from 'next/headers'
 import { decrypt } from '@lib/session'
 
 export async function GET(req: NextRequest) {
-  const cookie = (await cookies()).get('session')?.value
-  const session = await decrypt(cookie)
+  const session = await verifySession()
   const { searchParams } = new URL(req.url)
   const searchQuery = searchParams.get('search') || ''
   const categoryQuery = searchParams.get('category') || ''
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
   const limitQuery = searchParams.get('limit') || ''
 
   const filters: { category?: string; name?: { $regex: string; $options: string }; category_type?: string; status: string } = {
-    status: session?.role === 'admin' ? '' : 'in_stock'
+    status: session?.role === 'admin' ? '' : Status.IN_STOCK
   }
 
   if (searchQuery) {
@@ -57,6 +58,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = await verifySession()
+
+  if (auth?.role !== 'admin') {
+    return errorResponse('Forbidden', null, 403)
+  }
+
   const formData = await req.formData()
   const images: string[] = []
   const materialId = formData.get('material') as string

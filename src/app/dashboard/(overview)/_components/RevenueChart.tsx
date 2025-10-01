@@ -19,7 +19,7 @@ export default function RevenueChart() {
           <p className="text-xs text-[#4F4F4F]">27th September 2023</p>
         </div>
 
-        <div className="text-xs text-brand-dark/50 space-x-3">
+        <div className="text-[8px] md:text-xs text-brand-dark/50 space-x-3">
           <button className="text-blue-600 font-medium">Day</button>
           <button>Week</button>
           <button>Month</button>
@@ -30,8 +30,8 @@ export default function RevenueChart() {
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis className="text-xs" dataKey="name" />
-          <YAxis className="text-xs" tickFormatter={(value) => value.toLocaleString()} />
+          <XAxis className="text-[8px] md:text-xstext-xs" dataKey="name" />
+          <YAxis className="text-[8px] md:text-xs" tickFormatter={(value) => value.toLocaleString()} />
           <Tooltip formatter={(value: number) => value.toLocaleString()} />
           <Line
             type="monotone"

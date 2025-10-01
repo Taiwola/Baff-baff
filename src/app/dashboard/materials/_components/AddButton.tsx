@@ -4,10 +4,12 @@ import React from 'react'
 import { useDisclosure } from '@heroui/react'
 
 import { Button } from '@components/ui'
-import MaterialFormModal from './MaterialFormModal'
+import AddMaterial from './AddMaterial'
+
+
 
 export default function AddButton() {
-   const { isOpen, onClose, onOpenChange, onOpen } = useDisclosure()
+   const { isOpen, onOpenChange, onOpen } = useDisclosure()
 
    return (
       <>
@@ -15,10 +17,8 @@ export default function AddButton() {
             New Material
          </Button>
 
-         <MaterialFormModal
-            type='create'
+         <AddMaterial
             isOpen={isOpen}
-            onClose={onClose}
             onOpenChange={onOpenChange}
          />
       </>

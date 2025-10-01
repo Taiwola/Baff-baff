@@ -13,8 +13,7 @@ type Column = {
 
 type DataTableProps = {
    columns: Column[];
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   rows: Record<string, any>[];
+   rows: Record<string, unknown>[];
    rowsPerPage?: number;
 };
 
@@ -32,43 +31,46 @@ export default function DataTable({ columns, rows, rowsPerPage = 10 }: DataTable
    }
 
    return (
-      <Table
-         aria-label="Reusable data table"
-         removeWrapper
-         fullWidth
-         bottomContent={paginationContent}
-         classNames={{
-            base: "bg-white rounded-[20px] border border-black border-opacity-30 w-full overflow-hidden",
-            table: "w-full border-collapse",
-            thead: "bg-[#F9FAFB] overflow-hidden text-sm overflow-hidden",
-            tr: "border-b border-foreground",
-            th: "text-left font-medium text-xs text-[#667085] px-5 py-5 overflow-hidden",
-            td: "text-left text-xs text-black px-5 py-5",
-         }}
-      >
-         <TableHeader columns={columns}>
-            {(column) => (
-               <TableColumn
-                  key={column.key}
-                  style={{
-                     width: column.width || "auto",
-                     whiteSpace: "nowrap",
-                  }}
-               >
-                  {column.label}
-               </TableColumn>
-            )}
-         </TableHeader>
+      <div className="w-full overflow-x-auto no-scrollbar">
+         <Table
+            aria-label="Reusable data table"
+            removeWrapper
+            fullWidth
+            bottomContent={paginationContent}
+            classNames={{
+               base: "bg-white rounded-[20px] border border-black border-opacity-30 overflow-hidden",
+               table: "border-collapse w-full",
+               thead: "text-sm",
+               tr: "border-b border-foreground",
+               th: "text-left font-medium text-xs text-[#667085] bg-[#F9FAFB] px-5 py-5",
+               td: "text-left text-xs text-black px-4 sm:px-5 py-3 sm:py-5",
+            }}
+         >
+            <TableHeader columns={columns}>
+               {(column) => (
+                  <TableColumn
+                     key={column.key}
+                     style={{
+                        width: column.width || "auto",
+                        whiteSpace: "nowrap",
+                     }}
+                     //  className="whitespace-normal break-words"
+                  >
+                     {column.label}
+                  </TableColumn>
+               )}
+            </TableHeader>
 
-         <TableBody emptyContent={"No rows to display."} items={paginatedRows}>
-            {(item) => (
-               <TableRow key={item.key}>
-                  {(columnKey) => (
-                     <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                  )}
-               </TableRow>
-            )}
-         </TableBody>
-      </Table>
+            <TableBody emptyContent={"No rows to display."} items={paginatedRows}>
+               {(item) => (
+                  <TableRow key={item.key as string}>
+                     {(columnKey) => (
+                        <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                     )}
+                  </TableRow>
+               )}
+            </TableBody>
+         </Table>
+      </div>
    );
 }
