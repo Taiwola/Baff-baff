@@ -6,6 +6,13 @@ import mongoose, { ClientSession } from 'mongoose'
 import ProductModel, { IProduct, ISizeDetails, Status } from '@models/product.model'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { deleteManyCarts, getAllCarts } from '@services/cart'
+import dbConnect from '@lib/database'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function POST(req: NextRequest) {
   console.log('webhook ran')

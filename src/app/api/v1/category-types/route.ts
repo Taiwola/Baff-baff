@@ -1,23 +1,41 @@
 'use server'
 
-import { getAuthUser } from '@middleware/auth'
 import { createCategoryType, getAllCategoryTypes, getCategoryTypeByFilter } from '@services/category-type'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptCategoryType, adaptCategoryTypes } from '@adapters/category-type.adapter'
 import { createCategoryTypeSchema } from '@validations/category-type'
 import { NextRequest } from 'next/server'
+import { verifySession } from '@lib/dal'
+import dbConnect from '@lib/database'
+import { paginate } from '@pagination/paginate'
 
-export async function GET() {
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+
   const categoryTypes = await getAllCategoryTypes()
   const transformedCategories = adaptCategoryTypes(categoryTypes)
 
-  return sendResponse('Categories fetched successfully', transformedCategories, 200)
+  const pageQuery = searchParams.get('page') || ''
+  const limitQuery = searchParams.get('limit') || ''
+
+  const page = parseInt(pageQuery) || 1
+  const pageSize = parseInt(limitQuery) || 10
+
+  const pagination = paginate({ data: transformedCategories, page, pageSize })
+
+  return sendResponse('Categories fetched successfully', pagination, 200)
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const authUser = await getAuthUser(req)
-    if (authUser?.role !== 'admin') {
+    const session = await verifySession()
+    if (session?.role !== 'admin') {
       return errorResponse('Forbidden', null, 403)
     }
 

@@ -1,4 +1,4 @@
-export function paginate<T>({ data, page = 1, pageSize = 10 }: { data: T[]; page: number; pageSize: number }): Pagination<T> {
+export function paginate<T>({ data, page = 1, pageSize = 10 }: { data: T[]; page?: number; pageSize?: number }): Pagination<T> {
   const safePage = Math.max(1, page)
   const safePageSize = Math.min(Math.max(1, pageSize), 100)
 

@@ -12,8 +12,13 @@ import mongoose from 'mongoose'
 import { Status } from '@models/product.model'
 import { verifySession } from '@lib/dal'
 import { paginate } from '@pagination/paginate'
-import { cookies } from 'next/headers'
-import { decrypt } from '@lib/session'
+import dbConnect from '@lib/database'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function GET(req: NextRequest) {
   const session = await verifySession()
@@ -44,6 +49,8 @@ export async function GET(req: NextRequest) {
   if (statusQuery) {
     filters.status = statusQuery
   }
+
+  console.log(filters)
 
   const products = await getAllProducts(filters)
 

@@ -1,16 +1,23 @@
 'use server'
 
-import { getAuthUser } from '@middleware/auth'
 import { deleteOrder, getOneOrderById, updateOrder } from '@services/order'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformOrder } from '@adapters/order.adapter'
 import { UpdateOrderSchema } from '@validations/order'
 import { NextRequest } from 'next/server'
+import dbConnect from '@lib/database'
+import { verifySession } from '@lib/dal'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const authUser = await getAuthUser(req)
+  const session = await verifySession()
   const id = await params.id
-  if (authUser?.role !== 'admin') {
+  if (session?.role !== 'admin') {
     return errorResponse('Forbidden', 403)
   }
 
@@ -58,10 +65,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return sendResponse('Order found', transfromData, 200)
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const authUser = await getAuthUser(req)
+export async function DELETE(__req: NextRequest, { params }: { params: { id: string } }) {
+  const session = await verifySession()
   const id = await params.id
-  if (authUser?.role !== 'admin') {
+  if (session?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 

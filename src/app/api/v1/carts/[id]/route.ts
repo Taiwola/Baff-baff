@@ -5,6 +5,13 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptCart } from '@adapters/cart.adapter'
 import { updateCartSchema } from '@validations/cart'
 import { NextRequest } from 'next/server'
+import dbConnect from '@lib/database'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const id = await params.id

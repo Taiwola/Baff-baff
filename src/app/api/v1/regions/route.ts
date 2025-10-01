@@ -1,24 +1,40 @@
 'use server'
 
-import { getAuthUser } from '@middleware/auth'
 import { createRegion, getAllRegions } from '@services/region'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptRegion, adaptRegions } from '@adapters/region.adapter'
 import { CreateRegionSchema } from '@validations/region/create-region.validation'
 import { NextRequest } from 'next/server'
+import dbConnect from '@lib/database'
+import { verifySession } from '@lib/dal'
+import { paginate } from '@pagination/paginate'
 
-export async function GET() {
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
+
+export async function GET(req: NextRequest) {
   const region = await getAllRegions()
+  const { searchParams } = new URL(req.url)
 
   const transform = adaptRegions(region)
 
-  return sendResponse('regions fetched successfully', transform, 200)
+  const pageQuery = searchParams.get('page') || ''
+  const limitQuery = searchParams.get('limit') || ''
+  const page = parseInt(pageQuery) || 1
+  const pageSize = parseInt(limitQuery) || 10
+
+  const pagination = paginate({ data: transform, page, pageSize })
+
+  return sendResponse('regions fetched successfully', pagination, 200)
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const authUser = await getAuthUser(req)
-    if (authUser?.role !== 'admin') {
+    const session = await verifySession()
+    if (session?.role !== 'admin') {
       return errorResponse('Forbidden', null, 403)
     }
 

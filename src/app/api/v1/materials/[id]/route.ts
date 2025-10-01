@@ -8,6 +8,13 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { UpdateMaterialDto, updateMaterialSchema } from '@validations/material'
 import { deleteMaterial, getMaterialById, updateMaterial } from '@services/material'
+import dbConnect from '@lib/database'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   const auth = await verifySession()
@@ -82,7 +89,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (!update) {
       return errorResponse('Material not found after update', null, 404)
     }
-    
+
     const transform = adaptMaterial(update)
 
     return sendResponse('Material updated successfully', transform, 200)

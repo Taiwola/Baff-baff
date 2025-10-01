@@ -11,6 +11,7 @@ import { createMaterial, getAllMaterials } from '@services/material'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
 import { CreateMaterialDto, createMaterialSchema } from '@validations/material'
+import { paginate } from '@pagination/paginate'
 
 async function loadDb() {
   await dbConnect()
@@ -73,8 +74,9 @@ export async function POST(req: NextRequest) {
   return sendResponse('Material created successfully', transform, 201)
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const auth = await verifySession()
+  const { searchParams } = new URL(req.url)
 
   if (auth?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
@@ -82,5 +84,13 @@ export async function GET() {
 
   const materials = await getAllMaterials()
   const transforms = adaptMaterials(materials)
-  return sendResponse('Materials fetched successfully', transforms, 200)
+
+  const pageQuery = searchParams.get('page') || ''
+  const limitQuery = searchParams.get('limit') || ''
+
+  const page = parseInt(pageQuery) || 1
+  const pageSize = parseInt(limitQuery) || 10
+
+  const pagination = paginate({ data: transforms, page, pageSize })
+  return sendResponse('Materials fetched successfully', pagination, 200)
 }

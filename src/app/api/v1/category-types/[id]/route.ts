@@ -1,16 +1,23 @@
 'use server'
 
-import { getAuthUser } from '@middleware/auth'
 import { deleteCategoryType, getCategoryTypeById, updateCategoryType } from '@services/category-type'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptCategoryType } from '@adapters/category-type.adapter'
 import { updateCategoryTypeSchema } from '@validations/category-type/update.category-type.validation'
 import { NextRequest } from 'next/server'
+import { verifySession } from '@lib/dal'
+import dbConnect from '@lib/database'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const authUser = await getAuthUser(req)
+  const session = await verifySession()
   const id = await params.id
-  if (authUser?.role !== 'admin') {
+  if (session?.role !== 'admin') {
     return errorResponse('Forbidden', 403)
   }
 
@@ -59,9 +66,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const authUser = await getAuthUser(req)
+  const session = await verifySession()
   const id = await params.id
-  if (authUser?.role !== 'admin') {
+  if (session?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 
