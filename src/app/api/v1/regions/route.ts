@@ -6,7 +6,6 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptRegion, adaptRegions } from '@adapters/region.adapter'
 import { CreateRegionSchema } from '@validations/region/create-region.validation'
 import dbConnect from '@lib/database'
-import { verifySession } from '@lib/dal'
 import { paginate } from '@pagination/paginate'
 
 async function loadDb() {

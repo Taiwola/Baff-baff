@@ -1,10 +1,10 @@
-import { NextRequest } from 'next/server'
-
 import { deleteRegion, getOneRegionById, updateRegion } from '@services/region'
 import { UpdateRegionSchema } from '@validations/region/update-region.validation'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { adaptRegion } from '@adapters/region.adapter'
 
 async function loadDb() {
   await dbConnect()
