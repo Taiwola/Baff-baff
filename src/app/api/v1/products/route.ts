@@ -11,7 +11,6 @@ import { CreateProductDto, createProductSchema } from '@validations/product'
 import mongoose from 'mongoose'
 import { Status } from '@models/product.model'
 import { verifySession } from '@lib/dal'
-import { paginate } from '@utils/pagination'
 import dbConnect from '@lib/database'
 
 async function loadDb() {
@@ -50,18 +49,14 @@ export async function GET(req: NextRequest) {
     filters.status = statusQuery
   }
 
-  console.log(filters)
-
-  const products = await getAllProducts(filters)
-
-  const transform = adaptProducts(products)
-
   const page = parseInt(pageQuery) || 1
   const pageSize = parseInt(limitQuery) || 10
 
-  const paginateProduct = paginate({ data: transform, page, pageSize })
+  const products = await getAllProducts(pageSize, filters)
 
-  return sendResponse('Product was successfully found', paginateProduct)
+  const transform = adaptProducts({ data: products, page, pageSize })
+
+  return sendResponse('Product was successfully found', transform)
 }
 
 export async function POST(req: NextRequest) {

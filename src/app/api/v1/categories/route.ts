@@ -7,7 +7,6 @@ import { createCategorySchema } from '@validations/category'
 import { NextRequest } from 'next/server'
 import { verifySession } from '@lib/dal'
 import dbConnect from '@lib/database'
-import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()
@@ -19,15 +18,14 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const pageQuery = searchParams.get('page') || ''
   const limitQuery = searchParams.get('limit') || ''
-  const categories = await getAllCategories()
-  const transformedCategories = adaptCategories(categories)
 
   const page = parseInt(pageQuery) || 1
   const pageSize = parseInt(limitQuery) || 10
 
-  const pagination = paginate({ data: transformedCategories, page, pageSize })
+  const categories = await getAllCategories(pageSize)
+  const transformedCategories = adaptCategories({ data: categories, page, pageSize })
 
-  return sendResponse('Categories fetched successfully', pagination, 200)
+  return sendResponse('Categories fetched successfully', transformedCategories, 200)
 }
 
 export async function POST(req: NextRequest) {

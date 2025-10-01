@@ -1,4 +1,5 @@
 import { IAddress } from '@models/address.model'
+import { paginate } from '@utils/pagination'
 
 export function adaptAddress(data: IAddress): Address {
   return {
@@ -17,6 +18,6 @@ export function adaptAddress(data: IAddress): Address {
   }
 }
 
-export function adaptAddresses(data: IAddress[]): Address[] {
-  return data.map(adaptAddress)
+export function adaptAddresses({ data, page, pageSize }: { data: IAddress[]; page: number; pageSize: number }): Pagination<Address> {
+  return paginate({ data: data.map(adaptAddress), page, pageSize })
 }

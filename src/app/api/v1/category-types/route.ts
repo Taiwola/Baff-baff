@@ -7,7 +7,6 @@ import { createCategoryTypeSchema } from '@validations/category-type'
 import { NextRequest } from 'next/server'
 import { verifySession } from '@lib/dal'
 import dbConnect from '@lib/database'
-import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()
@@ -18,18 +17,16 @@ loadDb()
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
 
-  const categoryTypes = await getAllCategoryTypes()
-  const transformedCategories = adaptCategoryTypes(categoryTypes)
-
   const pageQuery = searchParams.get('page') || ''
   const limitQuery = searchParams.get('limit') || ''
 
   const page = parseInt(pageQuery) || 1
   const pageSize = parseInt(limitQuery) || 10
 
-  const pagination = paginate({ data: transformedCategories, page, pageSize })
+  const categoryTypes = await getAllCategoryTypes(pageSize)
+  const transformedCategories = adaptCategoryTypes({ data: categoryTypes, page, pageSize })
 
-  return sendResponse('Categories fetched successfully', pagination, 200)
+  return sendResponse('Categories fetched successfully', transformedCategories, 200)
 }
 
 export async function POST(req: NextRequest) {

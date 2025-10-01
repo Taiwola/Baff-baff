@@ -1,4 +1,5 @@
 import { IMaterial } from '@models/material.model'
+import { paginate } from '@utils/pagination'
 
 export function adaptMaterial(data: IMaterial): Material {
   return {
@@ -12,6 +13,6 @@ export function adaptMaterial(data: IMaterial): Material {
   }
 }
 
-export function adaptMaterials(data: IMaterial[]): Material[] {
-  return data.map(adaptMaterial)
+export function adaptMaterials({ data, page, pageSize }: { data: IMaterial[]; page: number; pageSize: number }): Pagination<Material> {
+  return paginate({ data: data.map(adaptMaterial), page, pageSize })
 }

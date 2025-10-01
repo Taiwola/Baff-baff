@@ -1,4 +1,5 @@
 import { IUser } from '@models/user.model'
+import { paginate } from '@utils/pagination'
 
 export function adaptUser(user: IUser): User {
   return {
@@ -14,6 +15,8 @@ export function adaptUser(user: IUser): User {
   }
 }
 
-export function adaptUsers(users: IUser[]): User[] {
-  return users.map(adaptUser)
+export function adaptUsers({ users, page, pageSize }: { users: IUser[]; page: number; pageSize: number }): Pagination<User> {
+  const pagination = paginate({ data: users.map(adaptUser), page, pageSize })
+
+  return pagination
 }

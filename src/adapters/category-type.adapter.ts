@@ -1,4 +1,5 @@
 import { ICategoryType } from '@models/category.type.model'
+import { paginate } from '@utils/pagination'
 
 export function adaptCategoryType(data: ICategoryType): CategoryType {
   return {
@@ -9,6 +10,6 @@ export function adaptCategoryType(data: ICategoryType): CategoryType {
   }
 }
 
-export function adaptCategoryTypes(data: ICategoryType[]): CategoryType[] {
-  return data.map(adaptCategoryType)
+export function adaptCategoryTypes({ data, page, pageSize }: { data: ICategoryType[]; page: number; pageSize: number }): Pagination<CategoryType> {
+  return paginate({ data: data.map(adaptCategoryType), page, pageSize })
 }

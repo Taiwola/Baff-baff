@@ -6,7 +6,6 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptRegion, adaptRegions } from '@adapters/region.adapter'
 import { CreateRegionSchema } from '@validations/region/create-region.validation'
 import dbConnect from '@lib/database'
-import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()
@@ -15,19 +14,17 @@ async function loadDb() {
 loadDb()
 
 export async function GET(req: NextRequest) {
-  const region = await getAllRegions()
   const { searchParams } = new URL(req.url)
-
-  const transform = adaptRegions(region)
 
   const pageQuery = searchParams.get('page') || ''
   const limitQuery = searchParams.get('limit') || ''
   const page = parseInt(pageQuery) || 1
   const pageSize = parseInt(limitQuery) || 10
 
-  const pagination = paginate({ data: transform, page, pageSize })
+  const region = await getAllRegions(pageSize)
+  const transform = adaptRegions({ data: region, page, pageSize })
 
-  return sendResponse('regions fetched successfully', pagination, 200)
+  return sendResponse('regions fetched successfully', transform, 200)
 }
 
 export async function POST(req: NextRequest) {

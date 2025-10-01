@@ -28,8 +28,8 @@ export async function getUserById(id: string): Promise<IUser | null> {
   return await UserModel.findById(id)
 }
 
-export async function getAllUsers(): Promise<IUser[]> {
-  return UserModel.find()
+export async function getAllUsers({ limit }: { limit: number }): Promise<IUser[]> {
+  return UserModel.find().limit(limit)
 }
 
 export async function deleteUser(id: string): Promise<{ deletedCount?: number }> {

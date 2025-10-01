@@ -1,4 +1,5 @@
 import { IProduct } from '@models/product.model'
+import { paginate } from '@utils/pagination'
 
 export function adaptProduct(data: IProduct): Product {
   const prices = [data.s?.price, data.m?.price, data.l?.price, data.xl?.price, data.xxl?.price, data.xxxl?.price].filter(
@@ -36,6 +37,7 @@ export function adaptProduct(data: IProduct): Product {
   }
 }
 
-export function adaptProducts(data: IProduct[]): Product[] {
-  return data.map(adaptProduct)
+export function adaptProducts({ data, page, pageSize }: { data: IProduct[]; page: number; pageSize: number }): Pagination<Product> {
+  const pagination = paginate({ data: data.map(adaptProduct), page, pageSize })
+  return pagination
 }

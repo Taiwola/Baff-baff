@@ -1,4 +1,5 @@
 import { IOrder } from '@models/order.model'
+import { paginate } from '@utils/pagination'
 
 export function transformOrder(data: IOrder): Order {
   return {
@@ -29,6 +30,6 @@ export function transformOrder(data: IOrder): Order {
   }
 }
 
-export function transformOrders(data: IOrder[]): Order[] {
-  return data.map(transformOrder)
+export function transformOrders({ data, page, pageSize }: { data: IOrder[]; page: number; pageSize: number }): Pagination<Order> {
+  return paginate({ data: data.map(transformOrder), page, pageSize })
 }

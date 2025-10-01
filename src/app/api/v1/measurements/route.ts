@@ -8,7 +8,6 @@ import { createMeasurementSchema } from '@validations/measurement'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
-import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()
@@ -20,18 +19,16 @@ export async function GET(req: NextRequest) {
   const session = await verifySession()
   const { searchParams } = new URL(req.url)
 
-  const measurement = await getAllMeasurements({ userId: session?.userId })
-  const transform = transformMeasurements(measurement)
-
   const pageQuery = searchParams.get('page') || ''
   const limitQuery = searchParams.get('limit') || ''
 
   const page = parseInt(pageQuery) || 1
   const pageSize = parseInt(limitQuery) || 10
 
-  const pagination = paginate({ data: transform, page, pageSize })
+  const measurement = await getAllMeasurements(pageSize, { userId: session?.userId })
+  const transform = transformMeasurements({ data: measurement, page, pageSize })
 
-  return sendResponse('Request was successful', pagination, 200)
+  return sendResponse('Request was successful', transform, 200)
 }
 
 export async function POST(req: NextRequest) {
