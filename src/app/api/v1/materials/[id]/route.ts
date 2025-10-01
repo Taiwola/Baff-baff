@@ -43,7 +43,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const body: UpdateMaterialDto = {
     name: String(formData.get('name')) || material.name,
-    stock: Number(formData.get('stock')) || material.stock,
+    stock: Number(formData.get('stock')) ?? material.stock,
     image: material.image
   }
 

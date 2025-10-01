@@ -1,10 +1,13 @@
 "use client";
 
-import React, { use } from "react";
-import { Chip } from "@heroui/react";
+import React, { use, useState } from "react";
+import { Chip, useDisclosure } from "@heroui/react";
 
 import ActionButton from "./ActionButton";
+import EditMaterial from "./EditMaterial";
 import { DataTable } from "@components/layouts";
+import { DeleteModal } from "@components/ui/Modals";
+import { deleteMaterial } from "@actions/materials.action";
 
 type Props = {
    promise: Promise<Material[]>
@@ -12,6 +15,23 @@ type Props = {
 
 export default function MaterialsList({ promise }: Props) {
    const materials = use(promise)
+   const [activeMaterial, setActiveMaterial] = useState<Material | null>(null)
+   const { isOpen: isOpenEdit, onOpenChange: onChangeEdit, onOpen: onOpenEdit } = useDisclosure()
+   const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpenChange: onChangeDelete, onOpen: onOpenDelete } = useDisclosure()
+
+   function handleShowEditModal(id: string) {
+      const foundMaterial = materials.find(m => m.id === id)
+      if (!foundMaterial) return
+      setActiveMaterial(foundMaterial)
+      onOpenEdit()
+   }
+
+   function handleShowDeleteModal(id: string) {
+      const foundMaterial = materials.find(m => m.id === id)
+      if (!foundMaterial) return
+      setActiveMaterial(foundMaterial)
+      onOpenDelete()
+   }
 
    const rows = materials.map((material) => ({
       key: material.id,
@@ -28,10 +48,40 @@ export default function MaterialsList({ promise }: Props) {
             {material.status || 'Out of Stock'}
          </Chip>
       ),
-      actions: <ActionButton material={material} />
+      actions: (
+         <ActionButton
+            id={material.id}
+            onEditClick={handleShowEditModal}
+            onDeleteClick={handleShowDeleteModal}
+         />
+      )
    }));
 
-   return <DataTable columns={columns} rows={rows} />;
+   return (
+      <>
+         <DataTable columns={columns} rows={rows} />
+
+         {activeMaterial && isOpenEdit ? (
+            <EditMaterial
+               material={activeMaterial}
+               isOpen={isOpenEdit}
+               onOpenChange={onChangeEdit}
+            />
+         ) : null}
+
+         {activeMaterial && isOpenDelete ? (
+            <DeleteModal
+               isOpen={isOpenDelete}
+               confirm='Are you sure you want to delete this Material?'
+               onOpenChange={onChangeDelete}
+               btnCloseTxt='No'
+               btnConfirmTxt='Yes'
+               onConfirm={deleteMaterial.bind(null, activeMaterial.id)}
+               onClose={onCloseDelete}
+            />
+         ) : null}
+      </>
+   )
 }
 
 const columns = [

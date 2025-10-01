@@ -68,7 +68,6 @@ export async function updateMaterial(id: string, state: UpdateMaterialFormState,
     stock: Number(formData.get('stock')) || 0,
     image: formData.get('image') || ''
   }
-
   const result = updateMaterialSchema.safeParse(parsedValues)
 
   if (!result.success) {
