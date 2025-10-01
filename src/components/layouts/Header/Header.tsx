@@ -10,7 +10,7 @@ import { Modal, ModalContent, ModalBody, useDisclosure, Dropdown, DropdownTrigge
 import LargeLogoSvg from "@assets/svg/largeLogoSvg";
 import SmallLogoSvg from "@assets/svg/smallLogoSvg";
 import { logout } from "@actions/auth.action";
-import { Loading } from "@components/ui";
+import { Button, Loading } from "@components/ui";
 
 type UserAccount = {
   key: string
@@ -122,53 +122,58 @@ export default function Header({ user }: Props) {
               <MagnifyingGlassIcon className="icon-button" />
             </button>
 
-            <Dropdown>
-              <DropdownTrigger>
-                <button aria-label="User Account">
-                  <UserIcon className="icon-button" />
-                </button>
-              </DropdownTrigger>
+            {isAuth ? (
+              <Dropdown>
+                <DropdownTrigger>
+                  <button aria-label="User Account">
+                    <UserIcon className="icon-button" />
+                  </button>
+                </DropdownTrigger>
 
-              <DropdownMenu aria-label="User Account Actions" className="h-auto w-[12.75rem] rounded-[20px] border border-grey bg-background font-lexend">
+                <DropdownMenu aria-label="User Account Actions" className="h-auto w-[12.75rem] rounded-[20px] border border-grey bg-background font-lexend">
 
 
-                {userAccountItems.map((item, idx) => (
-                  <>
-                    {item.key === 'profile' ? (
-                      <DropdownItem
-                        key={item.key}
-                        onClick={() => handlePressUserItem(item)}
-                        className={`px-5 py-3.5 border-b border-foreground text-sm text-black hover:`}
-                      >
-                        <User
-                          avatarProps={{
-                            className: 'p-0 text-black text-sm',
-                            classNames: { base: 'hidden w-full' }
-                          }}
-                          classNames={{
-                            base: "p-0 text-black text-sm font-lexend",
-                            name: "text-black text-sm font-lexend",
-                            description: "text-[11px] font-light text-black font-lexend",
-                          }}
-                          description={user?.email}
-                          name={user?.fullName}
-                        />
-                      </DropdownItem>
+                  {userAccountItems.map((item, idx) => (
+                    <>
+                      {item.key === 'profile' ? (
+                        <DropdownItem
+                          key={item.key}
+                          onClick={() => handlePressUserItem(item)}
+                          className={`px-5 py-3.5 border-b border-foreground text-sm text-black hover:`}
+                        >
+                          <User
+                            avatarProps={{
+                              className: 'p-0 text-black text-sm',
+                              classNames: { base: 'hidden w-full' }
+                            }}
+                            classNames={{
+                              base: "p-0 text-black text-sm font-lexend",
+                              name: "text-black text-sm font-lexend",
+                              description: "text-[11px] font-light text-black font-lexend",
+                            }}
+                            description={user?.email}
+                            name={user?.fullName}
+                          />
+                        </DropdownItem>
 
-                    ) : (
-                      <DropdownItem
-                        onClick={() => handlePressUserItem(item)}
-                        key={item.key}
-                        className={`px-5 py-3.5 border-b border-foreground text-sm ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length - 1 ? 'border-none' : ''}`}
-                      >
-                        {item.label}
-                      </DropdownItem>
+                      ) : (
+                        <DropdownItem
+                          onClick={() => handlePressUserItem(item)}
+                          key={item.key}
+                          className={`px-5 py-3.5 border-b border-foreground text-sm ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length - 1 ? 'border-none' : ''}`}
+                        >
+                          {item.label}
+                        </DropdownItem>
 
-                    )}
-                  </>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
+                      )}
+                    </>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+
+            ) : (
+              <Button size="sm" as={'link'} href={'/login'}>Login</Button>
+            )}
 
             <Link href="/cart">
               <ShoppingBagIcon className="icon-button" />
