@@ -1,17 +1,17 @@
-'use server'
-
-import { getAuthUser } from '@middleware/auth'
-import { deleteRegion, getOneRegionById, updateRegion } from '@services/region'
-import { errorResponse, sendResponse } from '@utils/api-response'
-import { adaptRegion } from '@adapters/region.adapter'
-import { UpdateRegionSchema } from '@validations/region/update-region.validation'
 import { NextRequest } from 'next/server'
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const authUser = await getAuthUser(req)
-  const id = await params.id
-  if (authUser?.role !== 'admin') {
-    return errorResponse('Forbidden', 403)
+import { verifySession } from '@lib/dal'
+import { adaptRegion } from '@adapters/region.adapter'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { deleteRegion, getOneRegionById, updateRegion } from '@services/region'
+import { UpdateRegionSchema } from '@validations/region/update-region.validation'
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const auth = await verifySession()
+
+  if (auth?.role !== 'admin') {
+    return errorResponse('Forbidden', null, 403)
   }
 
   const body = await req.json()
@@ -45,8 +45,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const region = await getOneRegionById(id)
 
   if (!region) {
@@ -54,14 +54,15 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 
   const transform = adaptRegion(region)
-
   return sendResponse('Region found', transform, 200)
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const authUser = await getAuthUser(req)
-  const id = await params.id
-  if (authUser?.role !== 'admin') {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
+  const auth = await verifySession()
+
+  if (auth?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 
