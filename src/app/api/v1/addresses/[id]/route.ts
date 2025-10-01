@@ -3,6 +3,13 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptAddress } from '@adapters/address.adapter'
 import { updateAddressSchema } from '@validations/address'
 import { NextRequest } from 'next/server'
+import dbConnect from '@lib/database'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function GET(__req: NextRequest, { params }: { params: { id: string } }) {
   const id = await params.id

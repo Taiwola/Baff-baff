@@ -1,4 +1,3 @@
-import { getAuthUser } from '@middleware/auth'
 import { InitiatePaystackPayment } from '@payment/payment'
 import { getAllCarts } from '@services/cart'
 import { getOneRegionById } from '@services/region'
@@ -9,13 +8,18 @@ import { CreateOrderDto, CreateOrderSchema } from '@validations/order'
 import { NextRequest } from 'next/server'
 import { getOneProductById } from '@services/product'
 import { createOrder } from '@services/order'
+import { verifySession } from '@lib/dal'
+import dbConnect from '@lib/database'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function POST(req: NextRequest) {
   // Validate user
-  const user = await getAuthUser(req)
-  if (!user || !user.id) {
-    return errorResponse('Unauthorized: User not found', null, 401)
-  }
+  const session = await verifySession()
 
   // Parse and validate request body
   const body = await req.json()
@@ -29,7 +33,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Fetch user carts
-  const userCarts = await getAllCarts({ userId: user.id })
+  const userCarts = await getAllCarts({ userId: session?.userId })
   console.log(userCarts)
   if (userCarts.length <= 0) {
     return errorResponse('You currently have no cart items', null, 404)
@@ -53,7 +57,7 @@ export async function POST(req: NextRequest) {
   const products = await Promise.all(
     userCarts.map(async (cart) => {
       const transformed = adaptCart(cart)
-      const product = await getOneProductById(cart.product as string)
+      const product = await getOneProductById(cart.product.id as string)
       return {
         id: product?.id as string,
         name: product?.name as string,
@@ -71,14 +75,14 @@ export async function POST(req: NextRequest) {
     const paymentData = {
       amount,
       email: result.data.email,
-      reference: `ORDER_${Date.now()}_${user.id}`
+      reference: `ORDER_${Date.now()}_${session?.userId}`
     }
     const paymentResult = await InitiatePaystackPayment(paymentData)
 
     // Create order data
     const orderData: Partial<CreateOrderDto> = {
       reference: paymentResult.reference,
-      userId: user.id.toString(),
+      userId: session?.userId.toString(),
       address: result.data.address,
       state: result.data.state,
       region: result.data.region,

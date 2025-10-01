@@ -2,7 +2,6 @@
 
 import { uploadToCloudinary } from '@lib/cloudinary'
 import { CLOUDINARY_FOLDERS } from '@lib/folder'
-import { getAuthUser } from '@middleware/auth'
 import { getMaterialById, updateMaterial } from '@services/material'
 import { deleteProduct, getOneProductById, updateProduct } from '@services/product'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
@@ -11,6 +10,14 @@ import { adaptProduct } from '@adapters/product.adapter'
 import { UpdateProductDto, updateProductSchema } from '@validations/product'
 import mongoose from 'mongoose'
 import { NextRequest } from 'next/server'
+import dbConnect from '@lib/database'
+import { verifySession } from '@lib/dal'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const id = await params.id
@@ -26,9 +33,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const auth = await getAuthUser(req)
+  const userSession = await verifySession()
 
-  if (auth?.role !== 'admin') {
+  if (userSession?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 

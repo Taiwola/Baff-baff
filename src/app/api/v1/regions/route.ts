@@ -5,13 +5,29 @@ import { createRegion, getAllRegions } from '@services/region'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptRegion, adaptRegions } from '@adapters/region.adapter'
 import { CreateRegionSchema } from '@validations/region/create-region.validation'
+import dbConnect from '@lib/database'
+import { paginate } from '@pagination/paginate'
 
-export async function GET() {
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
+
+export async function GET(req: NextRequest) {
   const region = await getAllRegions()
+  const { searchParams } = new URL(req.url)
 
   const transform = adaptRegions(region)
 
-  return sendResponse('regions fetched successfully', transform, 200)
+  const pageQuery = searchParams.get('page') || ''
+  const limitQuery = searchParams.get('limit') || ''
+  const page = parseInt(pageQuery) || 1
+  const pageSize = parseInt(limitQuery) || 10
+
+  const pagination = paginate({ data: transform, page, pageSize })
+
+  return sendResponse('regions fetched successfully', pagination, 200)
 }
 
 export async function POST(req: NextRequest) {

@@ -11,6 +11,14 @@ import { CreateProductDto, createProductSchema } from '@validations/product'
 import mongoose from 'mongoose'
 import { Status } from '@models/product.model'
 import { verifySession } from '@lib/dal'
+import { paginate } from '@pagination/paginate'
+import dbConnect from '@lib/database'
+
+async function loadDb() {
+  await dbConnect()
+}
+
+loadDb()
 
 export async function GET(req: NextRequest) {
   const session = await verifySession()
@@ -19,6 +27,8 @@ export async function GET(req: NextRequest) {
   const categoryQuery = searchParams.get('category') || ''
   const categoryTypeQuery = searchParams.get('category_type') || ''
   const statusQuery = searchParams.get('status') || ''
+  const pageQuery = searchParams.get('page') || ''
+  const limitQuery = searchParams.get('limit') || ''
 
   const filters: { category?: string; name?: { $regex: string; $options: string }; category_type?: string; status: string } = {
     status: session?.role === 'admin' ? '' : Status.IN_STOCK
@@ -40,11 +50,18 @@ export async function GET(req: NextRequest) {
     filters.status = statusQuery
   }
 
+  console.log(filters)
+
   const products = await getAllProducts(filters)
 
   const transform = adaptProducts(products)
 
-  return sendResponse('Product was successfully found', transform)
+  const page = parseInt(pageQuery) || 1
+  const pageSize = parseInt(limitQuery) || 10
+
+  const paginateProduct = paginate({ data: transform, page, pageSize })
+
+  return sendResponse('Product was successfully found', paginateProduct)
 }
 
 export async function POST(req: NextRequest) {
