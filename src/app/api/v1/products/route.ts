@@ -1,7 +1,6 @@
 'use server'
 import { uploadToCloudinary } from '@lib/cloudinary'
 import { CLOUDINARY_FOLDERS } from '@lib/folder'
-import { getAuthUser } from '@middleware/auth'
 import { getMaterialById, updateMaterial } from '@services/material'
 import { createProduct, getAllProducts } from '@services/product'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
@@ -10,17 +9,23 @@ import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
 import { CreateProductDto, createProductSchema } from '@validations/product'
 import { NextRequest } from 'next/server'
 import mongoose from 'mongoose'
+import { paginate } from '@pagination/paginate'
+import { cookies } from 'next/headers'
+import { decrypt } from '@lib/session'
 
 export async function GET(req: NextRequest) {
-  const user = await getAuthUser(req)
+  const cookie = (await cookies()).get('session')?.value
+  const session = await decrypt(cookie)
   const { searchParams } = new URL(req.url)
   const searchQuery = searchParams.get('search') || ''
   const categoryQuery = searchParams.get('category') || ''
   const categoryTypeQuery = searchParams.get('category_type') || ''
   const statusQuery = searchParams.get('status') || ''
+  const pageQuery = searchParams.get('page') || ''
+  const limitQuery = searchParams.get('limit') || ''
 
   const filters: { category?: string; name?: { $regex: string; $options: string }; category_type?: string; status: string } = {
-    status: user?.role === 'admin' ? '' : 'in_stock'
+    status: session?.role === 'admin' ? '' : 'in_stock'
   }
 
   if (searchQuery) {
@@ -43,16 +48,15 @@ export async function GET(req: NextRequest) {
 
   const transform = adaptProducts(products)
 
-  return sendResponse('Product was successfully found', transform)
+  const page = parseInt(pageQuery) || 1
+  const pageSize = parseInt(limitQuery) || 10
+
+  const paginateProduct = paginate({ data: transform, page, pageSize })
+
+  return sendResponse('Product was successfully found', paginateProduct)
 }
 
 export async function POST(req: NextRequest) {
-  const auth = await getAuthUser(req)
-
-  if (auth?.role !== 'admin') {
-    return errorResponse('Forbidden', null, 403)
-  }
-
   const formData = await req.formData()
   const images: string[] = []
   const materialId = formData.get('material') as string
