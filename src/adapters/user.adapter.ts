@@ -15,8 +15,8 @@ export function adaptUser(user: IUser): User {
   }
 }
 
-export function adaptUsers({ users, page, pageSize }: { users: IUser[]; page: number; pageSize: number }): Pagination<User> {
-  const pagination = paginate({ data: users.map(adaptUser), page, pageSize })
+export function adaptUsers({ data, page, pageSize }: AdaptersOptions<IUser[]>): Pagination<User> {
+  const pagination = paginate({ data: data.map(adaptUser), page, pageSize })
 
   return pagination
 }

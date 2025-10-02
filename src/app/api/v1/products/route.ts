@@ -54,10 +54,14 @@ export async function GET(req: NextRequest) {
     filters.status = queries.status
   }
 
+  if (queries?.limit) {
+    filters.limit = queries.limit || 10
+  }
+
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
 
-  const products = await getAllProducts(pageSize, filters)
+  const products = await getAllProducts(filters)
 
   const transform = adaptProducts({ data: products, page, pageSize })
 

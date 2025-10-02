@@ -12,7 +12,7 @@ type SizeDetails = {
 
 type ProductCategory = 'corporates' | 'casuals'
 
-type ProductType = 'shirt' | 'trouser' 
+type ProductType = 'shirt' | 'trouser'
 
 type Fitting = 'fit' | 'baggy' | 'straight'
 
@@ -39,4 +39,5 @@ type ProductFilter = {
   category?: ProductCategory
   type?: ProductType
   status?: Status
+  limit?: number
 }
