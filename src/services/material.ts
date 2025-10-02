@@ -16,8 +16,8 @@ export async function getMaterialById(id: string): Promise<IMaterial | null> {
   return MaterialModel.findById(id)
 }
 
-export async function getAllMaterials(): Promise<IMaterial[]> {
-  return MaterialModel.find()
+export async function getAllMaterials(limit: number): Promise<IMaterial[]> {
+  return MaterialModel.find().limit(limit)
 }
 
 export async function updateMaterial(id: string, updateData: UpdateMaterialDto, session?: ClientSession): Promise<IMaterial | null> {

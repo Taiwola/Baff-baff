@@ -14,8 +14,8 @@ export async function createCategoryType(data: CreateCategoryTypeDto): Promise<I
   return category
 }
 
-export async function getAllCategoryTypes(): Promise<ICategoryType[]> {
-  return await CategoryTypeModel.find()
+export async function getAllCategoryTypes(limit: number): Promise<ICategoryType[]> {
+  return await CategoryTypeModel.find().limit(limit)
 }
 
 export async function getCategoryTypeById(id: string): Promise<ICategoryType | null> {

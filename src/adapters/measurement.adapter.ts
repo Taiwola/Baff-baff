@@ -1,4 +1,5 @@
 import { IMeasurement } from '@models/measurement.model'
+import { paginate } from '@utils/pagination'
 
 export function transformMeasurement(data: IMeasurement): Measurement {
   return {
@@ -23,6 +24,6 @@ export function transformMeasurement(data: IMeasurement): Measurement {
   }
 }
 
-export function transformMeasurements(data: IMeasurement[]): Measurement[] {
-  return data.map(transformMeasurement)
+export function transformMeasurements({ data, page, pageSize }: { data: IMeasurement[]; page: number; pageSize: number }): Pagination<Measurement> {
+  return paginate({ data: data.map(transformMeasurement), page, pageSize })
 }

@@ -12,8 +12,8 @@ export async function createAddress(data: CreateAddressDto, session?: ClientSess
   return Addresss
 }
 
-export async function getAllAddresss(filter?: FilterQuery<IAddress>): Promise<IAddress[]> {
-  return await AddressModel.find(filter || {})
+export async function getAllAddresss(limit: number, filter?: FilterQuery<IAddress>): Promise<IAddress[]> {
+  return await AddressModel.find(filter || {}).limit(limit)
 }
 
 export async function getOneAddressById(id: string): Promise<IAddress | null> {

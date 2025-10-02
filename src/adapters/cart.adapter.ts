@@ -1,4 +1,5 @@
 import { ICart } from '@models/cart.model'
+import { paginate } from '@utils/pagination'
 
 export function adaptCart(data: ICart): Cart {
   return {
@@ -18,6 +19,6 @@ export function adaptCart(data: ICart): Cart {
   }
 }
 
-export function adaptCarts(data: ICart[]): Cart[] {
-  return data.map(adaptCart)
+export function adaptCarts({ data, page, pageSize }: { data: ICart[]; page: number; pageSize: number }): Pagination<Cart> {
+  return paginate({ data: data.map(adaptCart), page, pageSize })
 }

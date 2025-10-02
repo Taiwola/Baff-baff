@@ -6,7 +6,6 @@ import { CreateaddressSchema } from '@validations/address'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
-import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()
@@ -20,16 +19,14 @@ export async function GET(req: NextRequest) {
   const pageQuery = searchParams.get('page') || ''
   const limitQuery = searchParams.get('limit') || ''
 
-  const address = await getAllAddresss({ userId: session?.userId })
-
-  const transform = adaptAddresses(address)
-
   const page = parseInt(pageQuery) || 1
   const pageSize = parseInt(limitQuery) || 10
 
-  const paginateAddress = paginate({ data: transform, page, pageSize })
+  const address = await getAllAddresss(pageSize, { userId: session?.userId })
 
-  return sendResponse('Request successfull', paginateAddress)
+  const transform = adaptAddresses({ data: address, page, pageSize })
+
+  return sendResponse('Request successfull', transform)
 }
 
 export async function POST(req: NextRequest) {

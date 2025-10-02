@@ -1,4 +1,5 @@
 import { IRegion } from '@models/region.model'
+import { paginate } from '@utils/pagination'
 
 export function adaptRegion(data: IRegion): Region {
   return {
@@ -11,6 +12,6 @@ export function adaptRegion(data: IRegion): Region {
   }
 }
 
-export function adaptRegions(data: IRegion[]): Region[] {
-  return data.map(adaptRegion)
+export function adaptRegions({ data, page, pageSize }: { data: IRegion[]; page: number; pageSize: number }): Pagination<Region> {
+  return paginate({ data: data.map(adaptRegion), page, pageSize })
 }

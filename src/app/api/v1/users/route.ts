@@ -5,7 +5,6 @@ import { getAllUsers } from '@services/user'
 import { adaptUsers } from '@adapters/user.adapter'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { NextRequest } from 'next/server'
-import { paginate } from '@utils/pagination'
 
 async function loadDb() {
   await dbConnect()
@@ -21,16 +20,13 @@ export async function GET(req: NextRequest) {
     return errorResponse('Forbidden', null, 403)
   }
 
-  const users = await getAllUsers()
-  const transformedUsers = adaptUsers(users)
-
   const pageQuery = searchParams.get('page') || ''
   const limitQuery = searchParams.get('limit') || ''
-
   const page = parseInt(pageQuery) || 1
   const pageSize = parseInt(limitQuery) || 10
 
-  const pagination = paginate({ data: transformedUsers, page, pageSize })
+  const users = await getAllUsers({ limit: pageSize })
+  const transformedUsers = adaptUsers({ users, page, pageSize })
 
-  return sendResponse('Users fetched successfully', pagination, 200)
+  return sendResponse('Users fetched successfully', transformedUsers, 200)
 }

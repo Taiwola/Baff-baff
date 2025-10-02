@@ -13,8 +13,8 @@ export async function createCategory(data: CreateCategoryDto): Promise<ICategori
   return category
 }
 
-export async function getAllCategories(): Promise<ICategories[]> {
-  return await CategoryModel.find()
+export async function getAllCategories(limit: number): Promise<ICategories[]> {
+  return await CategoryModel.find().limit(limit)
 }
 
 export async function getCategoryById(id: string): Promise<ICategories | null> {

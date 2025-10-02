@@ -11,8 +11,8 @@ export async function createOrder(data: CreateOrderDto, session?: ClientSession)
   return Orders
 }
 
-export async function getAllOrders(filter?: FilterQuery<IOrder>): Promise<IOrder[]> {
-  return await OrderModel.find(filter || {})
+export async function getAllOrders(limit: number, filter?: FilterQuery<IOrder>): Promise<IOrder[]> {
+  return await OrderModel.find(filter || {}).limit(limit)
 }
 
 export async function getOneOrderById(id: string): Promise<IOrder | null> {

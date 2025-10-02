@@ -55,18 +55,21 @@ export async function GET(req: NextRequest) {
     filters.status = queries.status
   }
 
-  console.log(filters)
-
-  const products = await getAllProducts(filters)
-
-  const transform = adaptProducts(products)
-
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
 
-  const paginateProduct = paginate({ data: transform, page, pageSize })
+  const products = await getAllProducts(pageSize, filters)
 
-  return sendResponse('Product was successfully found', paginateProduct)
+  const transform = adaptProducts(products)
+
+  // const page = queries?.page || 1
+  // const pageSize = queries?.limit || 10
+
+  // const products = await getAllProducts(pageSize, filters)
+
+  // const transform = adaptProducts({ data: products, page, pageSize })
+
+  return sendResponse('Product was successfully found', transform)
 }
 
 export async function POST(req: NextRequest) {
