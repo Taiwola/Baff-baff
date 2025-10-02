@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 
 import AddNewAdmin from './AddNewAdmin';
@@ -13,7 +14,9 @@ export default function ManageAdminPage() {
    return (
       <div className='w-full'>
          <div className='flex justify-start items-center gap-2.5'>
-            <ArrowLeftIcon className='w-6 h-6 text-brand-dark' />
+            <Link href={'/dashboard/settings'}>
+               <ArrowLeftIcon className='w-6 h-6 text-brand-dark' />
+            </Link>
             <BreadCrumbs separator='/' items={breadcrumbsItems} />
          </div>
 

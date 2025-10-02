@@ -23,3 +23,26 @@ export async function getUser(id: string): Promise<User | null> {
 
   return response.data
 }
+
+// export async function updateUser(id: string, state: UpdateRegionFormState, formData: FormData) {
+//   const parsedValues: UpdateRegionDto = {
+//     state: String(formData.get('state')) || '',
+//     region: String(formData.get('region')) || '',
+//     price: Number(formData.get('price')) ?? 0
+//   }
+
+//   const result = UpdateRegionSchema.safeParse(parsedValues)
+
+//   if (!result.success) {
+//     const errors = formatError<UpdateRegionErrors, UpdateRegionFormValues>(result.error)
+//     return { ...state, errors, values: parsedValues }
+//   }
+
+//   const response = await ServerApiClient.patch<Region>(`/regions/${id}`, result.data)
+
+//   if (response.code >= 400) {
+//     return { ...state, error: response.message, values: parsedValues }
+//   }
+
+//   redirect('/dashboard/regions', RedirectType.replace)
+// }

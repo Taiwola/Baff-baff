@@ -1,4 +1,4 @@
-'use server'
+import 'server-only'
 
 import axios, { AxiosError } from 'axios'
 import { InitiatePayment, InitiatePaymentResponse } from '@index'
