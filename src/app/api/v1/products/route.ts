@@ -3,7 +3,6 @@ import { NextRequest } from 'next/server'
 
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
-import { paginate } from '@utils/pagination'
 import { CLOUDINARY_FOLDERS } from '@lib/folder'
 import { uploadToCloudinary } from '@lib/cloudinary'
 import { createProduct, getAllProducts } from '@services/product'
@@ -60,14 +59,7 @@ export async function GET(req: NextRequest) {
 
   const products = await getAllProducts(pageSize, filters)
 
-  const transform = adaptProducts(products)
-
-  // const page = queries?.page || 1
-  // const pageSize = queries?.limit || 10
-
-  // const products = await getAllProducts(pageSize, filters)
-
-  // const transform = adaptProducts({ data: products, page, pageSize })
+  const transform = adaptProducts({ data: products, page, pageSize })
 
   return sendResponse('Product was successfully found', transform)
 }

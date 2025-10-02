@@ -1,5 +1,5 @@
-import { IProduct, ISizeDetails } from '@models/product.model'
 import { paginate } from '@utils/pagination'
+import { IProduct, ISizeDetails } from '@models/product.model'
 
 export function adaptProduct(data: IProduct): Product {
   return {
@@ -30,14 +30,6 @@ export function adaptProduct(data: IProduct): Product {
 export function adaptProducts({ data, page, pageSize }: { data: IProduct[]; page: number; pageSize: number }): Pagination<Product> {
   const pagination = paginate({ data: data.map(adaptProduct), page, pageSize })
   return pagination
-}
-
-function getSize(s: ISizeDetails): SizeDetails {
-  return {
-    price: s.price,
-    discountPrice: s.discountPrice,
-    quantity: s.quantity
-  }
 }
 
 function getSize(s: ISizeDetails): SizeDetails {
