@@ -1,5 +1,9 @@
+import mongoose from 'mongoose'
 import { NextRequest } from 'next/server'
 
+import dbConnect from '@lib/database'
+import { verifySession } from '@lib/dal'
+import { paginate } from '@utils/pagination'
 import { CLOUDINARY_FOLDERS } from '@lib/folder'
 import { uploadToCloudinary } from '@lib/cloudinary'
 import { createProduct, getAllProducts } from '@services/product'
@@ -7,12 +11,7 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { getMaterialById, updateMaterial } from '@services/material'
 import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
-import { CreateProductDto, createProductSchema } from '@validations/product'
-import mongoose from 'mongoose'
-import { Status } from '@models/product.model'
-import { verifySession } from '@lib/dal'
-import { paginate } from '@utils/pagination'
-import dbConnect from '@lib/database'
+import { createProductSchema, productFilterSchema } from '@validations/product'
 
 async function loadDb() {
   await dbConnect()
@@ -23,31 +22,37 @@ loadDb()
 export async function GET(req: NextRequest) {
   const session = await verifySession()
   const { searchParams } = new URL(req.url)
-  const searchQuery = searchParams.get('search') || ''
-  const categoryQuery = searchParams.get('category') || ''
-  const categoryTypeQuery = searchParams.get('category_type') || ''
-  const statusQuery = searchParams.get('status') || ''
-  const pageQuery = searchParams.get('page') || ''
-  const limitQuery = searchParams.get('limit') || ''
 
-  const filters: { category?: string; name?: { $regex: string; $options: string }; category_type?: string; status: string } = {
-    status: session?.role === 'admin' ? '' : Status.IN_STOCK
+  const parsed = productFilterSchema.safeParse({
+    category: searchParams.get('category') || '',
+    type: searchParams.get('type') || '',
+    status: searchParams.get('status') || '',
+    page: searchParams.get('page') || '',
+    limit: searchParams.get('limit') || ''
+  })
+
+  const queries = parsed.data
+
+  const filters: ProductFilter = {}
+
+  if (session?.role !== 'admin') {
+    filters.status = 'inStock'
   }
 
-  if (searchQuery) {
-    filters.name = { $regex: searchQuery, $options: 'i' } // 'i' for case-insensitive
+  if (queries?.search) {
+    filters.name = { $regex: queries.search, $options: 'i' } // 'i' for case-insensitive
   }
 
-  if (categoryQuery) {
-    filters.category = categoryQuery
+  if (queries?.category) {
+    filters.category = queries.category
   }
 
-  if (categoryTypeQuery) {
-    filters.category_type = categoryTypeQuery
+  if (queries?.type) {
+    filters.type = queries.type
   }
 
-  if (statusQuery) {
-    filters.status = statusQuery
+  if (queries?.status && session?.role === 'admin') {
+    filters.status = queries.status
   }
 
   console.log(filters)
@@ -56,8 +61,8 @@ export async function GET(req: NextRequest) {
 
   const transform = adaptProducts(products)
 
-  const page = parseInt(pageQuery) || 1
-  const pageSize = parseInt(limitQuery) || 10
+  const page = queries?.page || 1
+  const pageSize = queries?.limit || 10
 
   const paginateProduct = paginate({ data: transform, page, pageSize })
 
@@ -67,80 +72,88 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const auth = await verifySession()
 
+  const session = await mongoose.startSession()
+  session.startTransaction()
+
   if (auth?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 
   const formData = await req.formData()
-  const images: string[] = []
-  const materialId = formData.get('material') as string
-  const yard = Number(formData.get('yard'))
 
-  const material = await getMaterialById(materialId)
+  try {
+    const parsed = createProductSchema.safeParse({
+      name: formData.get('name'),
+      description: formData.get('description'),
+      category: formData.get('category'),
+      status: formData.get('status'),
+      type: formData.get('type'),
+      materialId: formData.get('materialId'),
+      yard: formData.get('yard'),
+      images: formData.getAll('images'),
+      fittings: formData.getAll('fittings').map((f) => String(f)),
+      s: formData.get('s'),
+      m: formData.get('m'),
+      l: formData.get('l'),
+      xl: formData.get('xl'),
+      xxl: formData.get('xxl'),
+      xxxl: formData.get('xxxl')
+    })
 
-  if (!material) {
-    return errorResponse('Material does not exist', null, 404)
-  }
+    if (!parsed.success) {
+      const validationErrors = parsed.error.issues.map((detail) => ({
+        field: detail.path.join('.'),
+        message: detail.message
+      }))
 
-  if (yard > material.stock) {
-    return errorResponse('Can not deduct more yard from material stock', null, 400)
-  }
+      return errorResponse('Validation failed', validationErrors, 422)
+    }
 
-  // Upload images first
-  for (const entry of formData.getAll('image')) {
-    if (entry instanceof File && entry.size > 0) {
-      const validation = validateFile(entry, VALIDATION_PRESETS.IMAGE)
-      if (!validation.isValid) {
-        return errorResponse('File validation failed', { errors: validation.errors }, 400)
-      }
-      try {
-        const uploadResult = await uploadToCloudinary(entry, CLOUDINARY_FOLDERS.PRODUCTS)
-        if (!uploadResult.success) {
-          return errorResponse('Image upload failed', { error: uploadResult.error }, 500)
+    const result = parsed.data
+
+    const material = await getMaterialById(result.materialId)
+
+    if (!material) {
+      return errorResponse('Material does not exist', null, 404)
+    }
+
+    if (result.yard > material.stock) {
+      return errorResponse('Can not deduct more yard from material stock', null, 400)
+    }
+
+    const images: string[] = []
+
+    for (const entry of result.images) {
+      if (entry instanceof File) {
+        if (entry.size <= 0) continue
+        const validation = validateFile(entry, VALIDATION_PRESETS.IMAGE)
+
+        if (!validation.isValid) {
+          return errorResponse('File validation failed', { errors: validation.errors }, 400)
         }
-        images.push(uploadResult.data?.url || '')
-      } catch (error) {
-        console.error('Cloudinary upload error:', error)
-        return errorResponse('Image upload failed', null, 500)
+
+        try {
+          const uploadResult = await uploadToCloudinary(entry, CLOUDINARY_FOLDERS.PRODUCTS)
+
+          if (!uploadResult.success) {
+            return errorResponse('Image upload failed', { error: uploadResult.error }, 500)
+          }
+
+          if (uploadResult.data?.url) {
+            images.push(uploadResult.data.url)
+          }
+        } catch (error) {
+          console.error('Cloudinary upload error:', error)
+          return errorResponse('Image upload failed', null, 500)
+        }
+      } else {
+        images.push(entry)
       }
     }
-  }
 
-  // Add image URLs to formData or product data
-  formData.append('images', JSON.stringify(images))
+    result.images = images
 
-  const productData: CreateProductDto = {
-    name: formData.get('name') as string,
-    description: formData.get('description') as string,
-    category: formData.get('category') as string,
-    status: ['in_stock', 'out_of_stock'].includes(formData.get('status') as string)
-      ? (formData.get('status') as 'in_stock' | 'out_of_stock')
-      : undefined,
-    category_type: formData.get('category_type') as string,
-    material: materialId,
-    yard,
-    images,
-    s: formData.get('s') ? JSON.parse(formData.get('s') as string) : undefined,
-    m: formData.get('m') ? JSON.parse(formData.get('m') as string) : undefined,
-    l: formData.get('l') ? JSON.parse(formData.get('l') as string) : undefined,
-    xl: formData.get('xl') ? JSON.parse(formData.get('xl') as string) : undefined,
-    xxl: formData.get('xxl') ? JSON.parse(formData.get('xxl') as string) : undefined,
-    xxxl: formData.get('xxxl') ? JSON.parse(formData.get('xxxl') as string) : undefined
-  }
-
-  const result = createProductSchema.safeParse(productData)
-  if (!result.success) {
-    const validationErrors = result.error.issues.map((detail) => ({
-      field: detail.path.join('.'),
-      message: detail.message
-    }))
-    return errorResponse('Validation failed', validationErrors, 400)
-  }
-
-  const session = await mongoose.startSession()
-  session.startTransaction()
-  try {
-    const product = await createProduct(result.data, session)
+    const product = await createProduct(result, session)
     const currentMaterialStock = material.stock - product.yard
     await updateMaterial(material.id, { stock: currentMaterialStock }, session)
 

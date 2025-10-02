@@ -1,17 +1,17 @@
-'use server'
-
-import { uploadToCloudinary } from '@lib/cloudinary'
-import { CLOUDINARY_FOLDERS } from '@lib/folder'
-import { getMaterialById, updateMaterial } from '@services/material'
-import { deleteProduct, getOneProductById, updateProduct } from '@services/product'
-import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
-import { errorResponse, sendResponse } from '@utils/api-response'
-import { adaptProduct } from '@adapters/product.adapter'
-import { UpdateProductDto, updateProductSchema } from '@validations/product'
 import mongoose from 'mongoose'
 import { NextRequest } from 'next/server'
+
+import { CLOUDINARY_FOLDERS } from '@lib/folder'
+import { uploadToCloudinary } from '@lib/cloudinary'
+
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
+import { adaptProduct } from '@adapters/product.adapter'
+import { updateProductSchema } from '@validations/product'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { getMaterialById, updateMaterial } from '@services/material'
+import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
+import { deleteProduct, getOneProductById, updateProduct } from '@services/product'
 
 async function loadDb() {
   await dbConnect()
@@ -19,8 +19,8 @@ async function loadDb() {
 
 loadDb()
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
 
   const product = await getOneProductById(id)
 
@@ -32,100 +32,106 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return sendResponse('Product successfully found', transform)
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const userSession = await verifySession()
+
+  const session = await mongoose.startSession()
+  session.startTransaction()
 
   if (userSession?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 
   const formData = await req.formData()
-  const productId = params.id
+  const { id: productId } = await params
+
   const product = await getOneProductById(productId)
 
   if (!product) {
     return errorResponse('Product not found', null, 404)
   }
 
-  const materialId = (formData.get('material') as string) || product.material
-  const newYardStr = formData.get('yard')
-  const newYard = newYardStr ? Number(newYardStr) : product.yard
-  const material = await getMaterialById(materialId as string)
+  const parsed = updateProductSchema.safeParse({
+    name: formData.get('name') ?? product.name,
+    description: formData.get('description') ?? product.description,
+    category: formData.get('category') ?? product.category,
+    status: formData.get('status') ?? product.status,
+    type: formData.get('type') ?? product.type,
+    materialId: formData.get('materialId') ?? product.material.toString(),
+    yard: formData.get('yard') ?? product.yard,
+    images: formData.getAll('images'),
+    fittings: formData.getAll('fittings').map((f) => String(f)),
+    s: formData.get('s'),
+    m: formData.get('m'),
+    l: formData.get('l'),
+    xl: formData.get('xl'),
+    xxl: formData.get('xxl'),
+    xxxl: formData.get('xxxl')
+  })
+
+  if (!parsed.success) {
+    const validationErrors = parsed.error.issues.map((detail) => ({
+      field: detail.path.join('.'),
+      message: detail.message
+    }))
+
+    return errorResponse('Validation failed', validationErrors, 422)
+  }
+
+  const result = parsed.data
+
+  const material = await getMaterialById(result.materialId)
 
   if (!material) {
     return errorResponse('Material does not exist', null, 404)
   }
 
-  // Handle yard adjustment
-  const yardDifference = newYard - product.yard
-  if (yardDifference > 0 && newYard > material.stock + product.yard) {
+  if (result.yard > material.stock) {
     return errorResponse('Insufficient material stock for yard increase', null, 400)
   }
 
-  const images: string[] = [...product.images]
-  // Upload new images
-  for (const entry of formData.getAll('image')) {
-    if (entry instanceof File && entry.size > 0) {
-      const validation = validateFile(entry, VALIDATION_PRESETS.IMAGE)
-      if (!validation.isValid) {
-        return errorResponse('File validation failed', { errors: validation.errors }, 400)
-      }
-      try {
-        const uploadResult = await uploadToCloudinary(entry, CLOUDINARY_FOLDERS.PRODUCTS)
-        if (!uploadResult.success) {
-          return errorResponse('Image upload failed', { error: uploadResult.error }, 500)
+  try {
+    const images: string[] = []
+
+    for (const entry of result.images) {
+      if (entry instanceof File) {
+        if (entry.size <= 0) continue
+        const validation = validateFile(entry, VALIDATION_PRESETS.IMAGE)
+
+        if (!validation.isValid) {
+          return errorResponse('File validation failed', { errors: validation.errors }, 400)
         }
-        if (images.length < 5) {
-          images.push(uploadResult.data?.url || '')
-        } else {
-          images[0] = uploadResult.data?.url || ''
+
+        try {
+          const uploadResult = await uploadToCloudinary(entry, CLOUDINARY_FOLDERS.PRODUCTS)
+
+          if (!uploadResult.success) {
+            return errorResponse('Image upload failed', { error: uploadResult.error }, 500)
+          }
+
+          if (uploadResult.data?.url) {
+            images.push(uploadResult.data.url)
+          }
+        } catch (error) {
+          console.error('Cloudinary upload error:', error)
+          return errorResponse('Image upload failed', null, 500)
         }
-      } catch (error) {
-        console.error('Cloudinary upload error:', error)
-        return errorResponse('Image upload failed', null, 500)
+      } else {
+        images.push(entry)
       }
     }
-  }
 
-  // Build update data
-  const updateData: Partial<UpdateProductDto> = {
-    name: (formData.get('name') as string) || product.name,
-    description: (formData.get('description') as string) || product.description,
-    category: (formData.get('category') as string) || product.category,
-    category_type: (formData.get('category_type') as string) || product.category_type,
-    material: materialId.toString(),
-    yard: newYard,
-    status: (formData.get('status') as 'in_stock' | 'out_of_stock') || product.status,
-    images,
-    s: JSON.parse(formData.get('s') as string) || product.s,
-    m: JSON.parse(formData.get('m') as string) || product.m,
-    l: JSON.parse(formData.get('l') as string) || product.l,
-    xl: JSON.parse(formData.get('xl') as string) || product.xl,
-    xxl: JSON.parse(formData.get('xxl') as string) || product.xxl,
-    xxxl: JSON.parse(formData.get('xxxl') as string) || product.xxxl
-  }
+    result.images = images
 
-  const result = updateProductSchema.safeParse(updateData)
-  if (!result.success) {
-    const validationErrors = result.error.issues.map((detail) => ({
-      field: detail.path.join('.'),
-      message: detail.message
-    }))
-    return errorResponse('Validation failed', validationErrors, 400)
-  }
-
-  const session = await mongoose.startSession()
-  session.startTransaction()
-
-  try {
-    const updatedProduct = await updateProduct(productId, result.data, session)
+    const updatedProduct = await updateProduct(productId, result, session)
 
     if (!updatedProduct) {
       return errorResponse('Product could not be updated', null, 400)
     }
 
-    if (yardDifference !== 0) {
-      const newMaterialStock = material.stock - yardDifference
+    if (result.yard !== product.yard) {
+      const newMaterialStock =
+        result.yard > product.yard ? material.stock - (result.yard - product.yard) : material.stock + (product.yard - result.yard)
       await updateMaterial(material.id, { stock: newMaterialStock }, session)
     }
 

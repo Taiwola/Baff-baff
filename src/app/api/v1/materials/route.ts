@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       message: detail.message
     }))
 
-    return errorResponse('Validation failed', validationErrors, 400)
+    return errorResponse('Validation failed', validationErrors, 422)
   }
 
   const image = result.data.image

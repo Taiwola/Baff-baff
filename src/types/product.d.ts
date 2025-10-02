@@ -1,4 +1,20 @@
-type Status = 'inStock' | 'outOfStock'
+type ProductStatus = 'inStock' | 'outOfStock'
+
+type Size = 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl'
+
+type IProductSizes = Record<Size, SizeDetails>
+
+type SizeDetails = {
+  price: number
+  discountPrice?: number
+  quantity: number
+}
+
+type ProductCategory = 'corporates' | 'casuals'
+
+type ProductType = 'shirt' | 'trouser' 
+
+type Fitting = 'fit' | 'baggy' | 'straight'
 
 type Product = {
   id: string
@@ -6,29 +22,21 @@ type Product = {
   range?: string
   images: string[]
   description: string
-  category: string
-  categoryType: string
+  category: ProductCategory
+  type: ProductType
+  fittings: Fitting[]
   material: string
   yard: number
   name: string
-  status: Status
-  sizes?: ISizeDetails[]
+  status: ProductStatus
+  sizes: IProductSizes
   createdAt: string
   updatedAt: string
 }
 
-interface IProductSizes {
-  s?: ISizeDetails
-  m?: ISizeDetails
-  l?: ISizeDetails
-  xl?: ISizeDetails
-  xxl?: ISizeDetails
-  xxxl?: ISizeDetails
-}
-
-interface ISizeDetails {
-  size: string
-  price: number
-  discountPrice?: number
-  quantity: number
+type ProductFilter = {
+  name?: { $regex: string; $options: string }
+  category?: ProductCategory
+  type?: ProductType
+  status?: Status
 }
