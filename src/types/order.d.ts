@@ -27,3 +27,9 @@ type OrderProduct = {
   price: number
 }
 
+type OrderFilter = {
+  page?: number
+  limit?: number
+  userId?: string
+  id?: { $regex: string; $options: string }
+}

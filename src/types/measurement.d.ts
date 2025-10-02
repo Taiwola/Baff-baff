@@ -22,3 +22,9 @@ type TrouserMeasurement = {
   length: string
   knee: string
 }
+
+type MeasurementFilter = {
+  page?: number
+  limit?: number
+  userId?: string
+}

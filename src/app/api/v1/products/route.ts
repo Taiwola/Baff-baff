@@ -27,7 +27,8 @@ export async function GET(req: NextRequest) {
     type: searchParams.get('type') || '',
     status: searchParams.get('status') || '',
     page: searchParams.get('page') || '',
-    limit: searchParams.get('limit') || ''
+    limit: searchParams.get('limit') || '',
+    search: searchParams.get('search')
   })
 
   const queries = parsed.data

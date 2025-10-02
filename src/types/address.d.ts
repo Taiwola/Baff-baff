@@ -12,3 +12,9 @@ type Address = {
   createdAt: string
   updatedAt: string
 }
+
+type AddressFilter = {
+  page?: number
+  limit?: number
+  userId?: string
+}

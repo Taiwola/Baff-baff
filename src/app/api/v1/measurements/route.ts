@@ -8,6 +8,7 @@ import { createMeasurementSchema } from '@validations/measurement'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
+import { measurementQueryFilter } from '@validations/measurement/query-filter.validation'
 
 async function loadDb() {
   await dbConnect()
@@ -19,13 +20,27 @@ export async function GET(req: NextRequest) {
   const session = await verifySession()
   const { searchParams } = new URL(req.url)
 
-  const pageQuery = searchParams.get('page') || ''
-  const limitQuery = searchParams.get('limit') || ''
+  const parsed = measurementQueryFilter.safeParse({
+    page: searchParams.get('page'),
+    limit: searchParams.get('limit')
+  })
 
-  const page = parseInt(pageQuery) || 1
-  const pageSize = parseInt(limitQuery) || 10
+  const queries = parsed.data
 
-  const measurement = await getAllMeasurements(pageSize, { userId: session?.userId })
+  const filters: MeasurementFilter = {}
+
+  if (session !== null) {
+    filters.userId = session.userId
+  }
+
+  if (queries?.limit) {
+    filters.limit = queries.limit || 10
+  }
+
+  const page = queries?.page || 1
+  const pageSize = queries?.limit || 10
+
+  const measurement = await getAllMeasurements(filters)
   const transform = transformMeasurements({ data: measurement, page, pageSize })
 
   return sendResponse('Request was successful', transform, 200)

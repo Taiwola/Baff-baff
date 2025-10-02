@@ -2,7 +2,7 @@ import { createAddress, getAllAddresss } from '@services/address'
 import { getUserById } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptAddress, adaptAddresses } from '@adapters/address.adapter'
-import { CreateaddressSchema } from '@validations/address'
+import { addressQueryFilter, CreateaddressSchema } from '@validations/address'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
@@ -16,13 +16,28 @@ loadDb()
 export async function GET(req: NextRequest) {
   const session = await verifySession()
   const { searchParams } = new URL(req.url)
-  const pageQuery = searchParams.get('page') || ''
-  const limitQuery = searchParams.get('limit') || ''
 
-  const page = parseInt(pageQuery) || 1
-  const pageSize = parseInt(limitQuery) || 10
+  const parsed = addressQueryFilter.safeParse({
+    page: searchParams.get('page'),
+    limit: searchParams.get('limit')
+  })
 
-  const address = await getAllAddresss(pageSize, { userId: session?.userId })
+  const queries = parsed.data
+
+  const filters: AddressFilter = {}
+
+  if (session !== null) {
+    filters.userId = session.userId
+  }
+
+  if (queries?.limit) {
+    filters.limit = queries.limit || 10
+  }
+
+  const page = queries?.page || 1
+  const pageSize = queries?.limit || 10
+
+  const address = await getAllAddresss(filters)
 
   const transform = adaptAddresses({ data: address, page, pageSize })
 

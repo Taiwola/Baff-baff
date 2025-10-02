@@ -11,8 +11,8 @@ export async function createMeasurement(data: CreateMeasurementDto, session?: Cl
   return Measurements
 }
 
-export async function getAllMeasurements(limit: number, filter?: FilterQuery<IMeasurement>): Promise<IMeasurement[]> {
-  return await MeasurementModel.find(filter || {}).limit(limit)
+export async function getAllMeasurements(filter?: FilterQuery<MeasurementFilter>): Promise<IMeasurement[]> {
+  return await MeasurementModel.find(filter || {}).limit(filter?.limit)
 }
 
 export async function getOneMeasurementById(id: string): Promise<IMeasurement | null> {

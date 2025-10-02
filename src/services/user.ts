@@ -2,6 +2,7 @@ import 'server-only'
 
 import { RegisterDto } from '@validations/auth'
 import UserModel, { IUser } from '@models/user.model'
+import { FilterQuery } from 'mongoose'
 
 export async function getUserByEmail(email: string): Promise<IUser | null> {
   const user = await UserModel.findOne({
@@ -28,8 +29,8 @@ export async function getUserById(id: string): Promise<IUser | null> {
   return await UserModel.findById(id)
 }
 
-export async function getAllUsers({ limit }: { limit: number }): Promise<IUser[]> {
-  return UserModel.find().limit(limit)
+export async function getAllUsers(filters?: FilterQuery<UserFilter>): Promise<IUser[]> {
+  return UserModel.find().limit(filters?.limit)
 }
 
 export async function deleteUser(id: string): Promise<{ deletedCount?: number }> {

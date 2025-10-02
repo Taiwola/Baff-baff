@@ -6,3 +6,8 @@ type Region = {
   createdAt: Date
   updatedAt: Date
 }
+
+type RegionFilter = {
+  page?: number
+  limit?: number
+}

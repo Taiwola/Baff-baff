@@ -11,3 +11,8 @@ type User = {
 }
 
 type UserRole = 'user' | 'admin'
+
+type UserFilter = {
+  page?: number
+  limit?: number
+}

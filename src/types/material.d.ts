@@ -9,3 +9,9 @@ type Material = {
 }
 
 type MaterialStatus = 'In Stock' | 'Out of Stock'
+
+type MaterialFilter = {
+  page?: number
+  limit?: number
+  userId?: string
+}
