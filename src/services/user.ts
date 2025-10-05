@@ -21,8 +21,12 @@ export async function createUser(data: RegisterDto): Promise<IUser> {
   return newUser
 }
 
-export async function updateUser(id: string, updateData: Partial<IUser>): Promise<IUser | null> {
-  return UserModel.findByIdAndUpdate(id, updateData, { new: true })
+export async function updateUser(user: IUser, updateData: Partial<IUser>): Promise<IUser | null> {
+  Object.assign(user, updateData)
+
+  const updatedUser = await user.save()
+
+  return updatedUser
 }
 
 export async function getUserById(id: string): Promise<IUser | null> {
