@@ -1,10 +1,9 @@
 'use server'
 
 import { ServerApiClient } from '@utils/api-server'
-import { formatError } from '@utils/formatting'
+import { formatError, parseProductForm } from '@utils/formatting'
 import { emptyMetaData } from '@utils/pagination'
 import {
-  CreateProductDto,
   CreateProductErrors,
   CreateProductFormState,
   CreateProductFormValues,
@@ -20,24 +19,8 @@ import {
 import { redirect, RedirectType } from 'next/navigation'
 
 export async function createProduct(state: CreateProductFormState, formData: FormData): Promise<CreateProductFormState> {
-  const parsedValues: CreateProductDto = {
-    name: String(formData.get('name')),
-    description: String(formData.get('description')),
-    category: String(formData.get('category')) as ProductCategory,
-    status: formData.get('status') as ProductStatus,
-    type: formData.get('type') as ProductType,
-    materialId: String(formData.get('materialId')),
-    yard: Number(formData.get('yard')),
-    images: formData.getAll('images') as unknown as (string | File)[],
-    fittings: formData.getAll('fittings').map((f) => String(f)) as Fitting[],
-    s: parseJson(formData.get('s')),
-    m: parseJson(formData.get('m')),
-    l: parseJson(formData.get('l')),
-    xl: parseJson(formData.get('xl')),
-    xxl: parseJson(formData.get('xxl')),
-    xxxl: parseJson(formData.get('xxxl'))
-  }
-
+  const parsedValues = parseProductForm(formData)
+  console.log('parsed values: ', parsedValues)
   const result = createProductSchema.safeParse(parsedValues)
 
   if (!result.success) {
@@ -45,7 +28,7 @@ export async function createProduct(state: CreateProductFormState, formData: For
     return { ...state, errors, values: parsedValues }
   }
 
-  const response = await ServerApiClient.post<Product>('/products', result.data)
+  const response = await ServerApiClient.post<Product>('/products', formData)
 
   if (response.code >= 400) {
     return { ...state, error: response.message, values: parsedValues }
@@ -81,12 +64,10 @@ export async function updateProduct(id: string, state: UpdateProductFormState, f
     name: String(formData.get('name')),
     description: String(formData.get('description')),
     category: String(formData.get('category')) as ProductCategory,
-    status: formData.get('status') as ProductStatus,
     type: formData.get('type') as ProductType,
     materialId: String(formData.get('materialId')),
     yard: Number(formData.get('yard')),
     images: formData.getAll('images') as unknown as (string | File)[],
-    fittings: formData.getAll('fittings').map((f) => String(f)) as Fitting[],
     s: parseJson(formData.get('s')),
     m: parseJson(formData.get('m')),
     l: parseJson(formData.get('l')),

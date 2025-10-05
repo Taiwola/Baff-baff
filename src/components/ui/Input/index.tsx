@@ -7,7 +7,7 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 type BaseProps = {
   name: string
   label?: string
-  value?: string | number
+  value?: string | number | null
   placeholder?: string
   onChange?: (val: string) => void
   endContent?: string | ReactNode
@@ -91,10 +91,13 @@ export default function DynamicInput({
   }
 
   if (type === 'select') {
+    if (!options || options?.length <= 0) return null
+
     inputContent = (
       <Select
         id={id}
         name={name}
+        aria-label={name}
         defaultSelectedKeys={normalizedValue ? [normalizedValue] : []}
         onChange={(e) => handleChange(e.target.value)}
         {...commonHandlers}
@@ -106,11 +109,11 @@ export default function DynamicInput({
           selectorIcon: 'absolute right-3 text-brand-dark w-5 h-5 pointer-events-none'
         }}
       >
-        {options!.map((opt, idx) => (
+        {options.map((opt, idx) => (
           <SelectItem
             key={opt.key}
             textValue={opt.label}
-            className={`${options!.length - 1 === idx ? 'border-none' : 'border-b border-foreground'
+            className={`${options.length - 1 === idx ? 'border-none' : 'border-b border-foreground'
               }`}
           >
             {opt.label}
@@ -123,18 +126,18 @@ export default function DynamicInput({
       <Textarea
         id={id}
         name={name}
+        aria-label={name}
         placeholder={placeholder}
         disabled={disabled}
-        disableAutosize
         defaultValue={normalizedValue}
         onChange={(e) => handleChange(e.target.value)}
         {...commonHandlers}
         endContent={endContentComponent}
         startContent={startContentComponent}
         classNames={{
-          inputWrapper: `border ${borderClass} rounded-md w-full ${disabled ? 'bg-[#EDECEC]' : ''
+          inputWrapper: `border ${borderClass} rounded-md w-full h-max p-0 resize-none overflow-hidden no-scrollbar ${disabled ? 'bg-[#EDECEC]' : ''
             }`,
-          input: `outline-none p-2 ${textClass}`
+          input: `outline-none ${textClass} h-full p-2 no-scrollbar`
         }}
       />
     )
@@ -160,6 +163,7 @@ export default function DynamicInput({
       <Input
         id={id}
         name={name}
+        aria-label={name}
         type={resolvedType}
         placeholder={placeholder}
         disabled={disabled}

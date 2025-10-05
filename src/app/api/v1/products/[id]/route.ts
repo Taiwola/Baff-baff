@@ -60,7 +60,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     materialId: formData.get('materialId') ?? product.material.toString(),
     yard: formData.get('yard') ?? product.yard,
     images: formData.getAll('images'),
-    fittings: formData.getAll('fittings').map((f) => String(f)),
     s: formData.get('s'),
     m: formData.get('m'),
     l: formData.get('l'),

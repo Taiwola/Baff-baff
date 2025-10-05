@@ -7,14 +7,13 @@ import { Pencil } from "lucide-react"
 import { formatCurrency } from "@utils"
 import { Button } from "@components/ui"
 import ActionButton from "./ActionButton"
-import { Product } from "@models/product.model"
 
 type Props = {
    product: Product
 }
 
 export default function ProductItem({ product }: Props) {
-   
+
    return (
       <div className="w-full h-[28rem] bg-white flex flex-col shadow">
          {/* Image */}
@@ -48,7 +47,7 @@ export default function ProductItem({ product }: Props) {
                   {product.name}
                </h3>
 
-              <ActionButton id={product.id} stockCount={product.stockCount} />
+               <ActionButton id={product.id} status={product.status} />
             </div>
 
             {/* Category */}
@@ -57,13 +56,18 @@ export default function ProductItem({ product }: Props) {
             </p>
 
             {/* Price */}
-            <p className="text-base text-[#121212]">{formatCurrency(product.price)}</p>
+            <p className="text-base text-[#121212]">{formatCurrency(product.sizes.s.price)}</p>
 
             {/* Status */}
             <p className="text-xs text-[#121212]">
-               {product.stockCount <= 0 ? "(Out of Stock)" : "(In Stock)"}
+               {`(${statusMap[product.status]})`}
             </p>
          </div>
       </div>
    )
+}
+
+const statusMap: Record<ProductStatus, string> = {
+   inStock: 'In Stock',
+   outOfStock: 'Out of Stock'
 }

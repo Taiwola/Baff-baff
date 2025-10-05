@@ -24,7 +24,6 @@ export interface IProduct extends Document {
   description: string
   category: ProductCategory
   type: ProductType
-  fittings: Fitting[]
   material: mongoose.Types.ObjectId | string
   yard: number
   name: string
@@ -53,7 +52,6 @@ const productSchema: Schema = new Schema<IProduct>(
     description: { type: String, required: true },
     material: { type: Schema.Types.ObjectId, ref: 'Material', required: true },
     yard: { type: Number, required: true },
-    fittings: { type: [String], enum: fittings },
     name: { type: String, required: true },
     slug: { type: String, unique: true, index: true }, 
     status: { type: String, required: true, enum: Object.keys(statusMap), default: 'inStock' },

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { categorySchema, fittingSchema, sizeDetailsSchema, statusSchema, typeSchema } from './shared.validation'
+import { categorySchema, sizeDetailsSchema, typeSchema } from './shared.validation'
 
 export const updateProductSchema = z
   .object({
@@ -8,11 +8,8 @@ export const updateProductSchema = z
     description: z.string().min(1),
     category: categorySchema,
     type: typeSchema,
-    fittings: z.array(fittingSchema).min(1),
     materialId: z.string().min(1),
     yard: z.number().min(0),
-    status: statusSchema.default('inStock'),
-    // sizes
     s: sizeDetailsSchema.optional(),
     m: sizeDetailsSchema.optional(),
     l: sizeDetailsSchema.optional(),

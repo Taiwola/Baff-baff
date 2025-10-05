@@ -9,6 +9,7 @@ export { default as Loading } from './Loading'
 export { default as ExploreCard } from './Cards/ExploreCard'
 
 export { default as TableSkeleton } from './Skeletons/TableSkeleton'
+export { default as DashboardProductsSkeleton } from './Skeletons/DashboardProductsSkeleton'
 
 export { default as ProductList } from './Products/ProductList'
 export { default as ProductGallery } from './Products/ProductGallery'

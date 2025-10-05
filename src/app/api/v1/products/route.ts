@@ -11,6 +11,7 @@ import { getMaterialById, updateMaterial } from '@services/material'
 import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { createProductSchema, productFilterSchema } from '@validations/product'
+import { parseProductForm } from '@utils/formatting'
 
 async function loadDb() {
   await dbConnect()
@@ -73,27 +74,12 @@ export async function POST(req: NextRequest) {
   if (auth?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
-
-  const formData = await req.formData()
-
   try {
-    const parsed = createProductSchema.safeParse({
-      name: formData.get('name'),
-      description: formData.get('description'),
-      category: formData.get('category'),
-      status: formData.get('status'),
-      type: formData.get('type'),
-      materialId: formData.get('materialId'),
-      yard: formData.get('yard'),
-      images: formData.getAll('images'),
-      fittings: formData.getAll('fittings').map((f) => String(f)),
-      s: formData.get('s'),
-      m: formData.get('m'),
-      l: formData.get('l'),
-      xl: formData.get('xl'),
-      xxl: formData.get('xxl'),
-      xxxl: formData.get('xxxl')
-    })
+    const formData = await req.formData()
+
+    const parsedValues = parseProductForm(formData)
+    console.log('parsed values Server: ', parsedValues)
+    const parsed = createProductSchema.safeParse(parsedValues)
 
     if (!parsed.success) {
       const validationErrors = parsed.error.issues.map((detail) => ({

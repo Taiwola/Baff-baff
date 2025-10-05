@@ -1,11 +1,19 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { SearchIcon } from 'lucide-react'
 
-import { Button, Input } from '@components/ui'
+import { Button, DashboardProductsSkeleton, Input } from '@components/ui'
 import ProductsList from './_components/ProductsList'
 import { FilterButton, Header } from '@components/features/dashboard'
+import { getProducts } from '@actions/products.action'
 
-export default function ProductsPage() {
+type Props = {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function ProductsPage({ searchParams }: Props) {
+  const { page } = await searchParams
+  const promise = getProducts({ page })
+  
   return (
     <div className="w-full h-auto">
       {/* Header */}
@@ -29,7 +37,9 @@ export default function ProductsPage() {
 
       {/* Page content */}
       <div className="w-full">
-        <ProductsList />
+        <Suspense fallback={<DashboardProductsSkeleton />}>
+          <ProductsList promise={promise} />
+        </Suspense>
       </div>
     </div>
   )

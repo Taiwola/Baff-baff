@@ -1,30 +1,42 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { use } from 'react'
 
 import ProductItem from './ProductItem'
 import { Pagination } from '@components/ui'
-import { products } from '@models/product.model'
+import { usePathname, useRouter } from 'next/navigation'
+import { EmptyState } from './EmptyState'
 
-export default function ProductsList() {
-   const [page, setPage] = useState(1);
+type Props = {
+   promise: Promise<Pagination<Product>>
+}
 
-   const perPage = 9
-   const pages = Math.ceil(products.length / perPage);
-   const start = (page - 1) * perPage;
-   const paginatedProducts = products.slice(start, start + perPage);
+export default function ProductsList({ promise }: Props) {
+   const router = useRouter()
+   const pathname = usePathname()
+   const { items: products, metadata } = use(promise)
+
+   function handleChangePage(page: number) {
+      router.replace(pathname + `?page=${page}`)
+   }
+
+   if (products.length === 0) {
+      return (
+         <div className='w-full h-full'>
+            <EmptyState />
+         </div>
+      )
+   }
 
    return (
       <div className='w-full h-full'>
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 2xl:gap-7.5 mb-5 w-full">
-            {paginatedProducts.map((product) => (
+            {products.map((product) => (
                <ProductItem key={product.id} product={product} />
             ))}
          </div>
 
-
-
-         <Pagination total={pages} page={page} onChange={setPage} />
+         <Pagination metadata={metadata} onChange={handleChangePage} />
       </div>
    )
 }

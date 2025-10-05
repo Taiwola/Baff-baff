@@ -19,12 +19,10 @@ type Fitting = 'fit' | 'baggy' | 'straight'
 type Product = {
   id: string
   slug: string
-  range?: string
   images: string[]
   description: string
   category: ProductCategory
   type: ProductType
-  fittings: Fitting[]
   material: string
   yard: number
   name: string
