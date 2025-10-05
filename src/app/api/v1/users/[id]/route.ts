@@ -6,6 +6,7 @@ import { adaptUser } from '@adapters/user.adapter'
 import { deleteUser, getUserById, updateUser } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { updateUserSchema } from '@validations/users/update-user.validation'
+import { verifySession } from '@lib/dal'
 
 async function loadDb() {
   await dbConnect()
@@ -61,10 +62,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(__req: NextRequest, { params }: { params: { id: string } }) {
+  const session = await verifySession()
   const user = await getUserById(params.id)
   if (!user) {
     return errorResponse('User not found', null, 404)
+  }
+
+  if (user.id !== session?.userId && session?.role === 'admin') {
+    return errorResponse('Forbidden', null, 403)
   }
   try {
     await deleteUser(user.id)

@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
     return sendResponse('Reset Link sent', null, 200)
   } catch (error) {
-    console.error('Login error:', error)
-    return errorResponse('Error logging in user', process.env.NODE_ENV === 'development' ? error : null, 500)
+    console.error('Forgot password error:', error)
+    return errorResponse('Error forgot password', process.env.NODE_ENV === 'development' ? error : null, 500)
   }
 }

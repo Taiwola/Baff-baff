@@ -49,8 +49,6 @@ export async function POST(req: NextRequest) {
       role: user.role
     }
 
-    console.log(response)
-
     await createSession({ id: user.id, role: user.role })
 
     return sendResponse('User logged in successfully', response)
