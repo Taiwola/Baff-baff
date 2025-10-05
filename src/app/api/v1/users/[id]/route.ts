@@ -49,7 +49,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     return errorResponse('Validation failed', validationErrors, 400)
   }
   try {
-    const updatedUser = await updateUser(user.id, json)
+    const updatedUser = await updateUser(user, result.data)
     if (!updatedUser) {
       return errorResponse('User not found after update', null, 404)
     }
