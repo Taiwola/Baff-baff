@@ -32,7 +32,7 @@ export default function AddProduct({ materials }: Props) {
       if (error) {
          toast.error({ description: error })
       }
-   }, [toast, error])
+   }, [error, toast])
 
    return (
       <ProductForm

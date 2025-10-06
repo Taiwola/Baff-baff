@@ -1,32 +1,18 @@
 'use client'
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline'
 
 type Props = {
-   images?: (File | string)[] // initial images can be URLs
+   images?: (File | string)[]
    onChange?: (files: File[]) => void
 }
 
-export default function Images({ images: initialImages = [], onChange }: Props) {
+export default function Images({ images = [], onChange }: Props) {
+   const [files, setFiles] = useState<(File | string)[]>(images)
    const fileInputRefs = useRef<(HTMLInputElement | null)[]>([])
-   const [files, setFiles] = useState<(File | string)[]>(initialImages) // includes initial URLs
-   const [previews, setPreviews] = useState<string[]>([])
-
-   // Generate preview URLs whenever files change
-   useEffect(() => {
-      const objectUrls = files.map(file => (typeof file === 'string' ? file : URL.createObjectURL(file)))
-      setPreviews(objectUrls)
-
-      return () => {
-         // Only revoke object URLs for actual File objects
-         objectUrls.forEach((url, idx) => {
-            if (files[idx] instanceof File) URL.revokeObjectURL(url)
-         })
-      }
-   }, [files])
 
    const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
       if (!event.target.files || event.target.files.length === 0) return
@@ -36,6 +22,7 @@ export default function Images({ images: initialImages = [], onChange }: Props) 
          updated[index] = file
          return updated
       })
+
       if (onChange) onChange(files.filter(f => f instanceof File) as File[])
    }
 
@@ -43,7 +30,14 @@ export default function Images({ images: initialImages = [], onChange }: Props) 
       fileInputRefs.current[index]?.click()
    }
 
-   const totalSlots = Math.max(5, files.length) // ensure at least 5 slots
+   const totalSlots = Math.max(5, files.length)
+
+   useEffect(() => {
+      if (images) {
+         setFiles(images)
+      }
+   }, [images]);
+
    return (
       <div className='flex flex-wrap gap-5'>
          {[...Array(totalSlots)].map((_, idx) => (
@@ -52,9 +46,9 @@ export default function Images({ images: initialImages = [], onChange }: Props) 
                onClick={() => handleImageClick(idx)}
                className="border border-gray-400 h-[9.375rem] w-[9.375rem] rounded-[0.625rem] flex items-center justify-center cursor-pointer hover:bg-[#2D4596CC]/80 transition-colors relative overflow-hidden"
             >
-               {previews[idx] ? (
+               {files[idx] ? (
                   <Image
-                     src={previews[idx]}
+                     src={files[idx] instanceof File ? URL.createObjectURL(files[idx]) : files[idx]}
                      alt={`preview-${idx}`}
                      fill
                      className="object-cover rounded-[0.625rem]"

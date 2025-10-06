@@ -19,6 +19,8 @@ async function loadDb() {
 
 loadDb()
 
+const isLocal = process.env.NODE_ENV !== 'production'
+
 export async function GET(req: NextRequest) {
   const session = await verifySession()
   const { searchParams } = new URL(req.url)
@@ -68,8 +70,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const auth = await verifySession()
 
-  const session = await mongoose.startSession()
-  session.startTransaction()
+  const session = isLocal ? undefined : await mongoose.startSession()
+  if (session) session.startTransaction()
 
   if (auth?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
@@ -132,20 +134,24 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    if(images.length < 4) {
+      return errorResponse('At least four images are required', null, 400)
+    }
+
     result.images = images
 
     const product = await createProduct(result, session)
     const currentMaterialStock = material.stock - product.yard
     await updateMaterial(material.id, { stock: currentMaterialStock }, session)
 
-    await session.commitTransaction()
-    session.endSession()
+    if (session) await session.commitTransaction()
+    if (session) session.endSession()
 
     const transform = adaptProduct(product)
     return sendResponse('Product created successfully', transform, 201)
   } catch (error) {
-    await session.abortTransaction()
-    session.endSession()
+    if (session) await session.abortTransaction()
+    if (session) session.endSession()
     console.error('Transaction error:', error)
     return errorResponse('Product creation failed', null, 500)
   }

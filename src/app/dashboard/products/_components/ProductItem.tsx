@@ -19,7 +19,7 @@ export default function ProductItem({ product }: Props) {
          {/* Image */}
          <div className="w-full h-[22rem] bg-gray-100 overflow-hidden relative border border-foreground group">
             <Image
-               src={product.images[0]}
+               src={product.images[0] ?? null}
                alt={product.name}
                fill
                className="object-cover transition-opacity duration-300 group-hover:opacity-90"

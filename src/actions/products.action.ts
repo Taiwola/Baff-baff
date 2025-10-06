@@ -25,13 +25,13 @@ export async function createProduct(state: CreateProductFormState, formData: For
 
   if (!result.success) {
     const errors = formatError<CreateProductErrors, CreateProductFormValues>(result.error)
-    return { ...state, errors, values: parsedValues }
+    return { ...state, errors, error: '', values: { ...parsedValues, images: [] } }
   }
 
   const response = await ServerApiClient.post<Product>('/products', formData)
 
   if (response.code >= 400) {
-    return { ...state, error: response.message, values: parsedValues }
+    return { ...state, error: response.message, values: { ...parsedValues, images: [] } }
   }
 
   redirect('/dashboard/products', RedirectType.replace)

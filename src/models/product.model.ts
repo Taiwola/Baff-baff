@@ -53,7 +53,7 @@ const productSchema: Schema = new Schema<IProduct>(
     material: { type: Schema.Types.ObjectId, ref: 'Material', required: true },
     yard: { type: Number, required: true },
     name: { type: String, required: true },
-    slug: { type: String, unique: true, index: true }, 
+    slug: { type: String, unique: true, index: true },
     status: { type: String, required: true, enum: Object.keys(statusMap), default: 'inStock' },
     s: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } },
     m: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } },
@@ -67,14 +67,23 @@ const productSchema: Schema = new Schema<IProduct>(
   }
 )
 
-productSchema.pre<IProduct>('save', function (next) {
+productSchema.pre<IProduct>('save', async function (next) {
   if (this.isModified('name')) {
-    this.slug = slugify(this.name, {
-      lower: true,
-      strict: true, // remove special chars
-      trim: true
-    })
+    const baseSlug = slugify(this.name, { lower: true, strict: true, trim: true })
+    let slug = baseSlug
+
+    // Check for existing products with same slug
+    const existing = await ProductModel.findOne({ slug, _id: { $ne: this._id } })
+
+    if (existing) {
+      // Append a random short ID or counter to make it unique
+      const count = await ProductModel.countDocuments({ slug: new RegExp(`^${baseSlug}`) })
+      slug = `${baseSlug}-${count + 1}`
+    }
+
+    this.slug = slug
   }
+
   next()
 })
 

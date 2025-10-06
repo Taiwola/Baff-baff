@@ -36,6 +36,7 @@ export function parseProductForm(formData: FormData): CreateProductDto {
     category: String(formData.get('category')) as ProductCategory,
     type: formData.get('type') as ProductType,
     materialId: String(formData.get('materialId')),
+    material: String(formData.get('materialId')),
     yard: Number(formData.get('yard')),
     images: formData.getAll('images') as unknown as (string | File)[],
     s: {
