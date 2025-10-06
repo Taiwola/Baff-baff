@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { Input, Select, SelectItem, Textarea } from '@heroui/react'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 
@@ -43,10 +43,18 @@ export default function DynamicInput({
 }: Props) {
   const id = React.useId()
   const [showPassword, setShowPassword] = useState(false)
-  const [focused, setFocused] = useState(false)
+  // const [focused, setFocused] = useState(false)
+  const [currentError, setCurrentError] = useState('')
+
+  useEffect(() => {
+    if (error) {
+      setCurrentError(error)
+    }
+  }, [error])
+
 
   // Show errors only when the user is not actively editing
-  const currentError = focused ? undefined : error
+  // const currentError = focused ? undefined : error
 
   const normalizedValue = value != null ? String(value) : ''
 
@@ -67,7 +75,7 @@ export default function DynamicInput({
   const labelContent = label ? (
     <label
       htmlFor={id}
-      className={`text-sm font-medium ${currentError ? 'text-red-600' : 'text-black'}`}
+      className={`text-xs lg:text-sm font-medium ${currentError ? 'text-red-600' : 'text-black'}`}
     >
       {label}
     </label>
@@ -86,8 +94,11 @@ export default function DynamicInput({
     : 'text-black placeholder:text-brand-dark/40'
 
   const commonHandlers = {
-    onFocus: () => setFocused(true),
-    onBlur: () => setFocused(false)
+    onFocus: () => {
+      // setFocused(true)
+      setCurrentError('')
+    },
+    // onBlur: () => setFocused(false)
   }
 
   if (type === 'select') {
@@ -96,10 +107,10 @@ export default function DynamicInput({
     inputContent = (
       <Select
         id={id}
+        key={value}
         name={name}
         aria-label={name}
-        defaultSelectedKeys={normalizedValue ? [normalizedValue] : []}
-        onChange={(e) => handleChange(e.target.value)}
+        defaultSelectedKeys={[normalizedValue]}
         {...commonHandlers}
         classNames={{
           trigger: `border ${borderClass} rounded-md py-5 px-2.5 w-full text-sm ${textClass} min-h-[40px] flex items-center justify-between`,
