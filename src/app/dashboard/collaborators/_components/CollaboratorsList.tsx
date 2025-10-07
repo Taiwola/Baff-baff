@@ -37,7 +37,7 @@ export default function CollaboratorsList() {
             ))}
          </div>
 
-         <Pagination total={totalPages} page={page} onChange={setPage} />
+         {/* <Pagination total={totalPages} page={page} onChange={setPage} /> */}
       </section>
    )
 }
