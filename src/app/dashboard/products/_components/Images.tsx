@@ -2,68 +2,92 @@
 
 import React, { useRef } from 'react'
 import Image from 'next/image'
-import { PlusIcon } from '@heroicons/react/24/solid'
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline'
 
 type Props = {
-  images: (File | string)[]
-  onChange: (files: (File | string)[]) => void
+   images: (File | string)[]
+   onChange: (files: (File | string)[]) => void
 }
 
 export default function Images({ images, onChange }: Props) {
-  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([])
+   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([])
 
-  const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files?.length) return
-    const file = event.target.files[0]
+   const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!event.target.files?.length) return
+      const file = event.target.files[0]
+      const updated = [...images]
+      updated[index] = file
+      onChange(updated)
+   }
 
-    const updated = [...images]
-    updated[index] = file
-    onChange(updated)
-  }
+   const handleDelete = (index: number) => {
+      const updated = [...images]
+      updated.splice(index, 1)
+      onChange(updated)
+   }
 
-  const handleImageClick = (index: number) => {
-    fileInputRefs.current[index]?.click()
-  }
+   const handleImageClick = (index: number) => {
+      fileInputRefs.current[index]?.click()
+   }
 
-  const totalSlots = Math.max(5, images.length)
+   const totalSlots = Math.max(5, images.length + 1)
 
-  return (
-    <div className='flex flex-wrap gap-5'>
-      {[...Array(totalSlots)].map((_, idx) => (
-        <div
-          key={idx}
-          onClick={() => handleImageClick(idx)}
-          className="border border-gray-400 h-[9.375rem] w-[9.375rem] rounded-[0.625rem] flex items-center justify-center cursor-pointer hover:bg-[#2D4596CC]/80 transition-colors relative overflow-hidden"
-        >
-          {images[idx] ? (
-            <Image
-              src={images[idx] instanceof File ? URL.createObjectURL(images[idx]) : images[idx]}
-              alt={`preview-${idx}`}
-              fill
-              className="object-cover rounded-[0.625rem]"
-              sizes="150px"
-            />
-          ) : idx === 0 ? (
-            <div className="flex flex-col items-center justify-center">
-              <CloudArrowUpIcon className='w-6 h-6 text-black' />
-              <small className='text-[10px] text-brand-dark'>Upload an image</small>
-              <small className='text-[8px] font-medium text-black'>Choose file</small>
-            </div>
-          ) : (
-            <PlusIcon className="w-[3.375rem] h-[3.375rem] text-[#292D32]" />
-          )}
+   return (
+      <div className="flex flex-wrap gap-5">
+         {[...Array(totalSlots)].map((_, idx) => {
+            const hasImage = !!images[idx]
+            return (
+               <div
+                  key={idx}
+                  className="group relative border border-gray-400 h-[9.375rem] w-[9.375rem] rounded-[0.625rem] flex items-center justify-center cursor-pointer hover:bg-[#2D4596CC]/80 transition-colors overflow-hidden"
+                  onClick={() => handleImageClick(idx)}
+               >
+                  {/* Image Preview */}
+                  {hasImage ? (
+                     <>
+                        <Image
+                           src={images[idx] instanceof File ? URL.createObjectURL(images[idx]) : images[idx] as string}
+                           alt={`preview-${idx}`}
+                           fill
+                           className="object-cover rounded-[0.625rem]"
+                           sizes="150px"
+                        />
 
-          <input
-            name="images"
-            type="file"
-            accept="image/*"
-            ref={el => {(fileInputRefs.current[idx] = el)}}
-            className="hidden"
-            onChange={e => handleFileChange(idx, e)}
-          />
-        </div>
-      ))}
-    </div>
-  )
+                        {/* Delete Button (shows on hover) */}
+                        <button
+                           type="button"
+                           onClick={(e) => {
+                              e.stopPropagation() // prevent triggering file select
+                              handleDelete(idx)
+                           }}
+                           className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                           <TrashIcon className="w-4 h-4" />
+                        </button>
+                     </>
+                  ) : idx === 0 ? (
+                     <div className="flex flex-col items-center justify-center text-center">
+                        <CloudArrowUpIcon className="w-6 h-6 text-black" />
+                        <small className="text-[10px] text-brand-dark">Upload an image</small>
+                        <small className="text-[8px] font-medium text-black">Choose file</small>
+                     </div>
+                  ) : (
+                     <PlusIcon className="w-[3.375rem] h-[3.375rem] text-[#292D32]" />
+                  )}
+
+                  {/* Hidden file input */}
+                  <input
+                     name="images"
+                     type="file"
+                     accept="image/*"
+                     ref={(el) => {(fileInputRefs.current[idx] = el)}}
+                     className="hidden"
+                     onChange={(e) => handleFileChange(idx, e)}
+                  />
+               </div>
+            )
+         })}
+      </div>
+   )
 }
