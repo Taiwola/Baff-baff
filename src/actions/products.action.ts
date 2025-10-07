@@ -36,7 +36,9 @@ export async function createProduct(state: CreateProductFormState, formData: For
 }
 
 export async function getProducts(options: ProductQuery = {}): Promise<Pagination<Product>> {
-  const response = await ServerApiClient.get<Pagination<Product>>(`/products?page=${options.page ?? 1}&limit=${10}&status=${options.status}`)
+  const response = await ServerApiClient.get<Pagination<Product>>(
+    `/products?page=${options.page ?? 1}&limit=${options.limit || 10}&status=${options.status || ''}`
+  )
 
   if (response.code >= 400) {
     console.log('products error: ', response)

@@ -43,4 +43,5 @@ type ProductFilter = {
 type ProductQuery = PaginationParams & {
   status?: ProductStatus
   search?: string
+  limit?: number
 }

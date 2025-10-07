@@ -4,7 +4,6 @@ import Image from 'next/image'
 
 import Button from '../Button'
 import { formatCurrency } from '@utils'
-import { Product } from '@models/product.model'
 
 type Props = {
   product: Product
@@ -33,8 +32,8 @@ export default function ProductItem({ product }: Props) {
         </Link>
 
         <small className="font-montserrat flex gap-2 text-[#121212] mb-2">
-          <span>{formatCurrency(product.price)}</span>
-          {product.stockCount > 0 ? <span>(In stock)</span> : null}
+          <span>{formatCurrency(product.sizes.l.price)}</span>
+          <span>({product.status})</span>
         </small>
 
         <Button

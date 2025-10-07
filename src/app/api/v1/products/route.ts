@@ -28,10 +28,10 @@ export async function GET(req: NextRequest) {
   const parsed = productFilterSchema.safeParse({
     category: searchParams.get('category') || '',
     type: searchParams.get('type') || '',
-    status: searchParams.get('status') || '',
+    status: searchParams.get('status') ?? undefined,
     page: searchParams.get('page') || '',
     limit: searchParams.get('limit') || '',
-    search: searchParams.get('search')
+    search: searchParams.get('search') ?? undefined
   })
 
   const queries = parsed.data
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (queries?.search) {
-    filters.name = { $regex: queries.search, $options: 'i' } // 'i' for case-insensitive
+    filters.name = { $regex: queries.search, $options: 'i' } 
   }
 
   if (queries?.category) {
@@ -64,11 +64,9 @@ export async function GET(req: NextRequest) {
 
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
-
+  
   const products = await getAllProducts(filters)
-
   const transform = adaptProducts({ data: products, page, pageSize })
-
   return sendResponse('Product was successfully found', transform)
 }
 
@@ -138,7 +136,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    if(images.length < 4) {
+    if (images.length < 4) {
       return errorResponse('At least four images are required', null, 400)
     }
 

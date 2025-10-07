@@ -4,7 +4,7 @@ import { categorySchema, statusSchema, typeSchema } from './shared.validation'
 export const productFilterSchema = z.object({
   category: categorySchema.optional().or(z.literal('')),
   type: typeSchema.optional().or(z.literal('')),
-  status: statusSchema.optional().or(z.literal('')),
+  status: statusSchema.or(z.literal('')).optional(),
   search: z.string().optional(),
   page: z
     .string()

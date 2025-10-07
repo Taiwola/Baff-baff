@@ -11,8 +11,8 @@ export async function createProduct(data: CreateProductDto, session?: ClientSess
   return products
 }
 
-export async function getAllProducts(filter?: FilterQuery<ProductFilter>): Promise<IProduct[]> {
-  return await ProductModel.find(filter || {}).limit(filter?.limit)
+export async function getAllProducts({ limit, ...filter }: FilterQuery<ProductFilter>): Promise<IProduct[]> {
+  return await ProductModel.find(filter).limit(limit)
 }
 
 export async function getOneProductById(id: string): Promise<IProduct | null> {
