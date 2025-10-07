@@ -12,10 +12,10 @@ export async function createCart(data: CreateCartDto, session?: ClientSession): 
   return Carts
 }
 
-export async function getAllCarts(limit: number, filter?: FilterQuery<ICart>): Promise<ICart[]> {
+export async function getAllCarts(filter?: FilterQuery<CartFilter>): Promise<ICart[]> {
   return await CartModel.find(filter || {})
     .populate('product')
-    .limit(limit)
+    .limit(filter?.limit)
 }
 
 export async function getOneCartById(id: string): Promise<ICart | null> {

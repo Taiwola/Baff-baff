@@ -10,7 +10,7 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { createMaterial, getAllMaterials } from '@services/material'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
-import { CreateMaterialDto, createMaterialSchema } from '@validations/material'
+import { CreateMaterialDto, createMaterialSchema, materialQueryFilter } from '@validations/material'
 
 async function loadDb() {
   await dbConnect()
@@ -77,17 +77,27 @@ export async function GET(req: NextRequest) {
   const auth = await verifySession()
   const { searchParams } = new URL(req.url)
 
-  const pageQuery = searchParams.get('page') || ''
-  const limitQuery = searchParams.get('limit') || ''
-
-  const page = parseInt(pageQuery) || 1
-  const pageSize = parseInt(limitQuery) || 10
-
   if (auth?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 
-  const materials = await getAllMaterials(pageSize)
+  const parsed = materialQueryFilter.safeParse({
+    page: searchParams.get('page'),
+    limit: searchParams.get('limit')
+  })
+
+  const queries = parsed.data
+
+  const filters: MaterialFilter = {}
+
+  if (queries?.limit) {
+    filters.limit = queries.limit || 10
+  }
+
+  const page = queries?.page || 1
+  const pageSize = queries?.limit || 10
+
+  const materials = await getAllMaterials(filters)
   const transforms = adaptMaterials({ data: materials, page, pageSize })
 
   return sendResponse('Materials fetched successfully', transforms, 200)

@@ -24,6 +24,6 @@ export function transformMeasurement(data: IMeasurement): Measurement {
   }
 }
 
-export function transformMeasurements({ data, page, pageSize }: { data: IMeasurement[]; page: number; pageSize: number }): Pagination<Measurement> {
+export function transformMeasurements({ data, page, pageSize }: AdaptersOptions<IMeasurement[]>): Pagination<Measurement> {
   return paginate({ data: data.map(transformMeasurement), page, pageSize })
 }

@@ -13,3 +13,9 @@ interface Cart {
   createdAt: Date
   updatedAt: Date
 }
+
+type CartFilter = {
+  page?: number
+  limit?: number
+  userId?: string
+}

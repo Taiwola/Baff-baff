@@ -19,6 +19,6 @@ export function adaptCart(data: ICart): Cart {
   }
 }
 
-export function adaptCarts({ data, page, pageSize }: { data: ICart[]; page: number; pageSize: number }): Pagination<Cart> {
+export function adaptCarts({ data, page, pageSize }: AdaptersOptions<ICart[]>): Pagination<Cart> {
   return paginate({ data: data.map(adaptCart), page, pageSize })
 }

@@ -4,7 +4,7 @@ import { createCart, getAllCarts } from '@services/cart'
 import { getUserById } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptCart, adaptCarts } from '@adapters/cart.adapter'
-import { createCartSchema } from '@validations/cart'
+import { cartQueryFilter, createCartSchema } from '@validations/cart'
 import { NextRequest } from 'next/server'
 import { verifySession } from '@lib/dal'
 import dbConnect from '@lib/database'
@@ -18,13 +18,28 @@ loadDb()
 export async function GET(req: NextRequest) {
   const session = await verifySession()
   const { searchParams } = new URL(req.url)
-  const pageQuery = searchParams.get('page') || ''
-  const limitQuery = searchParams.get('limit') || ''
 
-  const page = parseInt(pageQuery) || 1
-  const pageSize = parseInt(limitQuery) || 10
+  const parsed = cartQueryFilter.safeParse({
+    page: searchParams.get('page'),
+    limit: searchParams.get('limit')
+  })
 
-  const carts = await getAllCarts(pageSize, { userId: session?.userId })
+  const queries = parsed.data
+
+  const filters: CartFilter = {}
+
+  if (session !== null) {
+    filters.userId = session.userId
+  }
+
+  if (queries?.limit) {
+    filters.limit = queries.limit || 10
+  }
+
+  const page = queries?.page || 1
+  const pageSize = queries?.limit || 10
+
+  const carts = await getAllCarts(filters)
   const transform = adaptCarts({ data: carts, page, pageSize })
 
   return sendResponse('Request was successful', transform, 200)

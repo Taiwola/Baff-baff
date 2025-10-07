@@ -5,6 +5,7 @@ import { getAllUsers } from '@services/user'
 import { adaptUsers } from '@adapters/user.adapter'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { NextRequest } from 'next/server'
+import { userQueryFilter } from '@validations/users/query-filter.validation'
 
 async function loadDb() {
   await dbConnect()
@@ -20,13 +21,24 @@ export async function GET(req: NextRequest) {
     return errorResponse('Forbidden', null, 403)
   }
 
-  const pageQuery = searchParams.get('page') || ''
-  const limitQuery = searchParams.get('limit') || ''
-  const page = parseInt(pageQuery) || 1
-  const pageSize = parseInt(limitQuery) || 10
+  const parsed = userQueryFilter.safeParse({
+    page: searchParams.get('page'),
+    limit: searchParams.get('limit')
+  })
 
-  const users = await getAllUsers({ limit: pageSize })
-  const transformedUsers = adaptUsers({ users, page, pageSize })
+  const queries = parsed.data
+
+  const filters: MeasurementFilter = {}
+
+  if (queries?.limit) {
+    filters.limit = queries.limit || 10
+  }
+
+  const page = queries?.page || 1
+  const pageSize = queries?.limit || 10
+
+  const users = await getAllUsers(filters)
+  const transformedUsers = adaptUsers({ data: users, page, pageSize })
 
   return sendResponse('Users fetched successfully', transformedUsers, 200)
 }

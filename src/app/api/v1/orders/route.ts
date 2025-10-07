@@ -6,6 +6,7 @@ import { transformOrders } from '@adapters/order.adapter'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
+import { orderQueryFilter } from '@validations/order'
 
 async function loadDb() {
   await dbConnect()
@@ -18,27 +19,29 @@ export async function GET(req: NextRequest) {
     const session = await verifySession()
 
     const { searchParams } = new URL(req.url)
-    const searchQuery = searchParams.get('search') || ''
 
-    const pageQuery = searchParams.get('page') || ''
-    const limitQuery = searchParams.get('limit') || ''
+    const parsed = orderQueryFilter.safeParse({
+      page: searchParams.get('page'),
+      limit: searchParams.get('limit'),
+      search: searchParams.get('search')
+    })
 
-    const page = parseInt(pageQuery) || 1
-    const pageSize = parseInt(limitQuery) || 10
+    const queries = parsed.data
 
-    const filters: { userId?: string; id?: string } = {
-      userId: session?.userId
-    }
+    const page = queries?.page || 1
+    const pageSize = queries?.limit || 10
 
-    if (searchQuery) {
-      filters.id = searchQuery
+    const filters: OrderFilter = {}
+
+    if (queries?.search) {
+      filters.id = { $regex: queries.search, $options: 'i' }
     }
 
     let orders
     if (session?.role === 'admin') {
-      orders = await getAllOrders(pageSize, filters.id ? { id: filters.id } : {})
+      orders = await getAllOrders(filters.id ? { id: filters.id } : filters)
     } else {
-      orders = await getAllOrders(pageSize, filters)
+      orders = await getAllOrders(filters)
     }
 
     const transform = transformOrders({ data: orders, page, pageSize })
