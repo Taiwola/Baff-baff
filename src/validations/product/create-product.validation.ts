@@ -32,6 +32,38 @@ export const createProductSchema = z
       path: ['s']
     }
   )
+  .superRefine((data, ctx) => {
+    const sizes = ['s', 'm', 'l', 'xl', 'xxl', 'xxxl'] as const
+
+    sizes.forEach((sizeKey) => {
+      const size = data[sizeKey]
+      if (!size) return
+
+      if (size.price && size.price <= 0) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [sizeKey, 'price'],
+          message: `Price for size "${sizeKey.toUpperCase()}" must be greater than 0`
+        })
+      }
+
+      if (size.quantity && size.quantity <= 0) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [sizeKey, 'quantity'],
+          message: `Quantity for size "${sizeKey.toUpperCase()}" must be greater than 0`
+        })
+      }
+
+      if (size.discountPrice && size.discountPrice <= 0) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [sizeKey, 'discountPrice'],
+          message: `Discount price for size "${sizeKey.toUpperCase()}" must be greater than 0`
+        })
+      }
+    })
+  })
 
 export type CreateProductDto = z.infer<typeof createProductSchema>
 

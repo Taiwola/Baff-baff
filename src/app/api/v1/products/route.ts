@@ -80,7 +80,6 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData()
 
     const parsedValues = parseProductForm(formData)
-    console.log('parsed values Server: ', parsedValues)
     const parsed = createProductSchema.safeParse(parsedValues)
 
     if (!parsed.success) {

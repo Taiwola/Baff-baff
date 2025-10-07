@@ -6,6 +6,7 @@ import { uploadToCloudinary } from '@lib/cloudinary'
 
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
+import { parseProductForm } from '@utils/formatting'
 import { adaptProduct } from '@adapters/product.adapter'
 import { updateProductSchema } from '@validations/product'
 import { errorResponse, sendResponse } from '@utils/api-response'
@@ -19,77 +20,59 @@ async function loadDb() {
 
 loadDb()
 
+const isLocal = process.env.NODE_ENV !== 'production'
+
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
   const product = await getOneProductById(id)
-
-  if (!product) {
-    return errorResponse('Product not found', null, 404)
-  }
+  if (!product) return errorResponse('Product not found', null, 404)
 
   const transform = adaptProduct(product)
   return sendResponse('Product successfully found', transform)
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: productId } = await params
+
   const userSession = await verifySession()
-
-  const session = await mongoose.startSession()
-  session.startTransaction()
-
   if (userSession?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 
-  const formData = await req.formData()
-  const { id: productId } = await params
+  const session = isLocal ? undefined : await mongoose.startSession()
+  if (session) session.startTransaction()
 
   const product = await getOneProductById(productId)
-
-  if (!product) {
-    return errorResponse('Product not found', null, 404)
-  }
-
-  const parsed = updateProductSchema.safeParse({
-    name: formData.get('name') ?? product.name,
-    description: formData.get('description') ?? product.description,
-    category: formData.get('category') ?? product.category,
-    status: formData.get('status') ?? product.status,
-    type: formData.get('type') ?? product.type,
-    materialId: formData.get('materialId') ?? product.material.toString(),
-    yard: formData.get('yard') ?? product.yard,
-    images: formData.getAll('images'),
-    s: formData.get('s'),
-    m: formData.get('m'),
-    l: formData.get('l'),
-    xl: formData.get('xl'),
-    xxl: formData.get('xxl'),
-    xxxl: formData.get('xxxl')
-  })
-
-  if (!parsed.success) {
-    const validationErrors = parsed.error.issues.map((detail) => ({
-      field: detail.path.join('.'),
-      message: detail.message
-    }))
-
-    return errorResponse('Validation failed', validationErrors, 422)
-  }
-
-  const result = parsed.data
-
-  const material = await getMaterialById(result.materialId)
-
-  if (!material) {
-    return errorResponse('Material does not exist', null, 404)
-  }
-
-  if (result.yard > material.stock) {
-    return errorResponse('Insufficient material stock for yard increase', null, 400)
-  }
+  if (!product) return errorResponse('Product not found', null, 404)
 
   try {
+    const formData = await req.formData()
+
+    const parsedValues = parseProductForm(formData)
+    const parsed = updateProductSchema.safeParse(parsedValues)
+
+    if (!parsed.success) {
+      const validationErrors = parsed.error.issues.map((detail) => ({
+        field: detail.path.join('.'),
+        message: detail.message
+      }))
+
+      return errorResponse('Validation failed', validationErrors, 422)
+    }
+
+    const result = parsed.data
+
+    const material = await getMaterialById(result.materialId)
+
+    if (!material) {
+      return errorResponse('Material does not exist', null, 404)
+    }
+
+    if (result.yard > material.stock) {
+      return errorResponse('Insufficient material stock for yard increase', null, 400)
+    }
+
     const images: string[] = []
 
     for (const entry of result.images) {
@@ -123,10 +106,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     result.images = images
 
     const updatedProduct = await updateProduct(productId, result, session)
-
-    if (!updatedProduct) {
-      return errorResponse('Product could not be updated', null, 400)
-    }
+    if (!updatedProduct) return errorResponse('Product could not be updated', null, 400)
 
     if (result.yard !== product.yard) {
       const newMaterialStock =
@@ -134,26 +114,24 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       await updateMaterial(material.id, { stock: newMaterialStock }, session)
     }
 
-    await session.commitTransaction()
-    session.endSession()
+    if (session) await session.commitTransaction()
+    if (session) session.endSession()
 
     const transform = adaptProduct(updatedProduct)
     return sendResponse('Product updated successfully', transform, 200)
   } catch (error) {
-    await session.abortTransaction()
-    session.endSession()
+    if (session) await session.abortTransaction()
+    if (session) session.endSession()
     console.error('Transaction error:', error)
     return errorResponse('Product update failed', null, 500)
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
-  const remove = await deleteProduct(id)
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
 
-  if (!remove) {
-    return errorResponse('Product could not be deleted', 404)
-  }
+  const remove = await deleteProduct(id)
+  if (!remove) return errorResponse('Product could not be deleted', 404)
 
   return sendResponse('Product deleted successfully')
 }

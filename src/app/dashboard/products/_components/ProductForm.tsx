@@ -1,24 +1,39 @@
-import React from 'react'
+import React, { startTransition, useState } from 'react'
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 
 import Images from './Images'
 import { Button, Input } from '@components/ui'
-import { CreateProductErrors, CreateProductFormValues, UpdateProductFormValues } from '@validations/product'
+import { CreateProductErrors, CreateProductFormValues, UpdateProductErrors, UpdateProductFormValues } from '@validations/product'
 
 
 interface Props {
    type?: 'create' | 'edit'
    pending: boolean
    initialState: CreateProductFormValues | UpdateProductFormValues
-   errors: CreateProductErrors
+   errors: CreateProductErrors | UpdateProductErrors
    materials: Material[]
    action: (payload: FormData) => void
 }
 
 export default function ProductForm({ type = 'create', pending, initialState, errors, materials, action }: Props) {
+   const [images, setImages] = useState<(File | string)[]>(initialState.images || [])
+
+   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      const formData = new FormData(e.currentTarget)
+
+      // preserve image positions explicitly
+      images.forEach((image, index) => {
+         formData.append(`images[${index}]`, image)
+      })
+
+      startTransition(async () => {
+         action(formData)
+      })
+   }
 
    return (
-      <form className='w-full h-auto' action={action}>
+      <form className='w-full h-auto' onSubmit={handleSubmit}>
          <div className='w-full flex justify-between items-start'>
             <Button as={'link'} href={'/dashboard/products'} className='bg-transparent text-brand-dark p-0 hover:p-2 hover:text-white gap-5 font-bold'>
                <ArrowLeftIcon className='w-5 h-5' />
@@ -57,7 +72,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
             <div className='w-full'>
                <h6 className='text-sm text-brand-dark/40 mb-2.5'>PRODUCT IMAGE</h6>
                <hr className='border border-brand-dark/40 mb-5' />
-               <Images images={initialState.images} />
+               <Images images={images} onChange={setImages} />
                {errors.images && <span className="text-xs text-red-500">{errors.images}</span>}
             </div>
 

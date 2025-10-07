@@ -17,7 +17,7 @@ export default function ProductItem({ product }: Props) {
    return (
       <div className="w-full h-[28rem] bg-white flex flex-col shadow">
          {/* Image */}
-         <div className="w-full h-[22rem] bg-gray-100 overflow-hidden relative border border-foreground group">
+         <div className="w-full h-[22rem] bg-gray-100 overflow-hidden relative border border-foreground group hover:bg-black">
             <Image
                src={product.images[0] ?? null}
                alt={product.name}

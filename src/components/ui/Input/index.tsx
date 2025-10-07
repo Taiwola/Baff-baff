@@ -42,19 +42,14 @@ export default function DynamicInput({
   error
 }: Props) {
   const id = React.useId()
-  const [showPassword, setShowPassword] = useState(false)
-  // const [focused, setFocused] = useState(false)
   const [currentError, setCurrentError] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     if (error) {
       setCurrentError(error)
     }
   }, [error])
-
-
-  // Show errors only when the user is not actively editing
-  // const currentError = focused ? undefined : error
 
   const normalizedValue = value != null ? String(value) : ''
 
@@ -95,10 +90,8 @@ export default function DynamicInput({
 
   const commonHandlers = {
     onFocus: () => {
-      // setFocused(true)
       setCurrentError('')
-    },
-    // onBlur: () => setFocused(false)
+    }
   }
 
   if (type === 'select') {
@@ -179,7 +172,10 @@ export default function DynamicInput({
         placeholder={placeholder}
         disabled={disabled}
         defaultValue={normalizedValue}
-        onChange={(e) => handleChange(e.target.value)}
+        onChange={(e) => {
+          e.preventDefault()
+          handleChange(e.target.value)
+        }}
         {...commonHandlers}
         classNames={{
           inputWrapper: `border ${borderClass} rounded-md w-full ${disabled ? 'bg-[#EDECEC]' : ''

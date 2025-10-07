@@ -10,7 +10,6 @@ import {
   createProductSchema
 } from '@validations/product/create-product.validation'
 import {
-  UpdateProductDto,
   UpdateProductErrors,
   UpdateProductFormState,
   UpdateProductFormValues,
@@ -20,7 +19,6 @@ import { redirect, RedirectType } from 'next/navigation'
 
 export async function createProduct(state: CreateProductFormState, formData: FormData): Promise<CreateProductFormState> {
   const parsedValues = parseProductForm(formData)
-  console.log('parsed values: ', parsedValues)
   const result = createProductSchema.safeParse(parsedValues)
 
   if (!result.success) {
@@ -59,36 +57,21 @@ export async function getProduct(id: string) {
   return response.data
 }
 
-export async function updateProduct(id: string, state: UpdateProductFormState, formData: FormData) {
-  const parsedValues: UpdateProductDto = {
-    name: String(formData.get('name')),
-    description: String(formData.get('description')),
-    category: String(formData.get('category')) as ProductCategory,
-    type: formData.get('type') as ProductType,
-    materialId: String(formData.get('materialId')),
-    yard: Number(formData.get('yard')),
-    images: formData.getAll('images') as unknown as (string | File)[],
-    s: parseJson(formData.get('s')),
-    m: parseJson(formData.get('m')),
-    l: parseJson(formData.get('l')),
-    xl: parseJson(formData.get('xl')),
-    xxl: parseJson(formData.get('xxl')),
-    xxxl: parseJson(formData.get('xxxl'))
-  }
-
+export async function updateProduct(product: Product, state: UpdateProductFormState, formData: FormData): Promise<UpdateProductFormState> {
+  const parsedValues = parseProductForm(formData)
   const result = updateProductSchema.safeParse(parsedValues)
-
+  
   if (!result.success) {
     const errors = formatError<UpdateProductErrors, UpdateProductFormValues>(result.error)
-    return { ...state, errors, values: parsedValues }
+    return { ...state, errors, error: '', values: { ...parsedValues, images: parsedValues.images.filter((image) => typeof image === 'string') } }
   }
-
-  const response = await ServerApiClient.patch<Product>(`/products/${id}`, result.data)
+  
+  const response = await ServerApiClient.patch<Product>(`/products/${product.id}`, formData)
 
   if (response.code >= 400) {
-    return { ...state, error: response.message, values: parsedValues }
+    return { ...state, error: response.message, values: { ...parsedValues, images: parsedValues.images.filter((image) => typeof image === 'string') } }
   }
-
+  
   redirect('/dashboard/products', RedirectType.replace)
 }
 
@@ -100,14 +83,4 @@ export async function deleteProduct(id: string) {
   }
 
   redirect('/dashboard/products', RedirectType.replace)
-}
-
-// helper to safely parse JSON fields (for size details)
-function parseJson<T>(value: FormDataEntryValue | null): T | undefined {
-  if (!value) return undefined
-  try {
-    return JSON.parse(String(value)) as T
-  } catch {
-    return undefined
-  }
 }

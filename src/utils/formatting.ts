@@ -30,6 +30,20 @@ function formatProperties(properties: Record<string, { errors: string[]; propert
 }
 
 export function parseProductForm(formData: FormData): CreateProductDto {
+  const imageEntries: (string | File)[] = []
+
+  // Handle indexed image fields
+  for (const [key, value] of formData.entries()) {
+    const match = key.match(/^images\[(\d+)\]$/)
+    if (match) {
+      const index = Number(match[1])
+      imageEntries[index] = value as string | File
+    }
+  }
+
+  // filter valid image values (non-empty)
+  const images = imageEntries.filter((image) => typeof image === 'string' || (image instanceof File && image.size > 0))
+
   return {
     name: String(formData.get('name')),
     description: String(formData.get('description')),
@@ -38,36 +52,20 @@ export function parseProductForm(formData: FormData): CreateProductDto {
     materialId: String(formData.get('materialId')),
     material: String(formData.get('materialId')),
     yard: Number(formData.get('yard')),
-    images: formData.getAll('images') as unknown as (string | File)[],
-    s: {
-      quantity: Number(formData.get('s[quantity]')),
-      price: Number(formData.get('s[price]')),
-      discountPrice: Number(formData.get('s[discountPrice]'))
-    },
-    m: {
-      quantity: Number(formData.get('m[quantity]')),
-      price: Number(formData.get('m[price]')),
-      discountPrice: Number(formData.get('m[discountPrice]'))
-    },
-    l: {
-      quantity: Number(formData.get('l[quantity]')),
-      price: Number(formData.get('l[price]')),
-      discountPrice: Number(formData.get('l[discountPrice]'))
-    },
-    xl: {
-      quantity: Number(formData.get('xl[quantity]')),
-      price: Number(formData.get('xl[price]')),
-      discountPrice: Number(formData.get('xl[discountPrice]'))
-    },
-    xxl: {
-      quantity: Number(formData.get('xxl[quantity]')),
-      price: Number(formData.get('xxl[price]')),
-      discountPrice: Number(formData.get('xxl[discountPrice]'))
-    },
-    xxxl: {
-      quantity: Number(formData.get('xxxl[quantity]')),
-      price: Number(formData.get('xxxl[price]')),
-      discountPrice: Number(formData.get('xxxl[discountPrice]'))
-    }
+    images,
+    s: parseSize(formData, 's'),
+    m: parseSize(formData, 'm'),
+    l: parseSize(formData, 'l'),
+    xl: parseSize(formData, 'xl'),
+    xxl: parseSize(formData, 'xxl'),
+    xxxl: parseSize(formData, 'xxl')
+  }
+}
+
+function parseSize(formData: FormData, key: string) {
+  return {
+    quantity: formData.get(`${key}[quantity]`) ? Number(formData.get(`${key}[quantity]`)) : undefined,
+    price: formData.get(`${key}[price]`) ? Number(formData.get(`${key}[price]`)) : undefined,
+    discountPrice: formData.get(`${key}[discountPrice]`) ? Number(formData.get(`${key}[discountPrice]`)) : undefined
   }
 }
