@@ -26,17 +26,18 @@ export default function ProductItem({ product }: Props) {
             />
 
             {/* Overlay Button */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                <Button
                   as={'link'}
                   href={`/dashboard/products/${product.id}`}
                   variant="bordered"
-                  className="flex items-center gap-2 border-white hover:bg-transparent hover:opacity-80"
+                  className="flex items-center gap-2 border-white text-white hover:bg-white/20"
                >
-                  <Pencil className="w-4 h-4 text-white" />
-                  <span className="text-white">Edit</span>
+                  <Pencil className="w-4 h-4" />
+                  <span>Edit</span>
                </Button>
             </div>
+
          </div>
 
          {/* Content */}

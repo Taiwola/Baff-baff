@@ -35,8 +35,8 @@ export async function createProduct(state: CreateProductFormState, formData: For
   redirect('/dashboard/products', RedirectType.replace)
 }
 
-export async function getProducts(options: PaginationParams = {}): Promise<Pagination<Product>> {
-  const response = await ServerApiClient.get<Pagination<Product>>(`/products?page=${options.page ?? 1}&limit=${10}`)
+export async function getProducts(options: ProductQuery = {}): Promise<Pagination<Product>> {
+  const response = await ServerApiClient.get<Pagination<Product>>(`/products?page=${options.page ?? 1}&limit=${10}&status=${options.status}`)
 
   if (response.code >= 400) {
     console.log('products error: ', response)
@@ -60,18 +60,22 @@ export async function getProduct(id: string) {
 export async function updateProduct(product: Product, state: UpdateProductFormState, formData: FormData): Promise<UpdateProductFormState> {
   const parsedValues = parseProductForm(formData)
   const result = updateProductSchema.safeParse(parsedValues)
-  
+
   if (!result.success) {
     const errors = formatError<UpdateProductErrors, UpdateProductFormValues>(result.error)
     return { ...state, errors, error: '', values: { ...parsedValues, images: parsedValues.images.filter((image) => typeof image === 'string') } }
   }
-  
+
   const response = await ServerApiClient.patch<Product>(`/products/${product.id}`, formData)
 
   if (response.code >= 400) {
-    return { ...state, error: response.message, values: { ...parsedValues, images: parsedValues.images.filter((image) => typeof image === 'string') } }
+    return {
+      ...state,
+      error: response.message,
+      values: { ...parsedValues, images: parsedValues.images.filter((image) => typeof image === 'string') }
+    }
   }
-  
+
   redirect('/dashboard/products', RedirectType.replace)
 }
 

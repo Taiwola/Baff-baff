@@ -36,5 +36,9 @@ type ProductFilter = {
   name?: { $regex: string; $options: string }
   category?: ProductCategory
   type?: ProductType
-  status?: Status
+  status?: ProductStatus
+}
+
+type ProductQuery = PaginationParams & {
+  status?: ProductStatus
 }

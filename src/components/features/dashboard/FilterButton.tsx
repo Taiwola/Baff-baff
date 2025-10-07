@@ -1,14 +1,28 @@
 'use client'
 
 import React from 'react'
-import { Dropdown } from '@components/ui'
+import { Dropdown, Item } from '@components/ui'
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/solid'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
-type Item = { key: string; value: string }
+// type Item = { key: string; value: string }
 
 export default function FilterButton() {
+   const router = useRouter()
+   const pathname = usePathname()
+   const searchParams = useSearchParams()
+
    function handleChange(item: Item) {
-      console.log(item);
+      if (item.key === 'clear') {
+         const params = new URLSearchParams(searchParams.toString())
+         params.delete('status')
+         router.replace(`${pathname}?${params.toString()}`)
+         return
+      }
+
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('status', item.key)
+      router.replace(`${pathname}?${params.toString()}`)
    }
 
    return (
@@ -20,7 +34,8 @@ export default function FilterButton() {
    )
 }
 
-const items = [
+const items: Item[] = [
    { key: 'inStock', value: 'In Stock' },
    { key: 'outOfStock', value: 'Out of Stock' },
+   { key: 'clear', value: 'Clear', color: 'danger' },
 ]

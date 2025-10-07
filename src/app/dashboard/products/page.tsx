@@ -7,12 +7,12 @@ import { FilterButton, Header } from '@components/features/dashboard'
 import { getProducts } from '@actions/products.action'
 
 type Props = {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string, status?: ProductStatus }>;
 }
 
 export default async function ProductsPage({ searchParams }: Props) {
-  const { page } = await searchParams
-  const promise = getProducts({ page })
+  const { page, status } = await searchParams
+  const promise = getProducts({ page, status })
   
   return (
     <div className="w-full h-auto">

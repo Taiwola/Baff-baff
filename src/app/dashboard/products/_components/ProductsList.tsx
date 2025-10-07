@@ -36,7 +36,7 @@ export default function ProductsList({ promise }: Props) {
             ))}
          </div>
 
-         <Pagination metadata={metadata} onChange={handleChangePage} />
+         {metadata.totalItems > metadata.pageSize ? <Pagination metadata={metadata} onChange={handleChangePage} /> : null}
       </div>
    )
 }
