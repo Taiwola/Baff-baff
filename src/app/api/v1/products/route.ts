@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
   const session = await verifySession()
   const { searchParams } = new URL(req.url)
 
+  // may like, featured
   const parsed = productFilterSchema.safeParse({
     category: searchParams.get('category') || '',
     type: searchParams.get('type') || '',

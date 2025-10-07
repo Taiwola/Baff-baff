@@ -33,7 +33,7 @@ export default function Catalog() {
                </p>
             </div>
 
-            <Button className="p-3 md:p-5 gap-2.5 bg-[#121212]" size='lg'>
+            <Button className="p-3 md:p-5 gap-2.5 bg-[#121212]" size='lg' as={'link'} href={'/marketplace?shirts'}>
                <span className="font-montserrat font-bold text-sm leading-3.5 md:text-2xl text-white">
                   SHOP NOW
                </span>
