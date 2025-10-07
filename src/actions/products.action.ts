@@ -88,3 +88,13 @@ export async function deleteProduct(id: string) {
 
   redirect('/dashboard/products', RedirectType.replace)
 }
+
+export async function updateProductStatus(id: string, status: ProductStatus) {
+  const response = await ServerApiClient.patch<Product>(`/products/${id}/status`, { status })
+
+  if (response.code >= 400) {
+    return { error: response.message }
+  }
+
+  redirect('/dashboard/products', RedirectType.replace)
+}

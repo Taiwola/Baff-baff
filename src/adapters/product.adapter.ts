@@ -10,7 +10,6 @@ export function adaptProduct(data: IProduct): Product {
     type: data.type,
     yard: data.yard,
     description: data.description,
-    fittings: data.fittings,
     name: data.name,
     sizes: {
       s: getSize(data.s),

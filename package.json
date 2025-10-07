@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gen": "next typegen"
   },
   "dependencies": {
     "@fontsource/montserrat": "^5.2.6",

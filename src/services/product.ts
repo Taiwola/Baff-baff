@@ -23,7 +23,7 @@ export async function getProductByFilter(filter: FilterQuery<IProduct>): Promise
   return await ProductModel.findOne(filter)
 }
 
-export async function updateProduct(id: string, data: UpdateProductDto, session?: ClientSession): Promise<IProduct | null> {
+export async function updateProduct(id: string, data: Partial<UpdateProductDto>, session?: ClientSession): Promise<IProduct | null> {
   const product = await ProductModel.findByIdAndUpdate(id, { $set: data }, { new: true, session })
   return product
 }

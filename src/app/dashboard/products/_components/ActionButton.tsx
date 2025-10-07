@@ -2,16 +2,18 @@ import React from 'react'
 import { MoreVertical } from 'lucide-react'
 
 import { Dropdown, Item } from '@components/ui';
+import { updateProductStatus } from '@actions/products.action';
 
 type Props = {
    id: string
    status: ProductStatus
 }
 
-export default function ActionButton({ status }: Props) {
+export default function ActionButton({ id, status }: Props) {
+   // const action = updateProductStatus.bind(null, )
 
-   function handleChange() {
-
+   async function handleChange(selectedItem: Item) {
+      await updateProductStatus(id, selectedItem.key as ProductStatus)
    }
 
    return (
