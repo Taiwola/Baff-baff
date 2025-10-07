@@ -25,6 +25,11 @@ const isLocal = process.env.NODE_ENV !== 'production'
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
+  const userSession = await verifySession()
+  if (userSession?.role !== 'admin') {
+    return errorResponse('Forbidden', null, 403)
+  }
+
   const product = await getOneProductById(id)
   if (!product) return errorResponse('Product not found', null, 404)
 
@@ -67,7 +72,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (!material) {
       return errorResponse('Material does not exist', null, 404)
     }
-    
+
     // positive value ( > 0) means there is an increment in product's yard
     // negative value ( < 0 ) means there is a decreament in product's yard
     // 0 means no change

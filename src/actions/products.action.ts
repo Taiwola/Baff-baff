@@ -59,6 +59,17 @@ export async function getProduct(id: string) {
   return response.data
 }
 
+export async function getProductBySlug(slug: string) {
+  const response = await ServerApiClient.get<Product>(`/products/slugs/${slug}`)
+
+  if (response.code >= 400) {
+    console.log('product error: ', response)
+    return null
+  }
+
+  return response.data
+}
+
 export async function updateProduct(product: Product, state: UpdateProductFormState, formData: FormData): Promise<UpdateProductFormState> {
   const parsedValues = parseProductForm(formData)
   const result = updateProductSchema.safeParse(parsedValues)

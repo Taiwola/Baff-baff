@@ -26,3 +26,7 @@ export function formatCurrency(amount: number, currency: string = 'NGN', locale:
 
   return new Intl.NumberFormat(locale, options).format(amount)
 }
+
+export function capitalizeFirstLetter(val: string) {
+    return val.charAt(0).toUpperCase() + String(val).slice(1);
+}

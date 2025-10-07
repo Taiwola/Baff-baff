@@ -2,10 +2,15 @@
 
 import React from 'react'
 import { Tab, Tabs } from '@heroui/react'
+
 import ProductSizes from './ProductSizes'
 import ProductBespoke from './ProductBespoke'
 
-export default function ProductItemTab() {
+type Props = {
+   product: Product
+}
+
+export default function ProductItemTab({ product }: Props) {
    return (
       <Tabs
          aria-label="Options"
@@ -16,13 +21,7 @@ export default function ProductItemTab() {
          }}
       >
          <Tab key="size" title="SELECT SIZE">
-            <p className="text-sm">SIZE</p>
-            <ProductSizes />
-            <button
-               className="w-[18.75rem] text-end text-black underline text-xs mt-2.5 transition-transform active:scale-95"
-            >
-               View size guide
-            </button>
+            <ProductSizes sizes={product.sizes} />
          </Tab>
 
          <Tab key="bespoke" title="BESPOKE">
@@ -31,3 +30,5 @@ export default function ProductItemTab() {
       </Tabs>
    )
 }
+
+
