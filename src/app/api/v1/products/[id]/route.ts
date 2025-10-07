@@ -62,14 +62,24 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const result = parsed.data
-
     const material = await getMaterialById(result.materialId)
 
     if (!material) {
       return errorResponse('Material does not exist', null, 404)
     }
+    
+    // positive value ( > 0) means there is an increment in product's yard
+    // negative value ( < 0 ) means there is a decreament in product's yard
+    // 0 means no change
+    const differenceInYard = result.yard - product.yard
 
-    if (result.yard > material.stock) {
+    //change in material
+    if (result.materialId.toString() !== product.material.toString() && result.yard > material.stock) {
+      return errorResponse('Insufficient material stock for yard increase', null, 400)
+    }
+
+    // Admin is increasing the yard of producr
+    else if (differenceInYard > 0 && differenceInYard > material.stock) {
       return errorResponse('Insufficient material stock for yard increase', null, 400)
     }
 
@@ -108,9 +118,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const updatedProduct = await updateProduct(productId, result, session)
     if (!updatedProduct) return errorResponse('Product could not be updated', null, 400)
 
-    if (result.yard !== product.yard) {
-      const newMaterialStock =
-        result.yard > product.yard ? material.stock - (result.yard - product.yard) : material.stock + (product.yard - result.yard)
+    if (result.materialId.toString() !== product.material.toString()) {
+      const newMaterialStock = material.stock - result.yard
+      await updateMaterial(material.id, { stock: newMaterialStock }, session)
+    } else if (differenceInYard > 0) {
+      const newMaterialStock = material.stock - differenceInYard
+      await updateMaterial(material.id, { stock: newMaterialStock }, session)
+    } else if (differenceInYard < 0) {
+      const newMaterialStock = material.stock + (product.yard - result.yard)
       await updateMaterial(material.id, { stock: newMaterialStock }, session)
     }
 

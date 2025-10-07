@@ -103,6 +103,7 @@ export default function DynamicInput({
         key={value}
         name={name}
         aria-label={name}
+        isDisabled={disabled}
         defaultSelectedKeys={[normalizedValue]}
         {...commonHandlers}
         classNames={{
