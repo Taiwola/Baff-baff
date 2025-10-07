@@ -1,9 +1,19 @@
 import React from 'react'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
-import { BreadCrumbItemType, BreadCrumbs, Button, Input } from '@components/ui'
+import EditForm from './EditForm'
+import { BreadCrumbItemType, BreadCrumbs } from '@components/ui'
+import { verifySession } from '@lib/dal'
+import { notFound } from 'next/navigation'
+import { getUser } from '@actions/users.action'
 
-export default function ProfileEdit() {
+export default async function ProfileEdit() {
+   const auth = await verifySession()
+   if(!auth) return notFound()
+
+   const user = await getUser(auth.userId)
+   if(!user) return notFound()
+   
    return (
       <main className='app-container py-5 md:py-12 font-montserrat'>
          <div className='w-full hidden md:block mb-12'>
@@ -14,54 +24,7 @@ export default function ProfileEdit() {
          </div>
 
          <section className='w-full'>
-            <form className="flex flex-col gap-6 mx-auto w-full md:max-w-[85%]">
-               {/* Two-column layout */}
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Input
-                     name="firstName"
-                     label="First Name"
-                     value={''}
-                  />
-                  <Input
-                     name="lastName"
-                     label="Last Name"
-                     value={''}
-                  />
-               </div>
-
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Input
-                     name="email"
-                     label="Email"
-                     value={''}
-                  />
-                  <Input
-                     name="phoneNumber"
-                     label="Phone Number"
-                     value={''}
-                  />
-               </div>
-
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Input
-                     name="gender"
-                     label="Gender"
-                     type="select"
-                     options={[
-                        { key: 'male', label: 'Male' },
-                        { key: 'female', label: 'Female' },
-                        { key: 'other', label: 'Other' },
-                     ]}
-                  />
-               </div>
-
-               <Button
-                  type="submit"
-                  className="w-full bg-black text-white rounded-[10px] py-3"
-               >
-                  Save Changes
-               </Button>
-            </form>
+           <EditForm user={user} />
          </section>
       </main>
    )

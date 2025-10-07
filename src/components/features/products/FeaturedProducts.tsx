@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { ProductList } from '@components/ui'
-import { products } from '@models/product.model'
 
 export default function FeaturedProducts() {
    return (
@@ -10,7 +9,7 @@ export default function FeaturedProducts() {
             featured products
          </h4>
 
-         <ProductList products={products.splice(0, 5)} />
+         <ProductList products={[]} />
       </section>
    )
 }

@@ -14,25 +14,12 @@ export const updateUserSchema = z
       .max(50, { message: 'last name cannot exceed 50 characters' })
       .optional(),
 
-    email: z.string().email({ message: 'Please enter a valid email address' }).optional(),
-
-    role: z.enum(['user', 'admin'], { message: 'Role must be either user or admin' }).optional(),
-
-    password: z
-      .string()
-      .min(6, { message: 'Password must be at least 6 characters long' })
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, {
-        message: 'Password must contain at least one lowercase letter, one uppercase letter, and one number'
-      })
-      .optional(),
-
-    confirmPassword: z.string().optional()
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    message: 'Passwords do not match'
+    phoneNumber: z.string().min(11).optional(),
+    gender: z.enum(['Male', 'Female']).optional()
   })
 
   export type UpdateUserDto = z.infer<typeof updateUserSchema>
   
   export type UpdateUserFormState = FormState<UpdateUserDto>;
+  export type UpdateUserFormErrors = UpdateUserFormState['errors'];
+  export type UpdateUserFormValues = UpdateUserFormState['values'];
