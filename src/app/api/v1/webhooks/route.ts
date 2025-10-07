@@ -1,9 +1,9 @@
 import { PaystackChargeSuccess, PaystackWebhook } from '@payment/payment.interface'
 import { getOrderByFilter, updateOrder } from '@services/order'
-import { getOneProductById } from '@services/product'
+import { getOneProductById, updateProduct } from '@services/product'
 import { NextRequest } from 'next/server'
 import mongoose, { ClientSession } from 'mongoose'
-import ProductModel, { IProduct, ISizeDetails } from '@models/product.model'
+import { IProduct, ISizeDetails, statusMap } from '@models/product.model'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { deleteManyCarts, getAllCarts } from '@services/cart'
 import dbConnect from '@lib/database'
@@ -69,15 +69,13 @@ export async function POST(req: NextRequest) {
 
         const updatedYard = prod.yard - totalYardDeduction
 
-        await ProductModel.findByIdAndUpdate(
+        await updateProduct(
           product.id,
           {
-            $set: {
-              yard: updatedYard,
-              status: updatedYard <= 0 ? Status.OUT_OF_STOCK : prod.status
-            }
+            yard: updatedYard,
+            status: updatedYard <= 0 ? statusMap.outOfStock : prod.status
           },
-          { new: true, session }
+          session
         )
 
         console.log(`Updated product ID: ${product.id}, size: ${size}, yard: ${updatedYard}`)

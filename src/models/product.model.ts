@@ -5,7 +5,7 @@ export const products: Product[] = []
 
 export const fittings: Fitting[] = ['fit', 'baggy', 'straight'] as const
 
-const statusMap: Record<ProductStatus, string> = {
+export const statusMap: Record<ProductStatus, string> = {
   inStock: 'In Stock',
   outOfStock: 'Out of Stock'
 }
