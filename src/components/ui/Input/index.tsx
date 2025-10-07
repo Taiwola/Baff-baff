@@ -14,6 +14,7 @@ type BaseProps = {
   startContent?: string | ReactNode
   disabled?: boolean
   error?: string
+  isClearable?: boolean
 }
 
 type TextOrNumberProps = BaseProps & {
@@ -39,7 +40,8 @@ export default function DynamicInput({
   endContent,
   startContent,
   disabled,
-  error
+  error,
+  isClearable
 }: Props) {
   const id = React.useId()
   const [currentError, setCurrentError] = useState('')
@@ -104,6 +106,7 @@ export default function DynamicInput({
         name={name}
         aria-label={name}
         isDisabled={disabled}
+        isClearable={isClearable}
         defaultSelectedKeys={[normalizedValue]}
         {...commonHandlers}
         classNames={{
@@ -135,6 +138,7 @@ export default function DynamicInput({
         placeholder={placeholder}
         disabled={disabled}
         defaultValue={normalizedValue}
+        isClearable={isClearable}
         onChange={(e) => handleChange(e.target.value)}
         {...commonHandlers}
         endContent={endContentComponent}
@@ -173,6 +177,7 @@ export default function DynamicInput({
         placeholder={placeholder}
         disabled={disabled}
         defaultValue={normalizedValue}
+        isClearable={isClearable}
         onChange={(e) => {
           e.preventDefault()
           handleChange(e.target.value)
