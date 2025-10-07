@@ -39,6 +39,8 @@ export const generateAdminInvite = (user: { name?: string; email: string }, link
       <h2 style="color: #333; text-align: center;">You're Invited to Become an Admin</h2>
       <p style="color: #666; line-height: 1.6;">Hi ${displayName},</p>
       <p style="color: #666; line-height: 1.6;">You've been invited to join our platform as an administrator. As an admin, you'll have access to manage users, and other key features.</p>
+      <p style="color: #666; line-height: 1.6;">To log in, reset your password.</p>
+  
       
       <div style="text-align: center; margin: 30px 0;">
         <a href="${link}" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Accept Invitation</a>

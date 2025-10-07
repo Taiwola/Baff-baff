@@ -44,3 +44,8 @@ type ProductQuery = PaginationParams & {
   status?: ProductStatus
   search?: string
 }
+
+const statusMap: Record<ProductStatus, string> = {
+  inStock: 'In Stock',
+  outOfStock: 'Out of Stock'
+}

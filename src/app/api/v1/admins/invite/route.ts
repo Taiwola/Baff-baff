@@ -1,8 +1,12 @@
 import { sendEmail } from '@lib/mail'
+import { createUser, getUserByEmail, updateUser } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { generateAdminInvite } from '@utils/mail-content'
 import { createInviteSchema } from '@validations/invite/create-invite.validation'
+import { randomBytes } from 'crypto'
 import { NextRequest } from 'next/server'
+
+const generateSecurePassword = () => randomBytes(8).toString('hex')
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
@@ -19,7 +23,25 @@ export async function POST(req: NextRequest) {
       return errorResponse('Validation failed', validationErrors, 422)
     }
 
-    const link = `${process.env.CLIENT_BASE_URL}/admin/register`
+    const userExist = await getUserByEmail(result.data.email)
+    let password: string | undefined
+
+    if (userExist) {
+      await updateUser(userExist, { role: 'admin' })
+    } else {
+      password = generateSecurePassword()
+      await createUser({
+        firstName: 'User',
+        lastName: 'Admin',
+        email: result.data.email,
+        role: 'admin',
+        password: password,
+        termsAndCondition: true,
+        confirmPassword: password
+      })
+    }
+
+    const link = `${process.env.CLIENT_BASE_URL}/admin/login`
     const content = generateAdminInvite({ email: result.data.email }, link)
 
     const { error, errorMessage } = await sendEmail(result.data.email, content, 'Invitation', 'Baffa Baffa')
