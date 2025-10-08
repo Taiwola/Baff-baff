@@ -22,7 +22,7 @@ import { redirect, RedirectType } from 'next/navigation'
 export async function createRegion(state: CreateRegionFormState, formData: FormData): Promise<CreateRegionFormState> {
   const parsedValues: CreateRegionDto = {
     state: String(formData.get('state')) || '',
-    region: String(formData.get('region')) || '',
+    city: String(formData.get('city')) || '',
     price: Number(formData.get('price')) ?? 0
   }
 
@@ -42,8 +42,14 @@ export async function createRegion(state: CreateRegionFormState, formData: FormD
   redirect('/dashboard/regions', RedirectType.replace)
 }
 
-export async function getRegions(options: PaginationParams = { }): Promise<Pagination<Region>> {
-  const response = await ServerApiClient.get<Pagination<Region>>(`/regions?page=${options.page ?? 1}&limit=${10}`)
+export async function getRegions(options: PaginationParams = {}): Promise<Pagination<Region>> {
+  const params = new URLSearchParams()
+  if (options.page) params.set('page', options.page.toString())
+  if (options.limit) params.set('limit', options.limit.toString())
+
+  const queryString = params.toString()
+  const url = `/regions${queryString ? `?${queryString}` : ''}`
+  const response = await ServerApiClient.get<Pagination<Region>>(url)
 
   if (response.code >= 400) {
     console.log('regions error: ', response)
@@ -67,7 +73,7 @@ export async function getRegion(id: string) {
 export async function updateRegion(id: string, state: UpdateRegionFormState, formData: FormData) {
   const parsedValues: UpdateRegionDto = {
     state: String(formData.get('state')) || '',
-    region: String(formData.get('region')) || '',
+    city: String(formData.get('city')) || '',
     price: Number(formData.get('price')) ?? 0
   }
 

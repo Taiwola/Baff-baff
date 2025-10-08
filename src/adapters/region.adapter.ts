@@ -5,7 +5,7 @@ export function adaptRegion(data: IRegion): Region {
   return {
     id: data.id,
     price: data.price,
-    region: data.region,
+    city: data.city,
     state: data.state,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt

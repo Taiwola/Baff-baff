@@ -1,20 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { ReactNode } from "react";
 import { X } from "lucide-react";
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/react";
 
 import { Button } from "@components/ui";
-import { AddressForm } from "@components/features/address";
 
 interface Props {
+  title: string
   isOpen: boolean;
-  onClose: () => void
   onOpenChange: () => void
+  children: ReactNode
 }
 
-export default function AddressFormModal({ isOpen, onOpenChange }: Props) {
-  async function handleSubmit() { }
+export default function AddressModal({ title, isOpen, children, onOpenChange }: Props) {
 
   return (
     <Modal
@@ -30,9 +29,8 @@ export default function AddressFormModal({ isOpen, onOpenChange }: Props) {
       <ModalContent>
         {(onClose) => (
           <>
-            {/* Header */}
             <ModalHeader className="flex justify-between items-center px-4 py-3">
-              <h3 className="text-lg font-semibold">New Address</h3>
+              <h3 className="text-lg font-semibold">{title}</h3>
 
               <Button
                 className="p-1 rounded-full hover:bg-gray-100 bg-transparent"
@@ -41,10 +39,9 @@ export default function AddressFormModal({ isOpen, onOpenChange }: Props) {
                 <X className="icon-button bg-none" />
               </Button>
             </ModalHeader>
-
-            {/* Body (form content goes here) */}
+            
             <ModalBody className="p-4">
-              <AddressForm action={handleSubmit} />
+              {children}
             </ModalBody>
           </>
         )}

@@ -1,11 +1,11 @@
-import { createAddress, getAllAddresss } from '@services/address'
-import { getUserById } from '@services/user'
-import { errorResponse, sendResponse } from '@utils/api-response'
-import { adaptAddress, adaptAddresses } from '@adapters/address.adapter'
-import { addressQueryFilter, CreateaddressSchema } from '@validations/address'
 import { NextRequest } from 'next/server'
+
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { createAddress, getAllAddresss } from '@services/address'
+import { adaptAddress, adaptAddresses } from '@adapters/address.adapter'
+import { addressQueryFilter, createAddressSchema } from '@validations/address'
 
 async function loadDb() {
   await dbConnect()
@@ -47,27 +47,25 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const session = await verifySession()
 
+  if (!session?.userId) {
+    return errorResponse('UnAuthenticated', null, 401)
+  }
+
   const body = await req.json()
 
-  const result = CreateaddressSchema.safeParse(body)
+  const result = createAddressSchema.safeParse(body)
 
   if (!result.success) {
     const validationErrors = result.error.issues.map((detail) => ({
       field: detail.path.join('.'),
       message: detail.message
     }))
+
     return errorResponse('Validation failed', validationErrors, 400)
   }
 
-  const findUser = await getUserById(session?.userId as string)
-
-  if (!findUser) {
-    return errorResponse('User does not exist', null, 404)
-  }
-
   try {
-    result.data.userId = findUser?.id
-    const address = await createAddress(result.data)
+    const address = await createAddress({ ...result.data, userId: session.userId })
     const transform = adaptAddress(address)
     return sendResponse('Request successfull', transform, 201)
   } catch (error) {

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
 import axios from 'axios'
-import { ApiResponse, LocalGovernment } from '@index'
+import { NextRequest, NextResponse } from 'next/server'
+
 import { errorResponse, sendResponse } from '@utils/api-response'
 
 const API_BASE_URL = process.env.API_REGION_URL
@@ -14,14 +14,16 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const response = await axios.get<ApiResponse<LocalGovernment[]>>(`${API_BASE_URL}/`, {
+    const response = await axios.get<string[]>(`${API_BASE_URL}/`, {
       params: { state: encodeURIComponent(state) },
       headers: {
         'Content-Type': 'application/json'
       }
     })
 
-    return sendResponse('Request was successfull', response.data.data)
+    const cities: NGA[] = response.data.map((item) => ({ key: item, label: item }))
+
+    return sendResponse('Request was successfull', cities)
   } catch (error) {
     console.error('Error fetching states:', error)
     if (axios.isAxiosError(error)) {
