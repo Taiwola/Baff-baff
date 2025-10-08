@@ -1,9 +1,7 @@
 import { z } from 'zod'
-import { isValidObjectId } from 'mongoose'
 
-// Zod schema for Measurement validation
 export const updateMeasurementSchema = z.object({
-  userId: z.string().refine((val) => !val || isValidObjectId(val), { message: 'Invalid USER ID' }).optional(),
+  userId: z.string().optional(),
   chest: z
     .string()
     .regex(/^\d*\.?\d*$|^$/, 'Chest must be a valid number or empty')
@@ -47,4 +45,6 @@ export const updateMeasurementSchema = z.object({
 })
 
 export type UpdateMeasurementDto = z.infer<typeof updateMeasurementSchema>
-export type UpdateMeasuremnentFormState = FormState<UpdateMeasurementDto>
+export type UpdateMeasurementFormState = FormState<UpdateMeasurementDto>
+export type UpdateMeasurementFormErrors = UpdateMeasurementFormState['errors']
+export type UpdateMeasurementFormValues = UpdateMeasurementFormState['values']

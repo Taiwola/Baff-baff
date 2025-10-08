@@ -97,8 +97,6 @@ export async function updateAddress(id: string, state: UpdateAddressFormState, f
 }
 
 export async function deleteAddress(id: string) {
-  console.log('i got here');
-  
   const response = await ServerApiClient.delete<void>(`/addresses/${id}`)
 
   if (response.code >= 400) {

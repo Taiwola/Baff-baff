@@ -24,7 +24,8 @@ const measurementSchema: Schema<IMeasurement> = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'User ID is required']
+      required: [true, 'User ID is required'],
+      unique: true
     },
     chest: { type: String, default: '' },
     arm: { type: String, default: '' },

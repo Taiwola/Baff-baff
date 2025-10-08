@@ -1,7 +1,4 @@
-'use server'
-
 import { createMeasurement, getAllMeasurements } from '@services/measurement'
-import { getUserById } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { transformMeasurement, transformMeasurements } from '@adapters/measurement.adapter'
 import { createMeasurementSchema } from '@validations/measurement'
@@ -18,6 +15,11 @@ loadDb()
 
 export async function GET(req: NextRequest) {
   const session = await verifySession()
+
+  if (!session?.userId) {
+    return errorResponse('UnAuthenticated', null, 401)
+  }
+
   const { searchParams } = new URL(req.url)
 
   const parsed = measurementQueryFilter.safeParse({
@@ -27,10 +29,8 @@ export async function GET(req: NextRequest) {
 
   const queries = parsed.data
 
-  const filters: MeasurementFilter = {}
-
-  if (session !== null) {
-    filters.userId = session.userId
+  const filters: MeasurementFilter = {
+    userId: session.userId
   }
 
   if (queries?.limit) {
@@ -49,15 +49,15 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const session = await verifySession()
 
-  const findUser = await getUserById(session?.userId as string)
-
-  if (!findUser) {
-    return errorResponse('User does not exist', null, 404)
+  if (!session?.userId) {
+    return errorResponse('UnAuthenticated', null, 401)
   }
+
   try {
     const body = await req.json()
 
     const result = createMeasurementSchema.safeParse(body)
+
     if (!result.success) {
       const validationErrors = result.error.issues.map((detail) => ({
         field: detail.path.join('.'),
@@ -66,9 +66,7 @@ export async function POST(req: NextRequest) {
       return errorResponse('Validation failed', validationErrors, 400)
     }
 
-    result.data.userId = session?.userId
-
-    const measurement = await createMeasurement(result.data)
+    const measurement = await createMeasurement({ ...result.data, userId: session.userId })
     const transform = transformMeasurement(measurement)
 
     return sendResponse('Measurement created successfully', transform, 201)

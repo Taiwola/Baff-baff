@@ -28,6 +28,21 @@ export async function updateMeasurement(id: string, data: UpdateMeasurementDto, 
   return Measurement
 }
 
+export async function upsertMeasurementByUserId(userId: string, data: UpdateMeasurementDto, session?: ClientSession): Promise<IMeasurement> {
+  const measurement = await MeasurementModel.findOneAndUpdate(
+    { userId },
+    { $set: data },
+    {
+      new: true, // return the updated or created doc
+      upsert: true, // create if not found
+      setDefaultsOnInsert: true,
+      session
+    }
+  )
+
+  return measurement
+}
+
 export async function deleteMeasurement(id: string): Promise<IMeasurement | null> {
   return await MeasurementModel.findByIdAndDelete(id)
 }

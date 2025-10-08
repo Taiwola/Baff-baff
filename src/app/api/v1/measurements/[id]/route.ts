@@ -19,11 +19,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const body = await req.json()
 
   const result = updateMeasurementSchema.safeParse(body)
+
   if (!result.success) {
     const validationErrors = result.error.issues.map((detail) => ({
       field: detail.path.join('.'),
       message: detail.message
     }))
+
     return errorResponse('Validation failed', validationErrors, 400)
   }
 
@@ -34,13 +36,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 
   try {
-    const update = await updateMeasurement(measurement?.id, result.data)
+    const update = await updateMeasurement(measurement.id, result.data)
 
     if (!update) {
       return errorResponse('Measurement failed to update', null, 400)
     }
 
-    return sendResponse('Measurement updated')
+    return sendResponse('Measurement updated', update)
   } catch (error) {
     console.error('Error updating Measurement', error)
     return sendResponse('Internal server error', null, 500)

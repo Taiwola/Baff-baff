@@ -1,20 +1,20 @@
 "use client";
 
-import React from "react";
 import { X } from "lucide-react";
+import React, { ReactNode } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/react";
 
 import { Button } from "@components/ui";
-import { MeasurementForm } from "@components/features/measurement";
 
 interface Props {
+  title: string
   isOpen: boolean;
+  children: ReactNode
   onClose: () => void
   onOpenChange: () => void
 }
 
-export default function MeasurementFormModal({ isOpen, onOpenChange }: Props) {
-  async function handleSubmit() { }
+export default function MeasurementFormModal({ title, isOpen, children, onOpenChange }: Props) {
 
   return (
     <Modal
@@ -33,10 +33,10 @@ export default function MeasurementFormModal({ isOpen, onOpenChange }: Props) {
           <>
             {/* Header */}
             <ModalHeader className="flex justify-between items-center px-4 py-3">
-              <h3 className="text-lg font-semibold">Shirt Measurement</h3>
+              <h3 className="text-lg font-semibold">{title}</h3>
 
               <Button
-                className="p-1 rounded-full hover:bg-gray-100 bg-none"
+                className="p-1 rounded-full hover:bg-gray-100 bg-white"
                 onClick={onClose}
               >
                 <X className="icon-button bg-none" />
@@ -45,7 +45,7 @@ export default function MeasurementFormModal({ isOpen, onOpenChange }: Props) {
 
             {/* Body (form content goes here) */}
             <ModalBody className="p-4">
-              <MeasurementForm action={handleSubmit} />
+              {children}
             </ModalBody>
           </>
         )}

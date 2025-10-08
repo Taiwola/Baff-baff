@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
-import { MeasurementList, EmptyMeasurement } from './_components'
-import { BreadCrumbItemType, BreadCrumbs } from '@components/ui'
+import { MeasurementLayout } from './_components'
+import { BreadCrumbItemType, BreadCrumbs, MeasurementsSkeleton } from '@components/ui'
 
-import { measurements } from '@models/measurement.model'
+import { getUserMeasurement } from '@actions/measurements.action'
 
 export default function Measurements() {
+   const promise = getUserMeasurement()
+
    return (
       <main className='app-container py-5 md:py-12 font-montserrat'>
          <div className='w-full hidden md:block mb-12'>
@@ -16,7 +18,9 @@ export default function Measurements() {
             />
          </div>
 
-         {measurements.length <= 0 ? <EmptyMeasurement /> : <MeasurementList measurements={measurements} />}
+         <Suspense fallback={<MeasurementsSkeleton />}>
+            <MeasurementLayout promise={promise} />
+         </Suspense>
       </main>
    )
 }
