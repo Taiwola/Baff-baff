@@ -16,7 +16,7 @@ const initialState: CreateRegionFormState = {
    error: '',
    values: {
       state: '',
-      region: '',
+      city: '',
       price: 0
    }
 }

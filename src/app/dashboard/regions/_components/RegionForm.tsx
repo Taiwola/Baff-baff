@@ -2,12 +2,12 @@ import React from 'react'
 
 import { Button, Input } from '@components/ui';
 
-type InitialState = Pick<Region, 'state' | 'region' | 'price'>
+type InitialState = Pick<Region, 'state' | 'city' | 'price'>
 
 type Props = {
    pending: boolean
    initialState: InitialState
-   errors: Partial<Record<'state' | 'region' | 'price', string | undefined>>
+   errors: Partial<Record<'state' | 'city' | 'price', string | undefined>>
    action: (payload: FormData) => void
 }
 
@@ -25,12 +25,12 @@ export default function RegionForm({ errors, initialState, action, pending }: Pr
          />
 
          <Input
-            name="region"
+            name="city"
             label="City"
             type="select"
             options={[{ label: 'Ikeja', key: 'Ikeja' }, { key: 'Oshodi', label: 'Oshodi' }]}
-            error={errors.region}
-            value={initialState.region}
+            error={errors.city}
+            value={initialState.city}
          />
 
          <Input

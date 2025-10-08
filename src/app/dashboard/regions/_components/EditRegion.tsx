@@ -22,7 +22,7 @@ export default function EditRegion({ region, isOpen, onOpenChange }: Props) {
       error: '',
       values: {
          state: region.state,
-         region: region.region,
+         city: region.city,
          price: region.price
       }
    }), [region])
