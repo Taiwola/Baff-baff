@@ -4,7 +4,7 @@ import { ProductList } from '@components/ui'
 import { getProducts } from '@actions/products.action'
 
 export default async function FeaturedProducts() {
-   const products = await getProducts({ limit: 5 })
+   const products = await getProducts({ limit: 5, sort: 'featured' })
 
    return (
       <section className='w-full py-12 container mx-auto'>

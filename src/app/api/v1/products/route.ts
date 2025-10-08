@@ -22,7 +22,6 @@ loadDb()
 const isLocal = process.env.NODE_ENV !== 'production'
 
 export async function GET(req: NextRequest) {
-  const session = await verifySession()
   const { searchParams } = new URL(req.url)
 
   // may like, featured

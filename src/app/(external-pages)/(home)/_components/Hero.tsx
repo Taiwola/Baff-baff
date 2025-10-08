@@ -40,7 +40,7 @@ export default function HomeHero() {
             </h6>
 
             <div className="flex justify-center items-center">
-               <Button variant="bordered" as={'link'} href={'/marketplace?shirts'} className="gap-0.5">
+               <Button variant="bordered" as={'link'} href={'/marketplace'} className="gap-0.5">
                   <p className="font-montserrat font-bold">
                      SHOP NOW
                   </p>
