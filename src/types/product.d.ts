@@ -45,11 +45,8 @@ type ProductFilter = {
   limit?: number
 }
 
-type ProductQuery = PaginationParams & {
-  status?: ProductStatus
+type ProductQuery = PaginationParams & MaketplaceFilter & {
   search?: string
-  limit?: number
-  type?: ProductType
 }
 
 type MaketplaceFilter = {

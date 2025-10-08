@@ -37,7 +37,7 @@ export default async function MarketPlace({ searchParams }: Props) {
         </div>
       </div>
 
-      <MarketPlaceProducts type={type} />
+      <MarketPlaceProducts filter={{ type, sort, status, price }} />
     </div>
   )
 }

@@ -4,11 +4,11 @@ import { ProductList } from '@components/ui'
 import { getProducts } from '@actions/products.action'
 
 type Props = {
-   type: ProductType
+   filter: MaketplaceFilter
 }
 
-export default async function MarketPlaceProducts({ type }: Props) {
-   const products = await getProducts({ type })
+export default async function MarketPlaceProducts({ filter }: Props) {
+   const products = await getProducts({ ...filter })
 
    return (
       <div className='w-full'>
