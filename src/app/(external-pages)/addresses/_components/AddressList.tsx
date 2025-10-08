@@ -1,14 +1,16 @@
 'use client'
 
-import React, { use } from 'react'
+import React, { use, useState } from 'react'
 import { useDisclosure } from '@heroui/react'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 
-import { Button } from '@components/ui'
-import EmptyAddress from './EmptyAddress'
-import AddressModal from './AddressModal'
-import { DeleteModal } from '@components/ui/Modals'
 import AddAdress from './AddAdress'
+import { Button } from '@components/ui'
+import EditAddress from './EditAddress'
+import AddressModal from './AddressModal'
+import EmptyAddress from './EmptyAddress'
+import { DeleteModal } from '@components/ui/Modals'
+import { deleteAddress } from '@actions/addresses.action'
 
 type Props = {
   promise: Promise<Pagination<Address>>
@@ -16,13 +18,26 @@ type Props = {
 
 export default function AddressList({ promise }: Props) {
   const addresses = use(promise)
-  const { isOpen, onOpenChange, onOpen } = useDisclosure()
-  const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpenChange: onOpenChangeDelete, onOpen: onOpenDelete } = useDisclosure()
-  console.log("IS OPEN", isOpen);
+  const [activeAddress, setActiveAddress] = useState<Address | null>(null)
 
-  // if (addresses.metadata.totalItems < 1) {
-  //   return <EmptyAddress />
-  // }
+  const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure()
+  const { isOpen: isOpenEdit, onOpenChange: onOpenChangeEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure()
+  const { isOpen: isOpenDelete, onClose: onCloseDelete, onOpenChange: onOpenChangeDelete, onOpen: onOpenDelete } = useDisclosure()
+
+  function handleEdit(address: Address) {
+    setActiveAddress(address)
+    onOpenEdit()
+  }
+
+  function handleCloseEdit() {
+    setActiveAddress(null)
+    onCloseEdit()
+  }
+
+  function handleOpenDelete(address: Address) {
+    setActiveAddress(address)
+    onOpenDelete()
+  }
 
   let content = <EmptyAddress onClick={onOpen} />
 
@@ -35,8 +50,8 @@ export default function AddressList({ promise }: Props) {
               {address.active ? <p className='text-sm text-brand-dark opacity-60'>Preferred delivery address</p> : <div />}
 
               <div className='flex justify-center items-center'>
-                <PencilIcon onClick={onOpen} className='icon-button w-6 h-6' />
-                <TrashIcon onClick={onOpenDelete} className='icon-button w-6 h-6' />
+                <PencilIcon onClick={() => handleEdit(address)} className='icon-button w-6 h-6' />
+                <TrashIcon onClick={() => handleOpenDelete(address)} className='icon-button w-6 h-6' />
               </div>
             </div>
 
@@ -58,18 +73,32 @@ export default function AddressList({ promise }: Props) {
       <AddressModal
         title="New Address"
         isOpen={isOpen}
+        onClose={onClose}
         onOpenChange={onOpenChange}
       >
         <AddAdress />
       </AddressModal>
 
-      <DeleteModal
-        confirm='Are you sure you want to remove this Address?'
-        isOpen={isOpenDelete}
-        onClose={onCloseDelete}
-        onOpenChange={onOpenChangeDelete}
-        onConfirm={() => { }}
-      />
+      {activeAddress ? (
+        <AddressModal
+          title="Edit Address"
+          isOpen={isOpenEdit}
+          onClose={handleCloseEdit}
+          onOpenChange={onOpenChangeEdit}
+        >
+          <EditAddress address={activeAddress} />
+        </AddressModal>
+      ) : null}
+
+      {activeAddress ? (
+        <DeleteModal
+          confirm='Are you sure you want to remove this Address?'
+          isOpen={isOpenDelete}
+          onClose={onCloseDelete}
+          onOpenChange={onOpenChangeDelete}
+          onConfirm={deleteAddress.bind(null, activeAddress.id)}
+        />
+      ) : null}
     </>
   )
 }

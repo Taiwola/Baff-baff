@@ -9,11 +9,12 @@ import { Button } from "@components/ui";
 interface Props {
   title: string
   isOpen: boolean;
+  onClose: () => void
   onOpenChange: () => void
   children: ReactNode
 }
 
-export default function AddressModal({ title, isOpen, children, onOpenChange }: Props) {
+export default function AddressModal({ title, isOpen, children, onOpenChange, onClose }: Props) {
 
   return (
     <Modal
@@ -27,7 +28,7 @@ export default function AddressModal({ title, isOpen, children, onOpenChange }: 
       }}
     >
       <ModalContent>
-        {(onClose) => (
+        {() => (
           <>
             <ModalHeader className="flex justify-between items-center px-4 py-3">
               <h3 className="text-lg font-semibold">{title}</h3>
@@ -39,7 +40,7 @@ export default function AddressModal({ title, isOpen, children, onOpenChange }: 
                 <X className="icon-button bg-none" />
               </Button>
             </ModalHeader>
-            
+
             <ModalBody className="p-4">
               {children}
             </ModalBody>
