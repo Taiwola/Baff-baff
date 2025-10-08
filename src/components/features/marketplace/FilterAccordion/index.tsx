@@ -15,7 +15,10 @@ export default function FilterAccordion() {
    const searchParams = useSearchParams()
 
    const status = searchParams.get('status') ?? 'inStock'
+   const type = searchParams.get('type') ?? 'shirt'
    const price = searchParams.get('price') ?? ''
+   const design = searchParams.get('design') ?? ''
+   const category = pathname.split('/marketplace/')[1] || ''
 
    function handleSelect(filterKey: string, value: string) {
       const params = new URLSearchParams(searchParams.toString())
@@ -37,7 +40,7 @@ export default function FilterAccordion() {
             }}
             dividerProps={{ className: "bg-brand-dark h-[0.5px]" }}
          >
-            {sections.map((section) => (
+            {sections.filter(i => !(i.id === 'design' && !category)).map((section) => (
                <AccordionItem
                   key={section.id}
                   aria-label={section.title}
@@ -57,9 +60,9 @@ export default function FilterAccordion() {
                   }
                >
                   <FilterList selectedKey={
-                     section.id === 'status' ? status : section.id === 'price' ? price : ''
+                     section.id === 'status' ? status : section.id === 'price' ? price : section.id === 'design' ? design : ''
                   }
-                     items={section.items}
+                     items={section.getItems(type, category)}
                      onSelect={(value) => handleSelect(section.id, value)}
                   />
                </AccordionItem>
@@ -77,23 +80,80 @@ const sections = [
          { key: "inStock", label: "In Stock" },
          { key: "outOfStock", label: "Out of Stock" },
       ],
+      getItems() {
+         return this.items
+      }
    },
-   // {
-   //    id: "design",
-   //    title: "Design",
-   //    items: [
-   //       { key: "modern", label: "Modern" },
-   //       { key: "classic", label: "Classic" },
-   //       { key: "minimal", label: "Minimal" },
-   //    ],
-   // },
+   {
+      id: "design",
+      title: "Design",
+      items: [
+         { key: "modern", label: "Modern" },
+         { key: "classic", label: "Classic" },
+         { key: "minimal", label: "Minimal" },
+      ],
+      corporateShirtItems: [
+         { key: "plain", label: "Plain" },
+         { key: "checkered", label: "Checkered" },
+         { key: "patterned", label: "Patterned" },
+         { key: "striped", label: "Striped" },
+      ],
+      casualShirtItems: [
+         { key: "plain", label: "Plain" },
+         { key: "checkered", label: "Checkered" },
+         { key: "abstract", label: "Abstract" },
+         { key: "print", label: "Print" },
+      ],
+      corporateTrouserItems: [
+         { key: "plain", label: "Plain" },
+         { key: "stripe", label: "Stripe" },
+         { key: "abstract", label: "Abstract" },
+         { key: "patterned", label: "Patterned" },
+      ],
+      causualTrouserItems: [
+         { key: "plain", label: "Plain" },
+         { key: "patterned", label: "Patterned" },
+         { key: "jeans", label: "Jeans" },
+         { key: "chinos", label: "Chinos" },
+         { key: "corduroy", label: "Corduroy" },
+      ],
+      getItems(type: string, category: string) {
+         if (type === 'shirt' && category === 'corporates') {
+            return this.corporateShirtItems
+         } else if (type === 'shirt' && category === 'casuals') {
+            return this.casualShirtItems
+         } else if (type === 'trouser' && category === 'corporates') {
+            return this.corporateTrouserItems
+         } else if (type === 'trouser' && category === 'casuals') {
+            return this.causualTrouserItems
+         }
+         else return this.items
+      }
+   },
    {
       id: "price",
       title: "Price",
       items: [
-         { key: "low", label: `${formatCurrency(0)} - ${formatCurrency(10000)}` },
-         { key: "mid", label: `${formatCurrency(10000)} - ${formatCurrency(100000)}` },
-         { key: "high", label: `${formatCurrency(100000)}+` },
+         { key: "low", label: `${formatCurrency(0)} - ${formatCurrency(15000)}` },
+         { key: "mid", label: `${formatCurrency(15000)} - ${formatCurrency(20000)}` },
+         { key: "high", label: `${formatCurrency(20000)}+` },
       ],
+      trouserItems: [
+         { key: "low", label: `${formatCurrency(0)} - ${formatCurrency(20000)}` },
+         { key: "mid", label: `${formatCurrency(20000)} - ${formatCurrency(25000)}` },
+         { key: "high", label: `${formatCurrency(25000)}+` },
+      ],
+      jacketItems: [
+         { key: "low", label: `${formatCurrency(0)} - ${formatCurrency(30000)}` },
+         { key: "mid", label: `${formatCurrency(30000)} - ${formatCurrency(35000)}` },
+         { key: "high", label: `${formatCurrency(35000)}+` },
+      ],
+      getItems(type: string) {
+         if (type === 'jacket') {
+            return this.jacketItems
+         } else if (type === 'trouser') {
+            return this.trouserItems
+         } else return this.items
+      }
    },
 ];
