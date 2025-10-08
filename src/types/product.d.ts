@@ -16,6 +16,11 @@ type ProductType = 'shirt' | 'trouser'
 
 type Fitting = 'fit' | 'baggy' | 'straight'
 
+type ProductSortType = 'featured' | 'best-selling' | 'a-z' | 'z-a' | 'o-n' | 'n-o' // old to new, new to old
+
+// low = 0 - 10,000; mid = 10,000 - 100,000; high = 100,000 +
+type PriceRange = 'low' | 'mid' | 'high'
+
 type Product = {
   id: string
   slug: string
@@ -44,4 +49,12 @@ type ProductQuery = PaginationParams & {
   status?: ProductStatus
   search?: string
   limit?: number
+  type?: ProductType
+}
+
+type MaketplaceFilter = {
+  type?: ProductType
+  status?: ProductStatus
+  price?: PriceRange
+  sort?: ProductSortType
 }

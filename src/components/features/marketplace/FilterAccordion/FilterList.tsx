@@ -1,25 +1,27 @@
 "use client";
 
 import React from "react";
-import { Listbox, ListboxItem, Selection } from "@heroui/react";
+import { Listbox, ListboxItem } from "@heroui/react";
 
 type FilterListProps = {
-   items: { key: string; label: string }[];
+   selectedKey: string
+   items: { key: string; label: string }[]
+   onSelect: (key: string) => void
 };
 
-export default function FilterList({ items }: FilterListProps) {
-   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
-      new Set([items[0]?.key])
-   );
+export default function FilterList({ selectedKey, items, onSelect }: FilterListProps) {
 
    return (
       <Listbox
          disallowEmptySelection
          aria-label="Filter list"
-         selectedKeys={selectedKeys}
          selectionMode="single"
          variant="flat"
-         onSelectionChange={setSelectedKeys}
+         selectedKeys={selectedKey ? new Set([selectedKey]) : new Set()}
+         onSelectionChange={(keys) => {
+            const key = Array.from(keys)[0] as string
+            onSelect(key)
+         }}
          itemClasses={{
             base: "p-2 text-base font-montserrat cursor-pointer text-black",
             selectedIcon: "text-brand-purple w-4 h-3",

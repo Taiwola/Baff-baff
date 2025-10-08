@@ -30,3 +30,31 @@ export function formatCurrency(amount: number, currency: string = 'NGN', locale:
 export function capitalizeFirstLetter(val: string) {
     return val.charAt(0).toUpperCase() + String(val).slice(1);
 }
+
+export function getSortOption(key: string) {
+  switch (key) {
+    case 'featured':
+      // could depend on a 'featured' boolean or priority field
+      return { featured: -1, createdAt: -1 }
+
+    case 'bestSelling':
+      // assuming you track product sales count
+      return { totalSales: -1 }
+
+    case 'nameAsc':
+      return { name: 1 } // A-Z
+
+    case 'nameDesc':
+      return { name: -1 } // Z-A
+
+    case 'oldToNew':
+      return { createdAt: 1 } // oldest first
+
+    case 'newToOld':
+      return { createdAt: -1 } // newest first
+
+    default:
+      return { createdAt: -1 }
+  }
+}
+

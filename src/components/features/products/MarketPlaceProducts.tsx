@@ -1,12 +1,18 @@
-import { ProductList } from '@components/ui'
-import { products } from '@models/product.model'
 import React from 'react'
 
+import { ProductList } from '@components/ui'
+import { getProducts } from '@actions/products.action'
 
-export default function MarketPlaceProducts() {
+type Props = {
+   type: ProductType
+}
+
+export default async function MarketPlaceProducts({ type }: Props) {
+   const products = await getProducts({ type })
+
    return (
       <div className='w-full'>
-         <ProductList products={products} variant='marketplace' />
+         <ProductList products={products.items} variant='marketplace' />
       </div>
    )
 }

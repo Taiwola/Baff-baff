@@ -23,10 +23,12 @@ export default function ProductSizes({ sizes }: Props) {
             {fittings.map((fitting) => (
                <Button
                   onClick={() => handleChangeFit(fitting.key)}
+                  size='md'
                   key={fitting.key}
                   type='button'
                   variant='bordered'
-                  className={`gap-1.5 rounded-[30px] text-base border ${activeFit === fitting.key ? 'border-black text-black' : 'border-foreground text-foreground'}`}
+                  className={`rounded-[2.5rem] font-montserrat gap-1.5 ${activeFit === fitting.key ? '' : 'border-foreground text-black/70'}`}
+                  // className={`gap-1.5 rounded-[30px] text-base border ${activeFit === fitting.key ? 'border-black text-black' : 'border-foreground text-foreground'}`}
                >
                   <div className='w-[18px] h-[18px] overflow-hidden'>
                      <Image src={fitting.image} alt={fitting.label} width={18} height={18} objectFit='contain' />

@@ -1,10 +1,16 @@
 import React from 'react'
 
-import { Button } from '@components/ui'
 import { MarketPlaceProducts } from '@components/features/products'
-import { FilterDrawer, SortButton, SortDrawer, Title } from '../_components'
+import { FilterDrawer, SortButton, SortDrawer, Title, TypeFilter } from '../_components'
 
-export default function MarketPlace() {
+
+type Props = {
+  searchParams: Promise<MaketplaceFilter>
+}
+
+export default async function MarketPlace({ searchParams }: Props) {
+  const { type = 'shirt', status = 'inStock', price, sort } = await searchParams
+
   return (
     <div className='w-full h-full flex flex-col justify-start items-start gap-5'>
       <div className='w-full'>
@@ -13,24 +19,11 @@ export default function MarketPlace() {
         {/* Desktop */}
         <div className='hidden md:flex justify-between items-center'>
           <div>
-            <div className='flex justify-start items-center gap-2 mb-5'>
-              <Button size='md' variant='bordered' className='rounded-[2.5rem] font-montserrat'>
-                <span>Shirts</span>
-              </Button>
-
-              <Button size='md' variant='filled' className='rounded-[2.5rem] font-montserrat bg-light text-brand-dark hover:bg-brand-light'>
-                <span>Trousers</span>
-              </Button>
-
-              <Button size='md' variant='filled' className='rounded-[2.5rem] font-montserrat bg-light text-brand-dark hover:bg-brand-light'>
-                <span>Jackets</span>
-              </Button>
-            </div>
-
+            <TypeFilter defaultType={type} />
             <p className='uppercase text-sm'>Stand out and look goods rocking top quality work shirts.</p>
           </div>
 
-          <SortButton />
+          <SortButton sort={sort} />
         </div>
 
         {/* Mobile */}
@@ -39,12 +32,12 @@ export default function MarketPlace() {
 
           <div className='flex items-center py-7.5'>
             <FilterDrawer />
-            <SortDrawer />
+            <SortDrawer sort={sort} />
           </div>
         </div>
       </div>
 
-      <MarketPlaceProducts />
+      <MarketPlaceProducts type={type} />
     </div>
   )
 }
