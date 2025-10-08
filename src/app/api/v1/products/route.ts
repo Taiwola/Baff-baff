@@ -39,10 +39,6 @@ export async function GET(req: NextRequest) {
 
   const filters: ProductFilter = {}
 
-  if (session?.role !== 'admin') {
-    filters.status = 'inStock'
-  }
-
   if (queries?.search) {
     filters.name = { $regex: queries.search, $options: 'i' } 
   }
@@ -55,7 +51,7 @@ export async function GET(req: NextRequest) {
     filters.type = queries.type
   }
 
-  if (queries?.status && session?.role === 'admin') {
+  if (queries?.status) {
     filters.status = queries.status
   }
 

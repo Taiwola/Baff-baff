@@ -54,4 +54,5 @@ type MaketplaceFilter = {
   status?: ProductStatus
   price?: PriceRange
   sort?: ProductSortType
+  category?: ProductCategory
 }
