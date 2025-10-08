@@ -13,5 +13,6 @@ export const productFilterSchema = z.object({
   limit: z
     .string()
     .transform((val) => (val ? Number(val) : 10)) // default to 10
-    .pipe(z.number().int().positive().max(100)) // max 100 for sanity
+    .pipe(z.number().int().positive().max(100)), // max 100 for sanity
+  flag: z.enum(['featured', 'bestSelling', 'newest', 'oldest', 'nameAsc', 'nameDesc']).optional()
 })

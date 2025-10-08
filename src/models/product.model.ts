@@ -27,6 +27,7 @@ export interface IProduct extends Document {
   material: mongoose.Types.ObjectId | string
   yard: number
   name: string
+  numberOfSales: number
   status: ProductStatus
   s: ISizeDetails
   m: ISizeDetails
@@ -54,6 +55,7 @@ const productSchema: Schema = new Schema<IProduct>(
     yard: { type: Number, required: true },
     name: { type: String, required: true },
     slug: { type: String, unique: true, index: true },
+    numberOfSales: { type: Number, default: 0 },
     status: { type: String, required: true, enum: Object.keys(statusMap), default: 'inStock' },
     s: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } },
     m: { type: sizeDetailsSchema, required: true, default: { price: 0, quantity: 0 } },

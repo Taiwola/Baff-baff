@@ -37,6 +37,7 @@ export async function GET(req: NextRequest) {
   const queries = parsed.data
 
   const filters: ProductFilter = {}
+  const sort: ProductSort = {}
 
   if (session?.role !== 'admin') {
     filters.status = 'inStock'
@@ -60,6 +61,26 @@ export async function GET(req: NextRequest) {
 
   if (queries?.limit) {
     filters.limit = queries.limit || 10
+  }
+
+  if (queries?.flag === 'bestSelling') {
+    sort.numberOfSales = 'asc'
+  }
+
+  if (queries?.flag === 'newest') {
+    sort.createdAt = 'asc'
+  }
+
+  if (queries?.flag === 'oldest') {
+    sort.createdAt = 'desc'
+  }
+
+  if (queries?.flag === 'nameAsc') {
+    sort.name = 'asc'
+  }
+
+  if (queries?.flag === 'nameDesc') {
+    sort.name = 'desc'
   }
 
   const page = queries?.page || 1
@@ -138,7 +159,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    if(images.length < 4) {
+    if (images.length < 4) {
       return errorResponse('At least four images are required', null, 400)
     }
 

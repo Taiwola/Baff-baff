@@ -38,6 +38,13 @@ type ProductFilter = {
   type?: ProductType
   status?: ProductStatus
   limit?: number
+  sort?: ProductSort
+}
+
+type ProductSort = {
+  numberOfSales?: 'asc' | 'desc'
+  createdAt?: 'asc' | 'desc'
+  name?: 'asc' | 'desc'
 }
 
 type ProductQuery = PaginationParams & {

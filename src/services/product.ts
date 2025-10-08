@@ -12,7 +12,9 @@ export async function createProduct(data: CreateProductDto, session?: ClientSess
 }
 
 export async function getAllProducts(filter?: FilterQuery<ProductFilter>): Promise<IProduct[]> {
-  return await ProductModel.find(filter || {}).limit(filter?.limit)
+  return await ProductModel.find(filter || {})
+    .limit(filter?.limit)
+    .sort(filter?.sort)
 }
 
 export async function getOneProductById(id: string): Promise<IProduct | null> {

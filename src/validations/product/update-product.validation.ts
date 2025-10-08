@@ -15,6 +15,7 @@ export const updateProductSchema = z
     materialId: z.string().nonempty('Material is required'),
     material: z.string().optional(),
     status: z.string().optional(),
+    numberOfSales: z.number().optional(),
     yard: z.number().min(1, 'Yard is required'),
     s: sizeDetailsSchema.optional(),
     m: sizeDetailsSchema.optional(),
