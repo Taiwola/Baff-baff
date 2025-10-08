@@ -1,11 +1,12 @@
+import { NextRequest } from 'next/server'
+
 import dbConnect from '@lib/database'
 import { sendEmail } from '@lib/mail'
 import { encrypt } from '@lib/session'
 import { getUserByEmail } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { generateResetPasswordEmail } from '@utils/mail-content'
-import { forgotPasswordSchema } from '@validations/forgot-password/create-forgot-password.validation'
-import { NextRequest } from 'next/server'
+import { forgotPasswordSchema } from '@validations/auth/forgot-password.validation'
 
 async function loadDb() {
   await dbConnect()

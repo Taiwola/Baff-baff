@@ -3,7 +3,20 @@ import { redirect } from 'next/navigation'
 import { ApiClient } from '@utils/api'
 import { toast } from '@hooks/useToast'
 import { formatError } from '@utils/formatting'
-import { LoginFormState, loginSchema, RegisterFormState, registerSchema } from '@validations/auth'
+import {
+  ForgotPasswordFormErrors,
+  ForgotPasswordFormState,
+  ForgotPasswordFormValues,
+  forgotPasswordSchema,
+  LoginFormState,
+  loginSchema,
+  RegisterFormState,
+  registerSchema,
+  ResetPasswordFormErrors,
+  ResetPasswordFormState,
+  ResetPasswordFormValues,
+  resetPasswordSchema
+} from '@validations/auth'
 
 export async function register(state: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
   const parsedValues = {
@@ -61,6 +74,56 @@ export async function login(state: LoginFormState, formData: FormData): Promise<
   if (role === 'admin') {
     redirect('/dashboard')
   } else redirect('/')
+}
+
+export async function forgotPassword(state: ForgotPasswordFormState, formData: FormData): Promise<ForgotPasswordFormState> {
+  const parsedValues = {
+    email: String(formData.get('email') || '')
+  }
+
+  const result = forgotPasswordSchema.safeParse(parsedValues)
+
+  if (!result.success) {
+    const errors = formatError<ForgotPasswordFormErrors, ForgotPasswordFormValues>(result.error)
+    return { ...state, errors, values: parsedValues }
+  }
+
+  const response = await ApiClient.post<void>('/auth/forgot-password', result.data)
+
+  if (response.code >= 400) {
+    toast.error({ title: 'Forgot Password Failed', description: response.message })
+    return { ...state, error: response.message }
+  }
+
+  toast.success({ title: 'Email Sent', description: response.message })
+
+  return { values: { email: '' }, errors: {}, error: '' }
+}
+
+export async function resetPassword(state: ResetPasswordFormState, formData: FormData): Promise<ResetPasswordFormState> {
+  const parsedValues = {
+    token: state.values.token,
+    password: String(formData.get('password') || ''),
+    confirmPassword: String(formData.get('confirmPassword') || '')
+  }
+  
+  const result = resetPasswordSchema.safeParse(parsedValues)
+
+  if (!result.success) {
+    const errors = formatError<ResetPasswordFormErrors, ResetPasswordFormValues>(result.error)
+    return { ...state, errors, values: parsedValues }
+  }
+  
+  const response = await ApiClient.patch<void>('/auth/reset-password', result.data)
+
+  if (response.code >= 400) {
+    toast.error({ title: 'Reset Password Failed', description: response.message })
+    return { ...state, error: response.message }
+  }
+
+  toast.success({ title: 'Success', description: response.message })
+
+  redirect('/login')
 }
 
 export async function logout() {

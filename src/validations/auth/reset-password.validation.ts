@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export const resetPasswordSchema = z
   .object({
+    token: z.string(),
     password: z
       .string()
       .min(6, 'Password must be at least 6 characters long')
@@ -15,5 +16,7 @@ export const resetPasswordSchema = z
     message: 'Passwords do not match'
   })
 
-export type CreateResetPasswordDto = z.infer<typeof resetPasswordSchema>
-export type CreateResetFormState = FormState<CreateResetPasswordDto>
+export type ResetPasswordDto = z.infer<typeof resetPasswordSchema>
+export type ResetPasswordFormState = FormState<ResetPasswordDto>
+export type ResetPasswordFormErrors = ResetPasswordFormState['errors']
+export type ResetPasswordFormValues = ResetPasswordFormState['values']
