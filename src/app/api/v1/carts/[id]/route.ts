@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server'
 
 import dbConnect from '@lib/database'
 import { adaptCart } from '@adapters/cart.adapter'
-import { getOneCartById, updateCart } from '@services/cart'
+import { getCartById, getOneCartById, updateCart } from '@services/cart'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { updateCartSchema } from '@validations/cart/update-cart.validation'
 
@@ -27,15 +27,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const { action, item } = result.data
-    const cart = await getOneCartById(id)
+
+    const cart = await getCartById(id)
     if (!cart) return errorResponse('Cart not found', null, 404)
 
-    const map = new Map(cart.items.map((it) => [it.productId.toString(), it]))
+    const map = new Map(cart.items.map((it) => [it.product.toString(), it]))
 
     if (action === 'add') {
-      map.set(item.productId, item)
+      map.set(item.productId, {...item, product: item.productId})
     } else if (action === 'update') {
-      if (map.has(item.productId)) map.set(item.productId, { ...map.get(item.productId), ...item })
+      if (map.has(item.productId)) map.set(item.productId, { ...map.get(item.productId), ...item, product: item.productId })
     } else if (action === 'remove') {
       map.delete(item.productId)
     }

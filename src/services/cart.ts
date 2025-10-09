@@ -22,6 +22,11 @@ export async function getOneCartById(id: string): Promise<ICart | null> {
   return await CartModel.findById(id).populate('product')
 }
 
+// this is not populated
+export async function getCartById(id: string): Promise<ICart | null> {
+  return await CartModel.findById(id)
+}
+
 export async function getCartByFilter(filter: FilterQuery<ICart>): Promise<ICart | null> {
   return await CartModel.findOne(filter).populate('product')
 }

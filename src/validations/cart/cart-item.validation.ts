@@ -14,3 +14,5 @@ export const cartItemSchema = z.object({
   size: z.enum(['s', 'm', 'l', 'xl', 'xxl', 'xxxl', 'Bespoke']),
   measurements: createMeasurementSchema.optional()
 })
+
+export type CartItemDto = z.infer<typeof cartItemSchema>

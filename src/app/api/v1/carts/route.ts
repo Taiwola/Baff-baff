@@ -11,6 +11,11 @@ import { adaptCart } from '@adapters/cart.adapter'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { createCart, getCartByFilter, getOneCartById, mergeItems } from '@services/cart'
 
+// user is not logged in, has no cart in cookie or db
+// user is not logged in, has cart in cookie
+// user is logged in, has cart in cookie, no cart in db
+// user is logged in has in cookie and db
+
 export async function GET() {
   await dbConnect()
   const session = await verifySession()
@@ -69,7 +74,7 @@ export async function POST(req: NextRequest) {
 
     const cookieStore = await cookies()
 
-    cookieStore.set('guestCartId', adaptedCart.id, {
+    cookieStore.set('guestCartId', cart.id, {
       httpOnly: true,
       secure: true,
       expires: 60 * 60 * 24 * 30, // 30 days

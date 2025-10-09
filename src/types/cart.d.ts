@@ -10,7 +10,7 @@ type CartItem = {
 }
 
 type Cart = {
-  id: string
+  id?: string
   userId?: string
   items: CartItem[]
   createdAt: string

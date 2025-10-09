@@ -12,6 +12,7 @@ export { default as TableSkeleton } from './Skeletons/TableSkeleton'
 export { default as DashboardProductsSkeleton } from './Skeletons/DashboardProductsSkeleton'
 export { default as AddressesSkeleton } from './Skeletons/AddressesSkeleton'
 export { default as MeasurementsSkeleton } from './Skeletons/MeasurementsSkeleton'
+export { default as CartSkeleton } from './Skeletons/CartSkeleton'
 
 export { default as ProductList } from './Products/ProductList'
 export { default as ProductGallery } from './Products/ProductGallery'
