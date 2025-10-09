@@ -1,4 +1,4 @@
-type OrderStatus = 'notStart' | 'processing' | 'delivered'
+type OrderStatus = 'pending' | 'paid' | 'delivered' | 'cancelled'
 
 type Order = {
   id: string

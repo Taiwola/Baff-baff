@@ -1,76 +1,83 @@
 'use server'
 
-import { createCart, getAllCarts } from '@services/cart'
-import { getUserById } from '@services/user'
-import { errorResponse, sendResponse } from '@utils/api-response'
-import { adaptCart, adaptCarts } from '@adapters/cart.adapter'
-import { cartQueryFilter, createCartSchema } from '@validations/cart'
+import { cookies } from 'next/headers'
 import { NextRequest } from 'next/server'
-import { verifySession } from '@lib/dal'
+
 import dbConnect from '@lib/database'
+import { verifySession } from '@lib/dal'
+import { ICart } from '@models/cart.model'
+import { cartSchema } from '@validations/cart'
+import { adaptCart } from '@adapters/cart.adapter'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { createCart, getCartByFilter, getOneCartById, mergeItems } from '@services/cart'
 
-async function loadDb() {
+export async function GET() {
   await dbConnect()
-}
-
-loadDb()
-
-export async function GET(req: NextRequest) {
   const session = await verifySession()
-  const { searchParams } = new URL(req.url)
+  const cookieStore = await cookies()
+  const guestCartId = cookieStore.get('guestCartId')?.value
 
-  const parsed = cartQueryFilter.safeParse({
-    page: searchParams.get('page'),
-    limit: searchParams.get('limit')
-  })
+  let cart: ICart | null = null
 
-  const queries = parsed.data
-
-  const filters: CartFilter = {}
-
-  if (session !== null) {
-    filters.userId = session.userId
+  if (session?.userId) {
+    cart = await getCartByFilter({ userId: session.userId })
+  } else if (guestCartId) {
+    cart = await getOneCartById(guestCartId)
   }
 
-  if (queries?.limit) {
-    filters.limit = queries.limit || 10
-  }
+  if (!cart) return errorResponse('cart not found', null, 404)
 
-  const page = queries?.page || 1
-  const pageSize = queries?.limit || 10
-
-  const carts = await getAllCarts(filters)
-  const transform = adaptCarts({ data: carts, page, pageSize })
-
-  return sendResponse('Request was successful', transform, 200)
+  const adaptedCart = adaptCart(cart)
+  return sendResponse('success', adaptedCart)
 }
 
 export async function POST(req: NextRequest) {
+  await dbConnect()
   const session = await verifySession()
 
-  const findUser = await getUserById(session?.userId as string)
+  const userId = session?.userId
 
-  if (!findUser) {
-    return errorResponse('User does not exist', null, 404)
-  }
   try {
     const body = await req.json()
 
-    const result = createCartSchema.safeParse(body)
+    const result = cartSchema.safeParse(body)
+
     if (!result.success) {
       const validationErrors = result.error.issues.map((detail) => ({
         field: detail.path.join('.'),
         message: detail.message
       }))
+
       return errorResponse('Validation failed', validationErrors, 400)
     }
 
-    result.data.userId = session?.userId
+    if (userId) {
+      let cart = await getCartByFilter({ userId })
+      if (!cart) {
+        cart = await createCart({ ...result.data, userId })
+      } else {
+        cart.items = mergeItems(cart.items, result.data.items)
+        await cart.save()
+      }
+
+      const adaptedCart = adaptCart(cart)
+      return sendResponse('Cart created successfully', adaptedCart, 201)
+    }
 
     const cart = await createCart(result.data)
-    const transform = adaptCart(cart)
+    const adaptedCart = adaptCart(cart)
 
-    return sendResponse('Cart created successfully', transform, 201)
+    const cookieStore = await cookies()
+
+    cookieStore.set('guestCartId', adaptedCart.id, {
+      httpOnly: true,
+      secure: true,
+      expires: 60 * 60 * 24 * 30, // 30 days
+      sameSite: 'lax',
+      path: '/'
+    })
+
+    return sendResponse('Cart created successfully', adaptedCart, 201)
   } catch (error) {
     console.error('Cart creation error:', error)
     return errorResponse('Internal server error', null, 500)

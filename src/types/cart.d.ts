@@ -1,15 +1,19 @@
-interface Cart {
+type CartItem = {
   id: string
+  product: Pick<Product, 'id' | 'category' | 'images' | 'name' | 'type'>
+  name: string
   price: number
-  size: string
-  quantity: string
-  subtotal: number
-  userId: mongoose.Types.ObjectId | string
-  product: {
-    id: string
-    name: string
-    images: string[]
-  }
+  fitting: Fitting
+  size: Size | 'Bespoke'
+  measurements?: ShirtMeasurement & TrouserMeasurement
+  quantity: number
+}
+
+type Cart = {
+  id: string
+  userId?: string
+  email?: string
+  items: CartItem[]
   createdAt: Date
   updatedAt: Date
 }

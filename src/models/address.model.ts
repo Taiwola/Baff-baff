@@ -1,9 +1,8 @@
 import mongoose, { Schema, model, Document } from 'mongoose'
 
-// Updated Address interface with userId
 export interface IAddress extends Document {
   id: string
-  userId: mongoose.Types.ObjectId | string
+  userId?: mongoose.Types.ObjectId
   fullName: string
   email: string
   phoneNumber: string
@@ -21,8 +20,7 @@ const addressSchema = new Schema<IAddress>(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: [true, 'User ID is required']
+      ref: 'User'
     },
     fullName: {
       type: String,
