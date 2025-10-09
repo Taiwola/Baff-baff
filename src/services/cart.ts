@@ -40,16 +40,16 @@ export async function deleteManyCarts(filter: FilterQuery<ICart>, session?: Clie
   return { deletedCount: result.deletedCount }
 }
 
-export function mergeItems(existing: ICartItem[], incoming?: ICartItem[]): ICartItem[] {
+export function mergeItems(existing: ICartItem[], incoming?: CartDto['items']): ICartItem[] {
   if (!incoming || incoming.length === 0) return existing
 
-  const map = new Map(existing.map((it) => [it.productId.toString(), it]))
+  const map = new Map(existing.map((it) => [it.product.toString(), it]))
   for (const item of incoming) {
-    const id = item.productId.toString()
+    const id = item.productId
     if (map.has(id)) {
       map.get(id)!.quantity += item.quantity
       map.get(id)!.fitting = item.fitting
-    } else map.set(id, item)
+    } else map.set(id, { ...item, product: item.productId })
   }
 
   return Array.from(map.values())

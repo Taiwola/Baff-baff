@@ -5,7 +5,7 @@ import { verifySession } from '@lib/dal'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { createCart, getCartByFilter, getOneCartById, updateCart } from '@services/cart'
 
-export async function POST(req: Request) {
+export async function POST() {
   await dbConnect()
 
   const cookieStore = await cookies()

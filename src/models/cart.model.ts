@@ -1,12 +1,13 @@
 import mongoose, { Schema, Document, Model, model } from 'mongoose'
+import { IProduct } from './product.model'
 
 export interface ICartItem {
-  productId: string | mongoose.Types.ObjectId 
+  product: IProduct | mongoose.Types.ObjectId | string
   name: string
   price: number
   fitting: Fitting
   size: Size | 'Bespoke'
-  measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement>
+  measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string }
   quantity: number
 }
 
@@ -19,7 +20,7 @@ export interface ICart extends Document {
 }
 
 const CartItemSchema = new Schema<ICartItem>({
-  productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+  product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
   name: String,
   price: Number,
   fitting: { type: String, required: true, enum: ['fit', 'baggy', 'straight'] },
@@ -42,7 +43,7 @@ const CartItemSchema = new Schema<ICartItem>({
 const cartSchema: Schema<ICart> = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
-    items: { type: [CartItemSchema], default: [] },
+    items: { type: [CartItemSchema], default: [] }
   },
   {
     timestamps: true

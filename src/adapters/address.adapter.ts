@@ -4,7 +4,7 @@ import { paginate } from '@utils/pagination'
 export function adaptAddress(data: IAddress): Address {
   return {
     id: data._id?.toString() || data.id,
-    userId: data.userId.toString(),
+    userId: data.userId?.toString(),
     fullName: data.fullName,
     email: data.email,
     phoneNumber: data.phoneNumber,

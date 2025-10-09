@@ -5,17 +5,16 @@ type CartItem = {
   price: number
   fitting: Fitting
   size: Size | 'Bespoke'
-  measurements?: ShirtMeasurement & TrouserMeasurement
+  measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string }
   quantity: number
 }
 
 type Cart = {
   id: string
   userId?: string
-  email?: string
   items: CartItem[]
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 type CartFilter = {
