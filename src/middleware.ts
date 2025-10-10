@@ -15,6 +15,10 @@ export async function middleware(request: NextRequest) {
   if (path === '/api/v1/products' && method === 'GET') {
     return NextResponse.next()
   }
+  if (path === '/api/v1/measurements/user' && method === 'GET') {
+    return NextResponse.next()
+  }
+  
   if (path === '/api/v1/forget-password' && method === 'POST') {
     return NextResponse.next()
   }

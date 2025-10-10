@@ -1,6 +1,6 @@
 type ProductStatus = 'inStock' | 'outOfStock'
 
-type Size = 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl'
+type Size = 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl' | 'Bespoke'
 
 type IProductSizes = Record<Size, SizeDetails>
 

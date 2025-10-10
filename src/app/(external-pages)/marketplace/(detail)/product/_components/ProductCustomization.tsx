@@ -1,70 +1,96 @@
 'use client'
 
 import React from 'react'
+import { Tab, Tabs } from '@heroui/react'
 
 import { Button } from '@components/ui'
-import ProductItemTab from './ProductItemTab'
+import ProductSizes from './ProductSizes'
+import ProductBespoke from './ProductBespoke'
 import { QuantityButton } from '@components/features/cart'
 
+import { formatCurrency } from '@utils'
+import { useProductCustomization } from '@hooks/useProductCustomization'
+
 type Props = {
-   product: Product
+  product: Product
+  shirtMeasurement: ShirtMeasurement
+  trouserMeasurement: TrouserMeasurement
 }
 
-export default function ProductCustomization({ product }: Props) {
-   return (
-      <>
-         <div className='w-full mt-5'>
-            <ProductItemTab product={product} />
-         </div>
+export default function ProductCustomization({ product, shirtMeasurement, trouserMeasurement }: Props) {
+  const { state, setFitting, setSize, setQuantity, setShirtMeasurements, setTrouserMeasurements } = useProductCustomization({
+    productId: product.id,
+    fitting: 'fit',
+    size: 'l',
+    quantity: 1,
+    shirtMeasurement,
+    trouserMeasurement
+  })
+
+  const price = state.size !== 'Bespoke' ? product.sizes[state.size].price : 100
+  const discountPrice = state.size !== 'Bespoke' && product.sizes[state.size].discountPrice ? product.sizes[state.size].discountPrice : undefined
+
+  return (
+    <>
+      <div className='flex justify-start items-center gap-1'>
+        <h6 className='text-[1.25rem]'>{formatCurrency(price)}</h6>
+        {discountPrice ? <h6 className='text-[1.25rem]'>{`-${formatCurrency(discountPrice)}`}</h6> : null}
+      </div>
+
+      <p className='text-[0.6875rem]'>Bulk pricing available for quantities of 5 units or more</p>
+
+      <div className='w-full mt-5'>
+        <Tabs
+          aria-label="Options"
+          classNames={{
+            base: 'w-full',
+            tab: 'px-3 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 w-auto data-[selected=true]:text-black data-[selected=true]:border-b data-[selected=true]:border-black',
+            tabList: 'flex gap-4'
+          }}
+          onSelectionChange={(key) => setSize(key as Size)}
+        >
+          <Tab key="s" title="SELECT SIZE">
+            <ProductSizes
+              sizes={product.sizes}
+              activeFitting={state.fitting}
+              onChangeFitting={setFitting}
+              onChangeSize={setSize}
+            />
+          </Tab>
+
+          <Tab key="Bespoke" title="BESPOKE">
+            <ProductBespoke
+              type={product.type}
+              shirtMeasurement={state.shirtMeasurement}
+              trouserMeasurement={state.trouserMeasurement}
+              onChangeShirtMeasurement={setShirtMeasurements}
+              onChangeTrouserMeasurement={setTrouserMeasurements}
+            />
+          </Tab>
+        </Tabs>
+      </div>
 
 
-         <div className='mt-5'>
-            <p className='text-sm'>QUANTITY</p>
-            <QuantityButton />
-         </div>
+      <div className='mt-5'>
+        <p className='text-sm'>QUANTITY</p>
 
-         <Button
-            fullWidth={true}
-            className='bg-black mt-5 mb-7.5 font-montserrat text-base font-bold'
-            size='md'
-            rounded='md'
-         >
-            ADD TO CART
-         </Button>
-      </>
-   )
+        <QuantityButton
+          quantity={state.quantity}
+          setQuantity={setQuantity}
+        />
+      </div>
+
+      <Button
+        fullWidth={true}
+        className='bg-black mt-5 mb-7.5 font-montserrat text-base font-bold'
+        size='md'
+        rounded='md'
+      >
+        ADD TO CART
+      </Button>
+    </>
+  )
 }
 
-// An enum with all the types of actions to use in our reducer
-type CustomizationAction = ''
 
-// An interface for our actions
-interface CountAction {
-  type: CountActionKind;
-  payload: number;
-}
 
-// An interface for our state
-interface CountState {
-  count: number;
-}
-
-// Our reducer function that uses a switch statement to handle our actions
-function counterReducer(state: CountState, action: CountAction) {
-  const { type, payload } = action;
-
-  switch (type) {
-    case CountActionKind.INCREASE:
-      return {
-        ...state,
-        value: state.count + payload,
-      };
-    case CountActionKind.DECREASE:
-      return {
-        ...state,
-        value: state.count - payload,
-      };
-    default:
-      return state;
-  }
-}

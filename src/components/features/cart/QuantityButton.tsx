@@ -1,13 +1,17 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { Button } from '@heroui/react'
 
-export default function QuantityButton() {
-  const [quantity, setQuantity] = useState(1)
+type Props = {
+  quantity: number
+  setQuantity: (quantity: number) => void
+}
 
-  const decrease = () => setQuantity((q) => Math.max(1, q - 1))
-  const increase = () => setQuantity((q) => q + 1)
+export default function QuantityButton({ quantity, setQuantity }: Props) {
+
+  const decrease = () => setQuantity(Math.max(1, quantity - 1))
+  const increase = () => setQuantity(quantity + 1)
 
   return (
     <div className="flex text-black text-xs">

@@ -45,13 +45,13 @@ export async function GET() {
   const session = await verifySession()
 
   if (!session?.userId) {
-    return errorResponse('UnAuthenticated', null, 401)
+    return errorResponse('measurement does not exist', null, 404)
   }
 
   const measurement = await getMeasurementByFilter({ userId: session.userId })
 
   if (!measurement) {
-    return errorResponse('Measurement does not exist', null, 404)
+    return errorResponse('Measurement not found', null, 404)
   }
 
   const transfromData = transformMeasurement(measurement)
