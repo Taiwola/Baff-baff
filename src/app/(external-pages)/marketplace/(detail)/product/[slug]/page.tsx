@@ -1,12 +1,12 @@
 import React from 'react'
+import { notFound } from 'next/navigation'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
-import { BreadCrumbItemType, BreadCrumbs, Button, ProductGallery } from '@components/ui'
-import { Description, ProductItemTab, QuantityButton } from '../_components'
+import { ProductCustomization, Description } from '../_components'
+import { BreadCrumbItemType, BreadCrumbs, ProductGallery } from '@components/ui'
 
-import { capitalizeFirstLetter, formatCurrency } from '@utils'
 import { getProductBySlug } from '@actions/products.action'
-import { notFound } from 'next/navigation'
+import { capitalizeFirstLetter, formatCurrency } from '@utils'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -68,24 +68,7 @@ export default async function ProductDetail({ params }: Props) {
 
           <p className='text-[0.6875rem]'>Bulk pricing available for quantities of 5 units or more</p>
 
-          <div className='w-full mt-5'>
-            <ProductItemTab product={product} />
-          </div>
-
-        
-          <div className='mt-5'>
-            <p className='text-sm'>QUANTITY</p>
-            <QuantityButton />
-          </div>
-
-          <Button
-            fullWidth={true}
-            className='bg-black mt-5 mb-7.5 font-montserrat text-base font-bold'
-            size='md'
-            rounded='md'
-          >
-            ADD TO CART
-          </Button>
+          <ProductCustomization product={product} />
 
           <Description />
 
