@@ -50,6 +50,6 @@ const cartSchema: Schema<ICart> = new Schema(
   }
 )
 
-const CartModel: Model<ICart> = model<ICart>('Cart', cartSchema)
+const CartModel: Model<ICart> = mongoose.models.Cart || model<ICart>('Cart', cartSchema)
 
 export default CartModel

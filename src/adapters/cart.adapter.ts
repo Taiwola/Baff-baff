@@ -7,7 +7,9 @@ export function adaptCart(data: ICart): Cart {
     id: data.id,
     userId: data.userId?.toString(),
     items: data.items.map((item) => {
-      if (typeof item.product === 'string' || item.product instanceof mongoose.Types.ObjectId) throw new Error('product not populated')
+      if (typeof item.product === 'string' || item.product instanceof mongoose.Types.ObjectId) {
+        throw new Error('product not populated')
+      }
 
       return {
         id: item.product.id,

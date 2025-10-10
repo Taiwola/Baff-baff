@@ -1,7 +1,9 @@
 'use client'
 
 import React from 'react'
+import { v4 as uuidv4 } from 'uuid';
 import { Tab, Tabs } from '@heroui/react'
+import { useRouter } from 'next/navigation'
 
 import { Button } from '@components/ui'
 import ProductSizes from './ProductSizes'
@@ -9,6 +11,7 @@ import ProductBespoke from './ProductBespoke'
 import { QuantityButton } from '@components/features/cart'
 
 import { formatCurrency } from '@utils'
+import { useCart } from '@contexts/carts.context'
 import { useProductCustomization } from '@hooks/useProductCustomization'
 
 type Props = {
@@ -18,6 +21,8 @@ type Props = {
 }
 
 export default function ProductCustomization({ product, shirtMeasurement, trouserMeasurement }: Props) {
+  const router = useRouter()
+  const { addItem } = useCart()
   const { state, setFitting, setSize, setQuantity, setShirtMeasurements, setTrouserMeasurements } = useProductCustomization({
     productId: product.id,
     fitting: 'fit',
@@ -29,6 +34,21 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
 
   const price = state.size !== 'Bespoke' ? product.sizes[state.size].price : 100
   const discountPrice = state.size !== 'Bespoke' && product.sizes[state.size].discountPrice ? product.sizes[state.size].discountPrice : undefined
+
+  function handleAddToCart() {
+    addItem({
+      id: uuidv4(),
+      product,
+      price,
+      name: product.name,
+      fitting: state.fitting,
+      size: state.size,
+      measurements: { ...state.shirtMeasurement, ...state.trouserMeasurement, length: state.shirtMeasurement.length, trouserLength: state.trouserMeasurement.length },
+      quantity: state.quantity
+    })
+
+    router.push('/cart')
+  }
 
   return (
     <>
@@ -85,6 +105,7 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
         className='bg-black mt-5 mb-7.5 font-montserrat text-base font-bold'
         size='md'
         rounded='md'
+        onClick={handleAddToCart}
       >
         ADD TO CART
       </Button>

@@ -1,25 +1,25 @@
-'use server'
+import 'server-only'
+
 import CartModel, { ICart, ICartItem } from '@models/cart.model'
 import { CartDto } from '@validations/cart'
 import { FilterQuery, ClientSession } from 'mongoose'
 
 export async function createCart(data: CartDto, session?: ClientSession): Promise<ICart> {
-  const Carts = new CartModel({
-    ...data
-  })
+  const items = data.items.map((item) => ({ ...item, product: item.productId }))
+  const Carts = new CartModel({ ...data, items })
 
   await Carts.save({ session })
-  return Carts
+  return await CartModel.populate(Carts, { path: 'items.product' })
 }
 
 export async function getAllCarts(filter?: FilterQuery<CartFilter>): Promise<ICart[]> {
   return await CartModel.find(filter || {})
-    .populate('product')
+    .populate('items.product')
     .limit(filter?.limit)
 }
 
 export async function getOneCartById(id: string): Promise<ICart | null> {
-  return await CartModel.findById(id).populate('product')
+  return await CartModel.findById(id).populate('items.product')
 }
 
 // this is not populated
@@ -28,7 +28,7 @@ export async function getCartById(id: string): Promise<ICart | null> {
 }
 
 export async function getCartByFilter(filter: FilterQuery<ICart>): Promise<ICart | null> {
-  return await CartModel.findOne(filter).populate('product')
+  return await CartModel.findOne(filter).populate('items.product')
 }
 
 export async function updateCart(id: string, data: Partial<ICart>, session?: ClientSession): Promise<ICart | null> {

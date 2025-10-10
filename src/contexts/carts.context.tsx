@@ -11,7 +11,7 @@ type CartContextType = {
   updateItem: (productId: string, quantity: number) => Promise<void>
   removeItem: (productId: string) => Promise<void>
   clear: () => Promise<void>
-  syncWithServer: () => Promise<void>
+  syncWithServer: (cart: Cart) => Promise<void>
 }
 
 type Props = {
@@ -38,39 +38,43 @@ export const CartProvider = ({ children }: Props) => {
     localStorage.setItem('cart_v1', JSON.stringify(cart));
   }, [cart]);
 
-  async function syncWithServer() {
+  async function syncWithServer(cart: Cart) {
     // create or get cart; server will set cookie
     const items: CartDto['items'] = cart.items.map((item) => ({ ...item, productId: item.product.id }))
     const syncedCart = await syncCart({ items })
     if (syncedCart) {
-      // setCart((prev) => ({ ...prev, id: syncedCart.id }))
       setCart(syncedCart)
     }
   }
 
   async function addItem(item: CartItem) {
-    setCart((prev) => {
-      // index of identical item in cart
-      const idx = prev.items.findIndex((i) => isIdenticalItem(i, item));
+    // find index of identical item
+    const idx = cart.items.findIndex((i) => isIdenticalItem(i, item));
 
+    let newCartItems: CartItem[];
+
+    if (idx > -1) {
       // update the quantity of the identical item
-      if (idx > -1) {
-        const newCartItems = prev.items.map((it, i) => i === idx ? { ...it, quantity: it.quantity + item.quantity } : it)
-        return { ...prev, newCartItems };
-      }
-
-      // just add another cart item
-      return { ...prev, item }
-    });
-
-    // if there is a cart id (user is logged in), sync with server
-    if (cart.id) {
-      const { product, ...dto } = item
-      const payload: UpdateCartDto = { action: 'add', item: { ...dto, productId: product.id } }
-      await updateCart(cart.id, payload)
+      newCartItems = cart.items.map((it, i) => i === idx ? { ...it, quantity: it.quantity + item.quantity } : it);
     } else {
-      // try to create server cart
-      await syncWithServer();
+      // add new item to cart
+      newCartItems = [...cart.items, item];
+    }
+
+    // update local cart state immediately for better UX
+    setCart((prev) => ({ ...prev, items: newCartItems }));
+
+    try {
+      // if there is a cart id (user is logged in), sync with server
+      if (cart.id) {
+        const { product, ...dto } = item
+        const payload: UpdateCartDto = { action: 'add', item: { ...dto, productId: product.id } }
+        await updateCart(cart.id, payload)
+      } else {
+        await syncWithServer({ ...cart, items: newCartItems });
+      }
+    } catch (error) {
+      console.error('Failed to sync with server:', error);
     }
   }
 

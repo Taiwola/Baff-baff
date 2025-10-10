@@ -39,12 +39,10 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   await dbConnect()
   const session = await verifySession()
-
   const userId = session?.userId
 
   try {
     const body = await req.json()
-
     const result = cartSchema.safeParse(body)
 
     if (!result.success) {
