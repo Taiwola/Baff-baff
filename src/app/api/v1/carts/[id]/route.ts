@@ -31,18 +31,18 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const cart = await getCartById(id)
     if (!cart) return errorResponse('Cart not found', null, 404)
 
-    const map = new Map(cart.items.map((it) => [it.product.toString(), it]))
+    const key = item.productId + item.fitting + item.size
+    const map = new Map(cart.items.map((it) => [it.product.toString() + it.fitting + it.size, it]))
 
     if (action === 'add') {
-      map.set(item.productId, {...item, product: item.productId})
+      map.set(key, { ...item, product: item.productId })
     } else if (action === 'update') {
-      if (map.has(item.productId)) map.set(item.productId, { ...map.get(item.productId), ...item, product: item.productId })
+      if (map.has(key)) map.set(key, { ...map.get(key), ...item, product: item.productId })
     } else if (action === 'remove') {
-      map.delete(item.productId)
+      map.delete(key)
     }
 
     const cartItems = Array.from(map.values())
-
     const updatedCart = await updateCart(id, { items: cartItems })
     if (!updatedCart) return errorResponse('Error updating cart', null, 404)
     return sendResponse('Cart updated', adaptCart(updatedCart))

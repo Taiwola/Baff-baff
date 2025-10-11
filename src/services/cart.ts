@@ -32,8 +32,8 @@ export async function getCartByFilter(filter: FilterQuery<ICart>): Promise<ICart
 }
 
 export async function updateCart(id: string, data: Partial<ICart>, session?: ClientSession): Promise<ICart | null> {
-  const Cart = await CartModel.findByIdAndUpdate(id, { $set: data }, { new: true, session })
-  return Cart
+  const cart = await CartModel.findByIdAndUpdate(id, { $set: data }, { new: true, session })
+   return await CartModel.populate(cart, { path: 'items.product' })
 }
 
 export async function deleteCart(id: string): Promise<ICart | null> {

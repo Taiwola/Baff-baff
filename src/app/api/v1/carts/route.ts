@@ -71,11 +71,11 @@ export async function POST(req: NextRequest) {
     const adaptedCart = adaptCart(cart)
 
     const cookieStore = await cookies()
-
+    const future = new Date()
     cookieStore.set('guestCartId', cart.id, {
       httpOnly: true,
       secure: true,
-      expires: 60 * 60 * 24 * 30, // 30 days
+      expires: future.setDate(future.getDate() + 30),
       sameSite: 'lax',
       path: '/'
     })
