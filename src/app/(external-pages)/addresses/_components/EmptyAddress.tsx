@@ -1,23 +1,21 @@
 'use client'
 
 import React from 'react'
-import { useDisclosure } from '@heroui/react'
-import AddressFormModal from './AddressModal'
 import { EmptyState } from '@components/layouts'
 
-export default function EmptyAddress() {
-   const { isOpen, onClose, onOpenChange, onOpen } = useDisclosure()
+type Props = {
+   onClick: () => void
+}
+
+export default function EmptyAddress({ onClick }: Props) {
 
    return (
-      <>
-         <EmptyState
-            title='You currently have no addresses saved'
-            description='Add address for a quicker checkout experience'
-            btnText='Add Address'
-            onAdd={onOpen}
-         />
+      <EmptyState
+         title='You currently have no addresses saved'
+         description='Add address for a quicker checkout experience'
+         btnText='Add Address'
+         onAdd={onClick}
+      />
 
-         <AddressFormModal isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} />
-      </>
    )
 }

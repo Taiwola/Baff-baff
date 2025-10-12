@@ -1,6 +1,6 @@
 type Region = {
   id: string
-  region: string
+  city: string
   state: string
   price: number
   createdAt: Date

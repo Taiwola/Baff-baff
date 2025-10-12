@@ -97,7 +97,7 @@ export default function DynamicInput({
   }
 
   if (type === 'select') {
-    if (!options || options?.length <= 0) return null
+    if (!options) return null
 
     inputContent = (
       <Select
@@ -107,6 +107,7 @@ export default function DynamicInput({
         aria-label={name}
         isDisabled={disabled}
         isClearable={isClearable}
+        onChange={(e) => handleChange(e.target.value)}
         defaultSelectedKeys={[normalizedValue]}
         {...commonHandlers}
         classNames={{

@@ -81,17 +81,3 @@ interface InitiatePaymentResponse {
   reference: string
   checkoutCode: string // for mobile
 }
-
-
-interface State {
-  name: string
-}
-
-interface LocalGovernment {
-  name: string;
-}
-
-interface ApiResponse<T> {
-  status: string;
-  data: T;
-}

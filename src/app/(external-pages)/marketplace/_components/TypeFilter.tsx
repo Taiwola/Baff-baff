@@ -44,5 +44,7 @@ export default function TypeFilter({ defaultType }: Props) {
 
 const productTypes: IProductType[] = [
    { key: 'shirt', label: 'Shirts' },
-   { key: 'trouser', label: 'Trousers' }
+   { key: 'trouser', label: 'Trousers' },
+   { key: 'jacket', label: 'Jackets' },
+   { key: 'short', label: 'Shorts' },
 ]

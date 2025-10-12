@@ -4,7 +4,7 @@ export const statusSchema = z.enum(['inStock', 'outOfStock'], "Status must be ei
 
 export const categorySchema = z.enum(['corporates', 'casuals'], "Category must be either 'corporates' or 'casuals'")
 
-export const typeSchema = z.enum(['shirt', 'trouser'], "Type must be either 'shirt' or 'trouser'")
+export const typeSchema = z.enum(['shirt', 'trouser', 'jacket', 'short'], "Type must be either 'shirt' or 'trouser'")
 
 export const fittingSchema = z.enum(['fit', 'baggy', 'straight'], 'Fitting must be one of: fit, baggy, straight')
 

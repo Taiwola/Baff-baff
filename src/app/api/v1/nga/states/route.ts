@@ -1,18 +1,18 @@
 import axios from 'axios'
-import { ApiResponse, State } from '@index'
 import { errorResponse, sendResponse } from '@utils/api-response'
 
 const API_BASE_URL = process.env.API_REGION_URL
 
 export async function GET() {
   try {
-    const response = await axios.get<ApiResponse<State[]>>(`${API_BASE_URL}/fetch`, {
+    const response = await axios.get<string[]>(`${API_BASE_URL}/fetch`, {
       headers: {
         'Content-Type': 'application/json'
       }
     })
 
-    return sendResponse('Request was successfull', response.data.data)
+    const states: NGA[] = response.data.map((item) => ({ key: item, label: item }))
+    return sendResponse('Request was successfull', states)
   } catch (error) {
     console.error('Error fetching states:', error)
     if (axios.isAxiosError(error)) {

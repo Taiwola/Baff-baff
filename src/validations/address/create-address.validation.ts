@@ -1,11 +1,6 @@
 import { z } from 'zod'
-import { isValidObjectId } from 'mongoose'
 
-export const CreateaddressSchema = z.object({
-  userId: z
-    .string()
-    .refine((val) => isValidObjectId(val), { message: 'Invalid User ID' })
-    .optional(),
+export const createAddressSchema = z.object({
   fullName: z
     .string()
     .min(2, 'Full name must be at least 2 characters long')
@@ -35,5 +30,7 @@ export const CreateaddressSchema = z.object({
   active: z.boolean().default(true)
 })
 
-export type CreateAddressDto = z.infer<typeof CreateaddressSchema>
+export type CreateAddressDto = z.infer<typeof createAddressSchema>
 export type CreateAddressFormState = FormState<CreateAddressDto>
+export type CreateAddressFormErrors = CreateAddressFormState['errors']
+export type CreateAddressFormValues = CreateAddressFormState['values']

@@ -14,13 +14,13 @@ export default function Explore() {
             <ExploreCard
                image="/images/corporate.jpg"
                text="CORPORATE SHIRTS"
-               href='/marketplace/corporates?shirts'
+               href='/marketplace/corporates'
             />
 
             <ExploreCard
                image="/images/casual.jpg"
                text="CASUAL SHIRTS"
-               href='/marketplace/casuals?shirts'
+               href='/marketplace/casuals'
             />
          </div>
       </section>

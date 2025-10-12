@@ -43,7 +43,7 @@ export default function RegionsList({ promise }: Props) {
   const rows = regions.items.map((region) => ({
     key: region.id,
     state: region.state,
-    region: region.region,
+    city: region.city,
     price: region.price,
     actions: (
       <ActionButton
@@ -93,7 +93,7 @@ export default function RegionsList({ promise }: Props) {
 
 const columns = [
   { key: "state", label: "State" },
-  { key: "region", label: "City" },
+  { key: "city", label: "City" },
   { key: "price", label: "Delivery Price" },
   { key: "actions", label: "" },
 ];
