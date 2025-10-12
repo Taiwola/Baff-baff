@@ -22,7 +22,7 @@ export default function ProductItem({ product }: Props) {
         {/* Image container */}
         <div className="relative w-full h-52 md:h-80 overflow-hidden">
           <motion.div
-            className="w-full h-full"
+            className="relative w-full h-full"
             whileHover={{ scale: 1.08 }}
             transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
           >
@@ -33,9 +33,12 @@ export default function ProductItem({ product }: Props) {
               className="object-cover transition-transform duration-700 ease-out"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
               quality={100}
-              loading="lazy"
+              priority
+              placeholder="blur"
+              blurDataURL={getCloudinaryBlurURL(product.images[0])}
             />
           </motion.div>
+
 
           {/* Overlay fade */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
@@ -55,4 +58,9 @@ export default function ProductItem({ product }: Props) {
       </Link>
     </motion.div>
   )
+}
+
+function getCloudinaryBlurURL(url: string) {
+  if (!url.includes('cloudinary')) return url
+  return url.replace('/upload/', '/upload/e_blur:2000,q_1/')
 }
