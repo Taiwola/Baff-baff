@@ -1,16 +1,17 @@
 'use client'
 
+import useSWR from 'swr'
 import { CartDto } from '@validations/cart'
-import { updateCart, syncCart } from '@actions/carts.action'
+import { updateCart, syncCart, getCart } from '@actions/carts.action'
 import { UpdateCartDto } from '@validations/cart/update-cart.validation'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 
 type CartContextType = {
   cart: Cart
+  isLoading: boolean
   addItem: (item: CartItem) => Promise<void>
   updateItem: (itemId: string, quantity: number) => Promise<void>
   removeItem: (itemId: string) => Promise<void>
-  clear: () => Promise<void>
   syncWithServer: (cart: Cart) => Promise<void>
 }
 
@@ -29,15 +30,20 @@ const defaultCart: Cart = {
 export const CartProvider = ({ children }: Props) => {
   const [cart, setCart] = useState<Cart>(defaultCart);
 
-  useEffect(() => {
-    const stored = localStorage.getItem('cart_v1');
-    if (stored) setCart(JSON.parse(stored));
-  }, []);
+  const { isLoading } = useSWR<Cart | null>('/api/cart', fetchCart)
 
+  // keep localStorage synced
   useEffect(() => {
-    localStorage.setItem('cart_v1', JSON.stringify(cart));
-  }, [cart]);
+    localStorage.setItem('cart_v1', JSON.stringify(cart))
+  }, [cart])
 
+  async function fetchCart() {
+    const serverCart = await getCart()
+    if (serverCart) setCart(serverCart)
+    return serverCart
+  }
+
+  // The user is a guest with no guest cart 
   async function syncWithServer(cart: Cart) {
     // create or get cart; server will set cookie
     const items: CartDto['items'] = cart.items.map((item) => ({ ...item, productId: item.product.id }))
@@ -108,18 +114,12 @@ export const CartProvider = ({ children }: Props) => {
     }
   }
 
-  async function clear() {
-    // setCart({ id: undefined, items: [] });
-    // // optionally call backend to clear guest cart cookie by requesting /api/cart/clear
-    // await fetch('/api/cart/clear', { method: 'POST' }).catch(() => {});
-  }
-
   function isIdenticalItem(existing: CartItem, incoming: CartItem) {
     return (existing.product.id === incoming.product.id) && (existing.size === incoming.size) && (existing.fitting === incoming.fitting)
   }
 
   return (
-    <CartContext.Provider value={{ cart, addItem, updateItem, removeItem, clear, syncWithServer }}>
+    <CartContext.Provider value={{ cart, isLoading, addItem, updateItem, removeItem, syncWithServer }}>
       {children}
     </CartContext.Provider>
   );

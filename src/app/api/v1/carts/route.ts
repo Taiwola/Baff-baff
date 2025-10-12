@@ -11,10 +11,7 @@ import { adaptCart } from '@adapters/cart.adapter'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { createCart, getCartByFilter, getOneCartById, mergeItems } from '@services/cart'
 
-// user is not logged in, has no cart in cookie or db
-// user is not logged in, has cart in cookie
-// user is logged in, has cart in cookie, no cart in db
-// user is logged in has in cookie and db
+
 
 export async function GET() {
   await dbConnect()
@@ -24,9 +21,13 @@ export async function GET() {
 
   let cart: ICart | null = null
 
+  // if the user is logged in
   if (session?.userId) {
     cart = await getCartByFilter({ userId: session.userId })
-  } else if (guestCartId) {
+  } 
+  
+  // if the user is a guest and has a guest cart
+  else if (guestCartId) {
     cart = await getOneCartById(guestCartId)
   }
 
@@ -36,10 +37,17 @@ export async function GET() {
   return sendResponse('success', adaptedCart)
 }
 
+// user is not logged in, has no cart in cookie or db
+// user is not logged in, has cart in cookie
+// user is logged in, has cart in cookie, no cart in db
+// user is logged in has in cookie and db
 export async function POST(req: NextRequest) {
   await dbConnect()
   const session = await verifySession()
   const userId = session?.userId
+
+  const cookieStore = await cookies()
+  const guestCartId = cookieStore.get('guestCartId')?.value
 
   try {
     const body = await req.json()
@@ -54,31 +62,54 @@ export async function POST(req: NextRequest) {
       return errorResponse('Validation failed', validationErrors, 400)
     }
 
+    let cart: ICart | null = null
+
+    // If user is logged in
     if (userId) {
-      let cart = await getCartByFilter({ userId })
+      cart = await getCartByFilter({ userId })
+
       if (!cart) {
+        // Create a new cart for logged-in user
         cart = await createCart({ ...result.data, userId })
       } else {
+        // Merge incoming items with existing cart
         cart.items = mergeItems(cart.items, result.data.items)
         await cart.save()
       }
-
-      const adaptedCart = adaptCart(cart)
-      return sendResponse('Cart created successfully', adaptedCart, 201)
     }
 
-    const cart = await createCart(result.data)
+    // If user is a guest but has a guest cart
+    else if (guestCartId) {
+      cart = await getOneCartById(guestCartId)
+
+      if (cart) {
+        cart.items = mergeItems(cart.items, result.data.items)
+        await cart.save()
+      } else {
+        cart = await createCart(result.data)
+      }
+    }
+
+    // Guest without a cart
+    else {
+      cart = await createCart(result.data)
+    }
+
     const adaptedCart = adaptCart(cart)
 
-    const cookieStore = await cookies()
-    const future = new Date()
-    cookieStore.set('guestCartId', cart.id, {
-      httpOnly: true,
-      secure: true,
-      expires: future.setDate(future.getDate() + 30),
-      sameSite: 'lax',
-      path: '/'
-    })
+    // Set/update guest cart cookie if user is not logged in
+    if (!userId && !guestCartId) {
+      const expiry = new Date()
+      expiry.setDate(expiry.getDate() + 30)
+
+      cookieStore.set('guestCartId', cart.id, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        path: '/',
+        expires: expiry
+      })
+    }
 
     return sendResponse('Cart created successfully', adaptedCart, 201)
   } catch (error) {

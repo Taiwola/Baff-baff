@@ -33,7 +33,7 @@ export async function getCartByFilter(filter: FilterQuery<ICart>): Promise<ICart
 
 export async function updateCart(id: string, data: Partial<ICart>, session?: ClientSession): Promise<ICart | null> {
   const cart = await CartModel.findByIdAndUpdate(id, { $set: data }, { new: true, session })
-   return await CartModel.populate(cart, { path: 'items.product' })
+  return await CartModel.populate(cart, { path: 'items.product' })
 }
 
 export async function deleteCart(id: string): Promise<ICart | null> {
@@ -48,14 +48,34 @@ export async function deleteManyCarts(filter: FilterQuery<ICart>, session?: Clie
 export function mergeItems(existing: ICartItem[], incoming?: CartDto['items']): ICartItem[] {
   if (!incoming || incoming.length === 0) return existing
 
-  const map = new Map(existing.map((it) => [it.product.toString(), it]))
+  const map = new Map(existing.map((it) => [getProductDistinctionKey({ id: it.product.toString(), fitting: it.fitting, size: it.size }), it]))
+
   for (const item of incoming) {
-    const id = item.productId
-    if (map.has(id)) {
-      map.get(id)!.quantity += item.quantity
-      map.get(id)!.fitting = item.fitting
-    } else map.set(id, { ...item, product: item.productId })
+    const key = getProductDistinctionKey({ id: item.productId, size: item.size, fitting: item.fitting })
+    map.set(key, { ...item, product: item.productId })
   }
 
   return Array.from(map.values())
+}
+
+export function syncItems(userItems: ICartItem[], guestItems?: ICartItem[]): ICartItem[] {
+  if (!guestItems || guestItems.length === 0) return userItems
+
+  const map = new Map(userItems.map((it) => [getProductDistinctionKey({ id: it.product.toString(), fitting: it.fitting, size: it.size }), it]))
+
+  for (const item of guestItems) {
+    const key = getProductDistinctionKey({ id: item.product.toString(), size: item.size, fitting: item.fitting })
+    if (map.has(key)) {
+      const foundItem = map.get(key)
+      map.set(key, { ...item, quantity: item.quantity + (foundItem?.quantity || 0) })
+    } else {
+      map.set(key, item)
+    }
+  }
+
+  return Array.from(map.values())
+}
+
+export function getProductDistinctionKey({ id, fitting, size }: DistinctCartItem): string {
+  return id + fitting + size
 }

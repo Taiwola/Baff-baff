@@ -22,3 +22,9 @@ type CartFilter = {
   limit?: number
   userId?: string
 }
+
+type DistinctCartItem = {
+  id: string
+  size: Size | 'Bespoke'
+  fitting: Fitting
+}

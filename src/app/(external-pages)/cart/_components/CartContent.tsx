@@ -7,12 +7,14 @@ import { MinusCircleIcon } from '@heroicons/react/24/outline'
 import { formatCurrency } from '@utils'
 
 import EmptyCart from './EmptyCart'
-import { Button } from '@components/ui'
+import { Button, CartSkeleton } from '@components/ui'
 import { QuantityButton } from '@components/features/cart'
 import { useCart } from '@contexts/carts.context'
 
 export default function CartContent() {
-  const { cart, updateItem, removeItem } = useCart()
+  const { cart, isLoading, updateItem, removeItem } = useCart()
+
+  if (isLoading) return <CartSkeleton />
 
   if (cart.items.length < 1) return <EmptyCart />
 
