@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { motion } from 'framer-motion'
 import { Menu, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { UserIcon, ShoppingBagIcon, MagnifyingGlassIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
@@ -108,10 +109,16 @@ export default function Header({ user }: Props) {
 
           {/* Logo */}
           <div className="flex-1 flex justify-center">
-            <Link href="/" className="text-xl font-bold">
-              <LargeLogoSvg className="w-full h-auto hidden md:block" />
-              <SmallLogoSvg className="w-full h-auto md:hidden" />
-            </Link>
+            <motion.div
+              whileHover={{ scale: 1.08 }}      // Slightly enlarge on hover
+              whileTap={{ scale: 0.92 }}         // Slightly shrink when pressed
+              transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+            >
+              <Link href="/" className="text-xl font-bold block">
+                <LargeLogoSvg className="w-full h-auto hidden md:block" />
+                <SmallLogoSvg className="w-full h-auto md:hidden" />
+              </Link>
+            </motion.div>
           </div>
 
           {/* Right side */}
@@ -133,7 +140,10 @@ export default function Header({ user }: Props) {
                   </button>
                 </DropdownTrigger>
 
-                <DropdownMenu aria-label="User Account Actions" className="h-auto w-[12.75rem] rounded-[20px] border border-grey bg-background font-lexend">
+                <DropdownMenu
+                  aria-label="User Account Actions"
+                  className="h-auto w-[12.75rem] rounded-[20px] border border-grey bg-background font-lexend p-0 gap-0 overflow-hidden m-0"
+                >
 
 
                   {userAccountItems.map((item, idx) => (
@@ -142,14 +152,16 @@ export default function Header({ user }: Props) {
                         <DropdownItem
                           key={item.key}
                           onClick={() => handlePressUserItem(item)}
-                          className={`px-5 py-3.5 border-b border-foreground text-sm text-black hover:`}
+                          className={`px-5 py-3.5 border-b border-foreground text-sm text-black hover:bg-brand-purple/10 hover:text-brand-purple`}
                         >
                           <User
+                            className="hover:text-brand-purple"
                             avatarProps={{
                               className: 'p-0 text-black text-sm',
                               classNames: { base: 'hidden w-full' }
                             }}
                             classNames={{
+                              wrapper: 'hover:text-brand-purple!',
                               base: "p-0 text-black text-sm font-lexend",
                               name: "text-black text-sm font-lexend",
                               description: "text-[11px] font-light text-black font-lexend",
@@ -163,7 +175,7 @@ export default function Header({ user }: Props) {
                         <DropdownItem
                           onClick={() => handlePressUserItem(item)}
                           key={item.key}
-                          className={`px-5 py-3.5 border-b border-foreground text-sm ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length - 1 ? 'border-none' : ''}`}
+                          className={`px-5 py-3.5 m-0 border-b border-foreground text-sm hover:bg-brand-purple/10 hover:text-brand-purple ${item.key === "sign-out" ? "text-danger" : "text-black"} ${idx === userAccountItems.length - 1 ? 'border-none' : ''}`}
                         >
                           {item.label}
                         </DropdownItem>
@@ -209,15 +221,26 @@ export default function Header({ user }: Props) {
       </header>
 
       {/* Search Modal */}
+      {/* Search Modal */}
       <Modal
         isOpen={searchOpen}
         onOpenChange={(open) => !open && onClose()}
         placement="top"
         hideCloseButton
         backdrop="transparent"
-        classNames={{ base: "w-full", body: "p-0" }}
+        classNames={{
+          base: "w-full max-w-none m-0 p-0 top-[var(--header-height,84px)]", // match header height dynamically
+          body: "p-0",
+        }}
+        motionProps={{
+          variants: {
+            enter: { opacity: 1, y: 0 },
+            exit: { opacity: 0, y: -10 },
+          },
+          transition: { duration: 0.25, ease: 'easeOut' },
+        }}
       >
-        <ModalContent className="fixed top-20 left-0 right-0 z-40 bg-background border-b border-foreground">
+        <ModalContent className="fixed left-0 right-0 z-40 bg-background border-b border-foreground rounded-none shadow-sm">
           <ModalBody>
             <form
               onSubmit={handleSearchSubmit}
@@ -238,6 +261,7 @@ export default function Header({ user }: Props) {
           </ModalBody>
         </ModalContent>
       </Modal>
+
     </>
   );
 }

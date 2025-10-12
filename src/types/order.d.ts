@@ -2,30 +2,19 @@ type OrderStatus = 'pending' | 'paid' | 'delivered' | 'cancelled'
 
 type Order = {
   id: string
-  date: string
-  orderId: string
-  fullName: string
-  email: string
-  phoneNumber: string
-  deliveryZone: string
-  address: string
-  status: OrderStatus
-  paymentStatus: string
-  subTotal: number
+  userId?: string
+  reference: string
+  items: OrderItem[]
+  total: number
   deliveryFee: number
-  totalAmount: number
-  products: OrderProduct[]
+  status: OrderStatus
+  shippingAddress: OrderShippingAddress
+  createdAt: string
 }
 
-type OrderProduct = {
-  id: string
-  name: string
-  image: string
-  category: string
-  quantity: string
-  size: string
-  price: number
-}
+type OrderItem = Omit<CartItem, 'id'>
+
+type OrderShippingAddress = Omit<Address, 'id' | 'userId' | 'active' | 'createdAt' | 'updatedAt'>
 
 type OrderFilter = {
   page?: number

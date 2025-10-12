@@ -1,8 +1,6 @@
-'use server'
-
 import { deleteOrder, getOneOrderById, updateOrder } from '@services/order'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformOrder } from '@adapters/order.adapter'
+import { adaptOrder } from '@adapters/order.adapter'
 import { UpdateOrderSchema } from '@validations/order'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
@@ -14,9 +12,9 @@ async function loadDb() {
 
 loadDb()
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await verifySession()
-  const id = await params.id
+  const id = (await params).id
   if (session?.role !== 'admin') {
     return errorResponse('Forbidden', 403)
   }
@@ -52,22 +50,22 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const id = (await params).id
   const Order = await getOneOrderById(id)
 
   if (!Order) {
     return errorResponse('Order does not exist', null, 404)
   }
 
-  const transfromData = transformOrder(Order)
+  const transfromData = adaptOrder(Order)
 
   return sendResponse('Order found', transfromData, 200)
 }
 
-export async function DELETE(__req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(__req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await verifySession()
-  const id = await params.id
+  const id = (await params).id
   if (session?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }

@@ -2,7 +2,7 @@ import mongoose, { Schema, model, Document } from 'mongoose'
 
 export interface IAddress extends Document {
   id: string
-  userId?: mongoose.Types.ObjectId
+  userId?: mongoose.Types.ObjectId | string
   fullName: string
   email: string
   phoneNumber: string

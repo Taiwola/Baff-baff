@@ -71,9 +71,8 @@ export async function login(state: LoginFormState, formData: FormData): Promise<
 
   const { role } = response.data
 
-  if (role === 'admin') {
-    redirect('/dashboard')
-  } else redirect('/')
+  if (role === 'admin') redirect('/dashboard')
+  redirect('/')
 }
 
 export async function forgotPassword(state: ForgotPasswordFormState, formData: FormData): Promise<ForgotPasswordFormState> {
@@ -106,14 +105,14 @@ export async function resetPassword(state: ResetPasswordFormState, formData: For
     password: String(formData.get('password') || ''),
     confirmPassword: String(formData.get('confirmPassword') || '')
   }
-  
+
   const result = resetPasswordSchema.safeParse(parsedValues)
 
   if (!result.success) {
     const errors = formatError<ResetPasswordFormErrors, ResetPasswordFormValues>(result.error)
     return { ...state, errors, values: parsedValues }
   }
-  
+
   const response = await ApiClient.patch<void>('/auth/reset-password', result.data)
 
   if (response.code >= 400) {

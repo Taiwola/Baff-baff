@@ -6,7 +6,7 @@ export interface ICartItem {
   name: string
   price: number
   fitting: Fitting
-  size: Size | 'Bespoke'
+  size: CartProductSize
   measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string }
   quantity: number
 }

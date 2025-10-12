@@ -4,7 +4,9 @@ import React, { useRef, useState } from 'react'
 
 import { Button, Input } from '@components/ui';
 
-type InitialState = Pick<Material, 'name' | 'stock'> & {
+type InitialState = {
+  name?: string
+  stock?: number
   image?: File | string
 }
 

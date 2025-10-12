@@ -4,7 +4,7 @@ type CartItem = {
   name: string
   price: number
   fitting: Fitting
-  size: Size | 'Bespoke'
+  size: CartProductSize
   measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string }
   quantity: number
 }
@@ -28,3 +28,5 @@ type DistinctCartItem = {
   size: Size | 'Bespoke'
   fitting: Fitting
 }
+
+type CartProductSize = Size | 'Bespoke'

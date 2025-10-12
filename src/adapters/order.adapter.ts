@@ -1,35 +1,34 @@
 import { IOrder } from '@models/order.model'
 import { paginate } from '@utils/pagination'
 
-export function transformOrder(data: IOrder): Order {
+export function adaptOrder(data: IOrder): Order {
   return {
     id: data.id,
-    orderId: 'ORDER-' + data.id.substring(0, 5),
-    date: data.datePlaced.toISOString(),
+    userId: data.userId?.toString(),
+    reference: data.reference,
+    total: data.total,
     deliveryFee: data.deliveryFee,
-    subTotal: data.amount,
-    totalAmount: data.totalAmount,
-    deliveryZone: data.region,
-    address: data.address,
-    email: data.email,
-    fullName: data.fullName,
-    paymentStatus: data.paymentStatus,
     status: data.status,
-    phoneNumber: data.phoneNumber,
-    products: data.products.map((product) => {
-      return {
-        id: product.id,
-        category: product.category,
-        image: product.image,
-        name: product.name,
-        price: product.price,
-        quantity: product.quantity,
-        size: product.size
+    items: data.items.map((item) => ({
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      fitting: item.fitting,
+      size: item.size,
+      measurements: item.measurements,
+      product: {
+        id: item.product.id,
+        name: item.product.name,
+        category: item.product.category,
+        type: item.product.type,
+        images: item.product.images
       }
-    })
+    })),
+    shippingAddress: data.shippingAddress,
+    createdAt: data.createdAt.toISOString()
   }
 }
 
-export function transformOrders({ data, page, pageSize }: AdaptersOptions<IOrder[]>): Pagination<Order> {
-  return paginate({ data: data.map(transformOrder), page, pageSize })
+export function adaptOrders({ data, page, pageSize }: AdaptersOptions<IOrder[]>): Pagination<Order> {
+  return paginate({ data: data.map(adaptOrder), page, pageSize })
 }

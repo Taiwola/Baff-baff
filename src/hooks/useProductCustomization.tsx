@@ -3,7 +3,7 @@ import { useReducer } from 'react'
 // --- Types ---
 export type CustomizationAction =
    | { type: 'fitting'; payload: Fitting }
-   | { type: 'size'; payload: Size }
+   | { type: 'size'; payload: CartProductSize }
    | { type: 'quantity'; payload: number }
    | { type: 'shirtMeasurement'; payload: Partial<ShirtMeasurement> }
    | { type: 'trouserMeasurement'; payload: Partial<TrouserMeasurement> }
@@ -12,7 +12,7 @@ export interface ProductCustomizationState {
    productId: string
    fitting: Fitting
    quantity: number
-   size: Size
+   size: CartProductSize
    shirtMeasurement: ShirtMeasurement
    trouserMeasurement: TrouserMeasurement
 }

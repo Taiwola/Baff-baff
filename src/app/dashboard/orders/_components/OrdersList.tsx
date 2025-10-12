@@ -1,10 +1,10 @@
 import React from 'react'
-import Link from 'next/link';
+// import Link from 'next/link';
 
 import { DataTable } from '@components/layouts';
 
 export default function OrdersList() {
-   return <DataTable columns={columns} rows={rowsForTable} />;
+   return <DataTable columns={columns} rows={[]} />;
 }
 
 
@@ -19,34 +19,13 @@ const columns = [
    { key: "status", label: "" },
 ];
 
-const statusColors: Record<OrderStatus, string> = {
-   notStart: "bg-gray-400",
-   processing: "bg-orange-500",
-   delivered: "bg-green-500"
-}
-
-// Helper function to get random status
-const randomStatus = (): OrderStatus => {
-   const statuses: OrderStatus[] = ["notStart", "processing", "delivered"]
-   return statuses[Math.floor(Math.random() * statuses.length)]
-}
+// const statusColors: Record<OrderStatus, string> = {
+//    notStart: "bg-gray-400",
+//    processing: "bg-orange-500",
+//    delivered: "bg-green-500"
+// }
 
 // Generate 20 orders
-const rows: Order[] = Array.from({ length: 20 }).map((_, i) => ({
-   id: `${i + 1}`,
-   date: "2025-09-28",
-   orderId: `ORD-${String(i + 1).padStart(3, "0")}`,
-   fullName: `Customer ${i + 1}`,
-   email: `customer${i + 1}@example.com`,
-   phoneNumber: `+44 7000 000${String(i + 1).padStart(2, "0")}`,
-   deliveryZone: ["Lagos Mainland", "Ikeja", "Lekki", "Victoria Island"][i % 4],
-   address: `${i + 1} Sample Street`,
-   status: randomStatus()
-}))
-
-// Map to JSX elements for DataTable
-const rowsForTable = rows.map(row => ({
-   ...row,
-   orderId: <Link className='underline text-[#3156DB]' href={`/dashboard/orders/${row.id}`}>{row.orderId}</Link>,
-   status: <div className={`w-[15px] h-[15px] rounded-full ${statusColors[row.status]}`} />
-}))
+// const rows: Order[] = []
+// // Map to JSX elements for DataTable
+// const rowsForTable = []
