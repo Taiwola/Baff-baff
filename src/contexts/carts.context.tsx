@@ -8,8 +8,8 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 type CartContextType = {
   cart: Cart
   addItem: (item: CartItem) => Promise<void>
-  updateItem: (productId: string, quantity: number) => Promise<void>
-  removeItem: (productId: string) => Promise<void>
+  updateItem: (itemId: string, quantity: number) => Promise<void>
+  removeItem: (itemId: string) => Promise<void>
   clear: () => Promise<void>
   syncWithServer: (cart: Cart) => Promise<void>
 }

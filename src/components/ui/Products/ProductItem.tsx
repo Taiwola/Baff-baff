@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 
-import Button from '../Button'
 import { formatCurrency } from '@utils'
 
 type Props = {
@@ -52,18 +51,6 @@ export default function ProductItem({ product }: Props) {
             <span>{formatCurrency(product.sizes.l.price)}</span>
             <span className="text-gray-500">({product.status})</span>
           </small>
-
-          <Button
-            as={'link'}
-            href={`/marketplace/product/${product.slug}`}
-            size="sm"
-            variant="bordered"
-            className="uppercase w-28 border-brand-dark text-brand-dark group-hover:bg-brand-dark hover:bg-brand-dark hover:text-white transition-all duration-300 group"
-          >
-            <small className="font-montserrat font-semibold group-hover:text-white">
-              add to bag
-            </small>
-          </Button>
         </div>
       </Link>
     </motion.div>

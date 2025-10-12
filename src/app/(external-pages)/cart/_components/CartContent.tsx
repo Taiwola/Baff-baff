@@ -12,9 +12,15 @@ import { QuantityButton } from '@components/features/cart'
 import { useCart } from '@contexts/carts.context'
 
 export default function CartContent() {
-  const { cart } = useCart()
+  const { cart, updateItem } = useCart()
 
   if (cart.items.length < 1) return <EmptyCart />
+
+  async function changeQuantity(quantity: number, id?: string) {
+    if(id) {
+     await updateItem(id, quantity)
+    }
+  }
 
   return (
     <div className="w-full flex flex-col font-montserrat">
@@ -45,7 +51,11 @@ export default function CartContent() {
             <div className="flex flex-col-reverse items-end md:flex-row md:items-start gap-12 md:gap-24">
               <div>
                 <p className="hidden md:block font-poppins text-black mb-2.5">Quantity</p>
-                <QuantityButton />
+                <QuantityButton
+                  id={item.id}
+                  quantity={item.quantity}
+                  setQuantity={changeQuantity}
+                />
               </div>
 
               <button type="button" onClick={() => { }}>

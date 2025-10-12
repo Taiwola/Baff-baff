@@ -4,14 +4,15 @@ import React from 'react'
 import { Button } from '@heroui/react'
 
 type Props = {
+  id?: string
   quantity: number
-  setQuantity: (quantity: number) => void
+  setQuantity: (quantity: number, id?: string) => void
 }
 
-export default function QuantityButton({ quantity, setQuantity }: Props) {
+export default function QuantityButton({ id, quantity, setQuantity }: Props) {
 
-  const decrease = () => setQuantity(Math.max(1, quantity - 1))
-  const increase = () => setQuantity(quantity + 1)
+  const decrease = () => setQuantity(Math.max(1, quantity - 1), id)
+  const increase = () => setQuantity(quantity + 1, id)
 
   return (
     <div className="flex text-black text-xs">
