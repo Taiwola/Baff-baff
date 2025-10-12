@@ -1,16 +1,18 @@
 import React from 'react'
 
 import { ProductList } from '@components/ui'
-import { products } from '@models/product.model'
+import { getProducts } from '@actions/products.action'
 
-export default function FeaturedProducts() {
+export default async function FeaturedProducts() {
+   const products = await getProducts({ limit: 5 })
+
    return (
       <section className='w-full py-12 container mx-auto'>
          <h4 className="home-label mb-5 md:mb-12">
             featured products
          </h4>
 
-         <ProductList products={products.splice(0, 5)} />
+         <ProductList products={products.items} />
       </section>
    )
 }

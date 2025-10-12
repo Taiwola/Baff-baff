@@ -1,24 +1,17 @@
-'use client'
-import { Button } from '@components/ui'
+import { notFound } from 'next/navigation'
 import { PencilIcon } from '@heroicons/react/24/outline'
 
-type ProfileDetails = {
-   firstName: string
-   lastName: string
-   email: string
-   gender: string
-   phoneNumber: string
-}
+import { verifySession } from '@lib/dal'
+import { getUser } from '@actions/users.action'
 
-const profile: ProfileDetails = {
-   firstName: 'John',
-   lastName: 'Doe',
-   email: 'john.doe@example.com',
-   gender: 'Male',
-   phoneNumber: '+44 123 456 7890',
-}
+import { Button } from '@components/ui'
 
-export default function ProfileSection() {
+export default async function ProfileSection() {
+   const session = await verifySession()
+   if (!session) return notFound()
+
+   const user = await getUser(session.userId)
+   if (!user) return notFound()
 
    return (
       <section className="mx-auto w-full md:max-w-[85%] flex flex-col gap-8 justify-center items-start font-montserrat border border-foreground rounded-xl p-6 relative">
@@ -30,11 +23,11 @@ export default function ProfileSection() {
 
          {/* Key / Value rows */}
          <div className="w-full flex flex-col gap-4">
-            <Row label="First Name" value={profile.firstName} />
-            <Row label="Last Name" value={profile.lastName} />
-            <Row label="Email Address" value={profile.email} />
-            <Row label="Gender" value={profile.gender} />
-            <Row label="Phone Number" value={profile.phoneNumber} />
+            <Row label="First Name" value={user.firstName} />
+            <Row label="Last Name" value={user.lastName} />
+            <Row label="Email Address" value={user.email} />
+            <Row label="Gender" value={user.gender || ''} />
+            <Row label="Phone Number" value={user.phoneNumber || ''} />
          </div>
       </section>
    )

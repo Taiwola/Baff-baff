@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose'
 import { NextRequest } from 'next/server'
 
@@ -25,26 +26,23 @@ export async function GET(req: NextRequest) {
   const session = await verifySession()
   const { searchParams } = new URL(req.url)
 
+  // may like, featured
   const parsed = productFilterSchema.safeParse({
     category: searchParams.get('category') || '',
     type: searchParams.get('type') || '',
-    status: searchParams.get('status') || '',
+    status: searchParams.get('status') ?? undefined,
     page: searchParams.get('page') || '',
     limit: searchParams.get('limit') || '',
-    search: searchParams.get('search')
+    search: searchParams.get('search') ?? undefined,
+    priceRange: searchParams.get('priceRange') || undefined
   })
 
   const queries = parsed.data
 
-  const filters: ProductFilter = {}
-  const sort: ProductSort = {}
-
-  if (session?.role !== 'admin') {
-    filters.status = 'inStock'
-  }
+  const filters: ProductFilter &  { $or?: any[]} = {}
 
   if (queries?.search) {
-    filters.name = { $regex: queries.search, $options: 'i' } // 'i' for case-insensitive
+    filters.name = { $regex: queries.search, $options: 'i' }
   }
 
   if (queries?.category) {
@@ -55,7 +53,7 @@ export async function GET(req: NextRequest) {
     filters.type = queries.type
   }
 
-  if (queries?.status && session?.role === 'admin') {
+  if (queries?.status) {
     filters.status = queries.status
   }
 
@@ -63,33 +61,50 @@ export async function GET(req: NextRequest) {
     filters.limit = queries.limit || 10
   }
 
-  if (queries?.flag === 'bestSelling') {
-    sort.numberOfSales = 'asc'
+  if (queries?.priceRange) {
+    const sizeKeys: Size[] = ['s', 'm', 'l', 'xl', 'xxl', 'xxxl']
+    let priceRangeQuery: { $gte?: number; $lte?: number; $gt?: number }
+    switch (queries.priceRange) {
+      case 'low':
+        priceRangeQuery = { $gte: 0, $lte: 15000 }
+        break
+      case 'mid':
+        priceRangeQuery = { $gt: 15000, $lte: 200000 }
+        break
+      case 'high':
+        priceRangeQuery = { $gt: 20000 }
+        break
+    }
+   filters.$or = [
+      ...sizeKeys.map((size) => ({
+        [`${size}.price`]: priceRangeQuery,
+      })),
+      ...sizeKeys.map((size) => ({
+        [`${size}.discountPrice`]: priceRangeQuery,
+      })),
+    ]
   }
 
-  if (queries?.flag === 'newest') {
-    sort.createdAt = 'asc'
-  }
-
-  if (queries?.flag === 'oldest') {
-    sort.createdAt = 'desc'
-  }
-
-  if (queries?.flag === 'nameAsc') {
-    sort.name = 'asc'
-  }
-
-  if (queries?.flag === 'nameDesc') {
-    sort.name = 'desc'
+  if (queries?.flag) {
+    filters.sort = {}
+    if (queries.flag === 'best-selling') {
+      filters.sort.numberOfSales = 'asc'
+    } else if (queries.flag === 'n-o') {
+      filters.sort.createdAt = 'asc'
+    } else if (queries.flag === 'o-n') {
+      filters.sort.createdAt = 'desc'
+    } else if (queries.flag === 'a-z') {
+      filters.sort.name = 'asc'
+    } else if (queries.flag === 'z-a') {
+      filters.sort.name = 'desc'
+    }
   }
 
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
 
   const products = await getAllProducts(filters)
-
   const transform = adaptProducts({ data: products, page, pageSize })
-
   return sendResponse('Product was successfully found', transform)
 }
 

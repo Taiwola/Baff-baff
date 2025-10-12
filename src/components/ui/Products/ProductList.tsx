@@ -1,6 +1,5 @@
 import React from 'react'
 import ProductItem from './ProductItem'
-import { Product } from '@models/product.model'
 
 type Props = {
   products: Product[]

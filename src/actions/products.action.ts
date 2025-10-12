@@ -36,7 +36,21 @@ export async function createProduct(state: CreateProductFormState, formData: For
 }
 
 export async function getProducts(options: ProductQuery = {}): Promise<Pagination<Product>> {
-  const response = await ServerApiClient.get<Pagination<Product>>(`/products?page=${options.page ?? 1}&limit=${10}&status=${options.status}`)
+  const params = new URLSearchParams()
+
+  if (options.page) params.set('page', options.page.toString())
+  if (options.limit) params.set('limit', options.limit.toString())
+  if (options.status) params.set('status', options.status)
+  if (options.type) params.set('type', options.type)
+  if (options.price) params.set('price', options.price)
+  if (options.sort) params.set('sort', options.sort)
+  if (options.category) params.set('category', options.category)
+  if (options.search) params.set('search', options.search)
+
+  const queryString = params.toString()
+  const url = `/products${queryString ? `?${queryString}` : ''}`
+
+  const response = await ServerApiClient.get<Pagination<Product>>(url)
 
   if (response.code >= 400) {
     console.log('products error: ', response)
@@ -48,6 +62,17 @@ export async function getProducts(options: ProductQuery = {}): Promise<Paginatio
 
 export async function getProduct(id: string) {
   const response = await ServerApiClient.get<Product>(`/products/${id}`)
+
+  if (response.code >= 400) {
+    console.log('product error: ', response)
+    return null
+  }
+
+  return response.data
+}
+
+export async function getProductBySlug(slug: string) {
+  const response = await ServerApiClient.get<Product>(`/products/slugs/${slug}`)
 
   if (response.code >= 400) {
     console.log('product error: ', response)

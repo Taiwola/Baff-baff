@@ -69,3 +69,4 @@ function parseSize(formData: FormData, key: string) {
     discountPrice: formData.get(`${key}[discountPrice]`) ? Number(formData.get(`${key}[discountPrice]`)) : undefined
   }
 }
+

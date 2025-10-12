@@ -1,12 +1,18 @@
-import { ProductList } from '@components/ui'
-import { products } from '@models/product.model'
 import React from 'react'
 
+import { ProductList } from '@components/ui'
+import { getProducts } from '@actions/products.action'
 
-export default function MarketPlaceProducts() {
+type Props = {
+   filter: MaketplaceFilter
+}
+
+export default async function MarketPlaceProducts({ filter }: Props) {
+   const products = await getProducts({ ...filter })
+
    return (
       <div className='w-full'>
-         <ProductList products={products} variant='marketplace' />
+         <ProductList products={products.items} variant='marketplace' />
       </div>
    )
 }

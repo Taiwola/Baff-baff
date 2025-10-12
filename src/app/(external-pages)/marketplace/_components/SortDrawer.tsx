@@ -1,16 +1,29 @@
 'use client'
-import React, { useState } from 'react'
+
+import React from 'react'
 import { Bars3BottomLeftIcon } from '@heroicons/react/24/outline'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Drawer, DrawerContent, DrawerHeader, DrawerBody, useDisclosure, Listbox, Selection, ListboxItem } from '@heroui/react'
 
+import { sortItems } from '@lib/sorts'
 import { Button } from '@components/ui'
 
-export default function SortDrawer() {
+type Props = {
+   sort?: ProductSortType
+}
+
+export default function SortDrawer({ sort }: Props) {
+   const router = useRouter()
+   const pathname = usePathname()
+   const searchParams = useSearchParams()
    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
-   const [selected, setSelected] = useState<Selection>(new Set())
 
    const handleSelect = (selection: Selection) => {
-      setSelected(selection)
+      const key = Array.from(selection)[0]
+      const params = new URLSearchParams(searchParams.toString())
+      if (key.toString() === 'clear') params.delete('sort')
+      else params.set('sort', key.toString())
+      router.replace(`${pathname}?${params.toString()}`)
       onClose()
    }
 
@@ -45,31 +58,43 @@ export default function SortDrawer() {
                         <Listbox
                            disallowEmptySelection
                            aria-label="Filter list"
-                           selectedKeys={selected}
+                           selectedKeys={new Set(sort ? [sort] : [])}
                            selectionMode="single"
                            variant="flat"
                            onSelectionChange={handleSelect}
                            itemClasses={{
-                              base: "p-2 text-base font-montserrat cursor-pointer text-black",
+                              base: "p-2 text-base font-montserrat cursor-pointer text-black data-[selected=true]:text-brand-purple",
                               selectedIcon: "text-brand-purple w-4 h-3",
                            }}
                         >
-                           {sortItems.map((item, idx) => (
+                           <>
+                              {sortItems.map((item, idx) => (
+                                 <ListboxItem
+                                    key={item.key}
+                                    className="text-black"
+                                    classNames={{
+                                       base: `w-full text-center px-5 py-3.5 text-base transition-colors hover:bg-brand-purple/10 ${idx === 0
+                                          ? "border-t border-b border-[#BCBCBC]" // first item gets top + bottom
+                                          : idx < sortItems.length - 1
+                                             ? "border-b border-[#BCBCBC]" // middle items get bottom only
+                                             : "" // last item has no border
+                                          }`
+                                    }}
+                                 >
+                                    {item.value}
+                                 </ListboxItem>
+                              ))}
+
                               <ListboxItem
-                                 key={item.key}
-                                 className="text-black"
+                                 key={'clear'}
+                                 className="text-red-600"
                                  classNames={{
-                                    base: `w-full text-center px-5 py-3.5 text-base transition-colors hover:bg-brand-purple/10 ${idx === 0
-                                       ? "border-t border-b border-[#BCBCBC]" // first item gets top + bottom
-                                       : idx < sortItems.length - 1
-                                          ? "border-b border-[#BCBCBC]" // middle items get bottom only
-                                          : "" // last item has no border
-                                       }`
+                                    base: `w-full text-center px-5 py-3.5 text-base transition-colors hover:bg-brand-purple/10 border-t border-b border-[#BCBCBC]`
                                  }}
                               >
-                                 {item.value}
+                                 Clear
                               </ListboxItem>
-                           ))}
+                           </>
                         </Listbox>
                      </DrawerBody>
                   </>
@@ -79,12 +104,3 @@ export default function SortDrawer() {
       </>
    )
 }
-
-const sortItems = [
-   { key: 'featured', value: 'Featured' },
-   { key: 'best-selling', value: 'Best Selling' },
-   { key: 'a-z', value: 'Alphabetically, A-Z' },
-   { key: 'z-a', value: 'Alphabetically, Z-A' },
-   { key: 'o-n', value: 'Date, Old to New' },
-   { key: 'n-o', value: 'Date, New to Old' }
-]

@@ -8,6 +8,10 @@ export const typeSchema = z.enum(['shirt', 'trouser'], "Type must be either 'shi
 
 export const fittingSchema = z.enum(['fit', 'baggy', 'straight'], 'Fitting must be one of: fit, baggy, straight')
 
+export const flagSchema = z.enum(['featured', 'best-selling', 'a-z', 'z-a', 'o-n', 'n-o'])
+
+export const priceSchema = z.enum(['low', 'mid', 'high'])
+
 export const sizeDetailsSchema = z.object({
   price: z.number('Price is required').min(1, 'Price must be greater than or equal to 0').optional(),
   discountPrice: z.number().min(1, 'Discount price must be greater than or equal to 0').optional(),

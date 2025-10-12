@@ -16,6 +16,11 @@ type ProductType = 'shirt' | 'trouser'
 
 type Fitting = 'fit' | 'baggy' | 'straight'
 
+type ProductSortType = 'featured' | 'best-selling' | 'a-z' | 'z-a' | 'o-n' | 'n-o' // old to new, new to old
+
+// low = 0 - 10,000; mid = 10,000 - 100,000; high = 100,000 +
+type PriceRange = 'low' | 'mid' | 'high'
+
 type Product = {
   id: string
   slug: string
@@ -47,12 +52,20 @@ type ProductSort = {
   name?: 'asc' | 'desc'
 }
 
-type ProductQuery = PaginationParams & {
-  status?: ProductStatus
-  search?: string
-}
+type ProductQuery = PaginationParams &
+  MaketplaceFilter & {
+    search?: string
+  }
 
 const statusMap: Record<ProductStatus, string> = {
   inStock: 'In Stock',
   outOfStock: 'Out of Stock'
+}
+
+type MaketplaceFilter = {
+  type?: ProductType
+  status?: ProductStatus
+  price?: PriceRange
+  sort?: ProductSortType
+  category?: ProductCategory
 }
