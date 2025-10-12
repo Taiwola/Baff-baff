@@ -12,13 +12,13 @@ import { QuantityButton } from '@components/features/cart'
 import { useCart } from '@contexts/carts.context'
 
 export default function CartContent() {
-  const { cart, updateItem } = useCart()
+  const { cart, updateItem, removeItem } = useCart()
 
   if (cart.items.length < 1) return <EmptyCart />
 
   async function changeQuantity(quantity: number, id?: string) {
-    if(id) {
-     await updateItem(id, quantity)
+    if (id) {
+      await updateItem(id, quantity)
     }
   }
 
@@ -58,8 +58,8 @@ export default function CartContent() {
                 />
               </div>
 
-              <button type="button" onClick={() => { }}>
-                <MinusCircleIcon className="icon-button w-4.5 md:w-6.5 h-4.5 md:h-6.5 text-brand-dark" />
+              <button type="button" onClick={() => removeItem(item.id)}>
+                <MinusCircleIcon className="icon-button w-4.5 md:w-6.5 h-4.5 md:h-6.5 text-red-500" />
               </button>
             </div>
           </div>
