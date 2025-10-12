@@ -1,5 +1,6 @@
 'use client'
 
+import useSWR from 'swr'
 import React from 'react'
 import Image from 'next/image'
 import { MinusCircleIcon } from '@heroicons/react/24/outline'
@@ -12,7 +13,9 @@ import { QuantityButton } from '@components/features/cart'
 import { useCart } from '@contexts/carts.context'
 
 export default function CartContent() {
-  const { cart, isLoading, updateItem, removeItem } = useCart()
+  const { cart, fetchCart, updateItem, removeItem } = useCart()
+
+  const { isLoading } = useSWR<Cart | null>('/api/cart', fetchCart)
 
   if (isLoading) return <CartSkeleton />
 

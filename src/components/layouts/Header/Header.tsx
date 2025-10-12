@@ -11,6 +11,7 @@ import LargeLogoSvg from "@assets/svg/largeLogoSvg";
 import SmallLogoSvg from "@assets/svg/smallLogoSvg";
 import { logout } from "@actions/auth.action";
 import { Button, Loading } from "@components/ui";
+import { useCart } from "@contexts/carts.context";
 
 type UserAccount = {
   key: string
@@ -24,6 +25,7 @@ type Props = {
 
 export default function Header({ user }: Props) {
   const router = useRouter();
+  const { reset } = useCart()
   const pathname = usePathname()
 
   const [query, setQuery] = useState("");
@@ -46,6 +48,7 @@ export default function Header({ user }: Props) {
   async function handlePressUserItem(item: UserAccount) {
     if (item.key === 'sign-out') {
       setIsLoggingOut(true)
+      reset() // clear cart local state
       await logout()
       setIsLoggingOut(false)
       router.push('/login')

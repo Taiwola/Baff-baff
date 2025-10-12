@@ -1,6 +1,5 @@
 'use client'
 
-import useSWR from 'swr'
 import { CartDto } from '@validations/cart'
 import { updateCart, syncCart, getCart } from '@actions/carts.action'
 import { UpdateCartDto } from '@validations/cart/update-cart.validation'
@@ -8,11 +7,12 @@ import React, { createContext, ReactNode, useContext, useState } from 'react'
 
 type CartContextType = {
   cart: Cart
-  isLoading: boolean
+  reset: () => void;
+  fetchCart: () => Promise<Cart | null>
   addItem: (item: CartItem) => Promise<void>
-  updateItem: (itemId: string, quantity: number) => Promise<void>
   removeItem: (itemId: string) => Promise<void>
   syncWithServer: (cart: Cart) => Promise<void>
+  updateItem: (itemId: string, quantity: number) => Promise<void>
 }
 
 type Props = {
@@ -29,8 +29,6 @@ const defaultCart: Cart = {
 
 export const CartProvider = ({ children }: Props) => {
   const [cart, setCart] = useState<Cart>(defaultCart);
-
-  const { isLoading } = useSWR<Cart | null>('/api/cart', fetchCart)
 
   async function fetchCart() {
     const serverCart = await getCart()
@@ -109,12 +107,16 @@ export const CartProvider = ({ children }: Props) => {
     }
   }
 
+  function reset() {
+    setCart(defaultCart)
+  }
+
   function isIdenticalItem(existing: CartItem, incoming: CartItem) {
     return (existing.product.id === incoming.product.id) && (existing.size === incoming.size) && (existing.fitting === incoming.fitting)
   }
 
   return (
-    <CartContext.Provider value={{ cart, isLoading, addItem, updateItem, removeItem, syncWithServer }}>
+    <CartContext.Provider value={{ cart, reset, fetchCart, addItem, updateItem, removeItem, syncWithServer }}>
       {children}
     </CartContext.Provider>
   );
