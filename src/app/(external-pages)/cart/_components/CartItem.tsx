@@ -7,6 +7,7 @@ import { MinusCircleIcon } from '@heroicons/react/24/outline'
 
 import { formatCurrency } from '@utils'
 import { QuantityButton } from '@components/features/cart'
+import Link from 'next/link'
 
 type Props = {
    item: CartItem
@@ -39,9 +40,9 @@ export default function CartItem({ item, remove, setQuantity }: Props) {
 
          {/* Product Info */}
          <div className="flex flex-col flex-1 w-full gap-3 text-center sm:text-left">
-            <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 uppercase">
+            <Link href={`/marketplace/product/${item.product.slug}`} className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 uppercase hover:text-brand-purple">
                {item.name}
-            </h3>
+            </Link>
 
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                <span className="border border-gray-800 text-gray-900 font-medium text-sm md:text-base px-2 py-1 rounded min-w-10 text-center">

@@ -12,14 +12,15 @@ export function adaptCart(data: ICart): Cart {
       }
 
       return {
-        id: item.product.id,
+        id: item.id,
         name: item.product.name,
         product: {
           id: item.product.id,
           name: item.product.name,
           images: item.product.images,
           category: item.product.category,
-          type: item.product.type
+          type: item.product.type,
+          slug: item.product.slug,
         },
         price: item.price,
         fitting: item.fitting,

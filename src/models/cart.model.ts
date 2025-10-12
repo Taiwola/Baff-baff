@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model, model } from 'mongoose'
 import { IProduct } from './product.model'
 
 export interface ICartItem {
+  id: string;
   product: IProduct | mongoose.Types.ObjectId | string
   name: string
   price: number

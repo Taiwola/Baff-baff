@@ -3,6 +3,7 @@ import { isValidObjectId } from 'mongoose'
 import { createMeasurementSchema } from '@validations/measurement'
 
 export const cartItemSchema = z.object({
+  id: z.string(),
   productId: z
     .string()
     .refine((val) => isValidObjectId(val), { message: 'Invalid Product ID' })

@@ -1,6 +1,6 @@
 type CartItem = {
   id: string
-  product: Pick<Product, 'id' | 'category' | 'images' | 'name' | 'type'>
+  product: Pick<Product, 'id' | 'category' | 'images' | 'name' | 'type' | 'slug'>
   name: string
   price: number
   fitting: Fitting

@@ -34,7 +34,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const key = getCartItemKey({ id: item.productId, fitting: item.fitting, size: item.size })
     const map = new Map(cart.items.map((it) => [getCartItemKey({ id: it.product.toString(), fitting: it.fitting, size: it.size }), it]))
 
-    if (action === 'add') {
+    if (action === 'add' && map.has(key)) {
+      const duplicateItemQuantity = map.get(key)?.quantity || 0
+      map.set(key, { ...item, product: item.productId, quantity: item.quantity + duplicateItemQuantity })
+    } else if(action === 'add') {
       map.set(key, { ...item, product: item.productId })
     } else if (action === 'update') {
       if (map.has(key)) map.set(key, { ...item, product: item.productId })
