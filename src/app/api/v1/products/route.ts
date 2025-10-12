@@ -33,12 +33,13 @@ export async function GET(req: NextRequest) {
     page: searchParams.get('page') || '',
     limit: searchParams.get('limit') || '',
     search: searchParams.get('search') ?? undefined,
-    priceRange: searchParams.get('priceRange') || undefined
+    priceRange: searchParams.get('priceRange') || undefined,
+    flag: searchParams.get('flag') ?? undefined
   })
 
   const queries = parsed.data
 
-  const filters: ProductFilter &  { $or?: any[]} = {}
+  const filters: ProductFilter & { $or?: any[] } = {}
 
   if (queries?.search) {
     filters.name = { $regex: queries.search, $options: 'i' }
@@ -68,39 +69,41 @@ export async function GET(req: NextRequest) {
         priceRangeQuery = { $gte: 0, $lte: 15000 }
         break
       case 'mid':
-        priceRangeQuery = { $gt: 15000, $lte: 200000 }
+        priceRangeQuery = { $gt: 15000, $lte: 20000 }
         break
       case 'high':
         priceRangeQuery = { $gt: 20000 }
         break
     }
-   filters.$or = [
+    filters.$or = [
       ...sizeKeys.map((size) => ({
-        [`${size}.price`]: priceRangeQuery,
+        [`${size}.price`]: priceRangeQuery
       })),
       ...sizeKeys.map((size) => ({
-        [`${size}.discountPrice`]: priceRangeQuery,
-      })),
+        [`${size}.discountPrice`]: priceRangeQuery
+      }))
     ]
   }
 
   if (queries?.flag) {
     filters.sort = {}
     if (queries.flag === 'best-selling') {
-      filters.sort.numberOfSales = 'asc'
+      filters.sort.numberOfSales = -1
     } else if (queries.flag === 'n-o') {
-      filters.sort.createdAt = 'asc'
+      filters.sort.createdAt = 1
     } else if (queries.flag === 'o-n') {
-      filters.sort.createdAt = 'desc'
+      filters.sort.createdAt = -1
     } else if (queries.flag === 'a-z') {
-      filters.sort.name = 'asc'
+      filters.sort.name = 1
     } else if (queries.flag === 'z-a') {
-      filters.sort.name = 'desc'
+      filters.sort.name = -1
     }
   }
 
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
+
+  console.log(filters.sort)
 
   const products = await getAllProducts(filters)
   const transform = adaptProducts({ data: products, page, pageSize })

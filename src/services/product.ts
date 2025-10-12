@@ -12,6 +12,7 @@ export async function createProduct(data: CreateProductDto, session?: ClientSess
 }
 
 export async function getAllProducts({ limit, sort, ...filter }: FilterQuery<ProductFilter>): Promise<IProduct[]> {
+  console.log(sort)
   return await ProductModel.find(filter).limit(limit).sort(sort)
 }
 

@@ -47,9 +47,9 @@ type ProductFilter = {
 }
 
 type ProductSort = {
-  numberOfSales?: 'asc' | 'desc'
-  createdAt?: 'asc' | 'desc'
-  name?: 'asc' | 'desc'
+  numberOfSales?: -1 | 1
+  createdAt?: -1 | 1
+  name?: -1 | 1
 }
 
 type ProductQuery = PaginationParams &
