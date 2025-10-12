@@ -4,7 +4,7 @@ import useSWR from 'swr'
 import { CartDto } from '@validations/cart'
 import { updateCart, syncCart, getCart } from '@actions/carts.action'
 import { UpdateCartDto } from '@validations/cart/update-cart.validation'
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import React, { createContext, ReactNode, useContext, useState } from 'react'
 
 type CartContextType = {
   cart: Cart
@@ -31,11 +31,6 @@ export const CartProvider = ({ children }: Props) => {
   const [cart, setCart] = useState<Cart>(defaultCart);
 
   const { isLoading } = useSWR<Cart | null>('/api/cart', fetchCart)
-
-  // keep localStorage synced
-  useEffect(() => {
-    localStorage.setItem('cart_v1', JSON.stringify(cart))
-  }, [cart])
 
   async function fetchCart() {
     const serverCart = await getCart()
