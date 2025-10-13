@@ -74,7 +74,7 @@ export default function Header({ user }: Props) {
   return (
     <>
       <header className="pt-4 pb-0 md:pb-4 w-full sticky backdrop-blur-sm top-0 z-40 border-b border-foreground bg-white">
-        <nav className="app-container flex items-center justify-between pb-8 md:pb-0">
+        <nav className="flex items-center justify-between pb-8 md:pb-0 app-container">
           {/* Left side */}
           <div className="flex items-center gap-7 flex-1">
             {/* Mobile menu button */}

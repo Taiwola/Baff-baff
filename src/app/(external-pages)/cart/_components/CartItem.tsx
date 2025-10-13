@@ -45,13 +45,15 @@ export default function CartItem({ item, remove, setQuantity }: Props) {
             </Link>
 
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-               <span className="border border-gray-800 text-gray-900 font-medium text-sm md:text-base px-2 py-1 rounded min-w-10 text-center">
+               <span className="border border-gray-800 text-gray-900 font-medium text-sm md:text-base px-2 py-1 rounded min-w-10 text-center uppercase">
                   {item.size}
                </span>
 
-               <span className="bg-gray-100 border border-gray-300 text-gray-700 text-sm md:text-base px-2 py-1 rounded min-w-10 text-center">
-                  {item.fitting}
-               </span>
+               {item.size !== 'Bespoke' ? (
+                  <span className="bg-gray-100 border border-gray-300 text-gray-700 text-sm md:text-base px-2 py-1 rounded min-w-10 text-center capitalize">
+                     {item.fitting}
+                  </span>
+               ) : null}
             </div>
 
             <span className="text-sm sm:text-base md:text-lg font-semibold text-brand-dark">

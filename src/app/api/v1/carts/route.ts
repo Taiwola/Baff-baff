@@ -10,7 +10,6 @@ import { cartSchema } from '@validations/cart'
 import { adaptCart } from '@adapters/cart.adapter'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { createCart, getCartByFilter, getOneCartById, mergeItems } from '@services/cart'
-import { IMeasurement } from '@models/measurement.model'
 import { createMeasurement, getMeasurementByFilter, updateMeasurement } from '@services/measurement'
 
 export async function GET() {

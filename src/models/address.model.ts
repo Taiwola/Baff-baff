@@ -74,6 +74,6 @@ const addressSchema = new Schema<IAddress>(
 )
 
 // Mongoose model for Address
-const AddressModel = model<IAddress>('Address', addressSchema)
+const AddressModel = mongoose.models.Address || model<IAddress>('Address', addressSchema)
 
 export default AddressModel

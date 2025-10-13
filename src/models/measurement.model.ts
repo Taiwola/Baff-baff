@@ -44,4 +44,4 @@ const measurementSchema: Schema<IMeasurement> = new Schema(
 )
 
 // Mongoose model for Measurement
-export const MeasurementModel = model<IMeasurement>('Measurement', measurementSchema)
+export const MeasurementModel = mongoose.models.Measurement || model<IMeasurement>('Measurement', measurementSchema)
