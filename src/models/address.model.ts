@@ -73,7 +73,18 @@ const addressSchema = new Schema<IAddress>(
   }
 )
 
-// Mongoose model for Address
+addressSchema.pre('save', async function (next) {
+  // Only run if this address is being set as active
+  if (!this.isModified('active') || !this.active || !this.userId) {
+    return next()
+  }
+
+  // Set all other addresses of this user to inactive
+  await mongoose.model('Address').updateMany({ userId: this.userId, _id: { $ne: this._id } }, { $set: { active: false } })
+
+  next()
+})
+
 const AddressModel = mongoose.models.Address || model<IAddress>('Address', addressSchema)
 
 export default AddressModel

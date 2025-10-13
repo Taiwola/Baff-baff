@@ -1,11 +1,13 @@
 import React from 'react'
 import Image from 'next/image'
 
-import { Button } from '@components/ui'
 import { formatCurrency } from '@utils'
 import { ServerApiClient } from '@utils/api-server'
-import { getActveAddress } from '@actions/addresses.action'
+
 import { getRegionSC } from '@actions/regions.action'
+import { getActveAddress } from '@actions/addresses.action'
+
+import DetailsButton from './DetailsButton'
 
 export default async function ShippingDetailsPage() {
    const response = await ServerApiClient.get<Cart | null>('/carts')
@@ -78,30 +80,7 @@ export default async function ShippingDetailsPage() {
             </div>
          </div>
 
-         {/* Button */}
-         <Button
-            size="md"
-            fullWidth
-            className="bg-black disabled:bg-[#B5B5B5]"
-         >
-            Proceed to Payment
-         </Button>
+         <DetailsButton address={address} />
       </>
    )
 }
-// const items = [
-//    {
-//       id: 1,
-//       name: 'T-Shirt',
-//       size: 'M',
-//       price: 20000,
-//       img: '/images/product-image.png',
-//    },
-//    {
-//       id: 2,
-//       name: 'Hoodie',
-//       size: 'L',
-//       price: 45000,
-//       img: '/images/product-image.png',
-//    },
-// ]
