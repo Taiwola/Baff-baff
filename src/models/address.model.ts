@@ -3,6 +3,7 @@ import mongoose, { Schema, model, Document } from 'mongoose'
 export interface IAddress extends Document {
   id: string
   userId?: mongoose.Types.ObjectId | string
+  cartId?: mongoose.Types.ObjectId | string
   fullName: string
   email: string
   phoneNumber: string
@@ -21,6 +22,10 @@ const addressSchema = new Schema<IAddress>(
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User'
+    },
+    cartId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Cart'
     },
     fullName: {
       type: String,

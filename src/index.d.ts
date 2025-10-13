@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// import { Status } from '@models/product.model'
+
 
 interface MenuItem {
   href: string
@@ -63,21 +62,4 @@ export interface FileValidationOptions {
 export interface ValidationResult {
   isValid: boolean
   errors: string[]
-}
-
-export type Currency = 'NGN' | 'USD' | 'GHS' | 'ZAR' | 'KES' | 'XOF'
-
-interface InitiatePayment {
-  amount: number
-  email: string
-  currency?: Currency
-  reference?: string
-  callback_url?: string
-  metadata?: Record<string, any>
-}
-
-interface InitiatePaymentResponse {
-  checkoutUrl: string // for web
-  reference: string
-  checkoutCode: string // for mobile
 }

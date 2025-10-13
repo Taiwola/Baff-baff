@@ -1,117 +1,114 @@
 // import { InitiatePaystackPayment } from '@payment/payment'
 // import { getAllCarts } from '@services/cart'
 // import { getOneRegionById } from '@services/region'
-import { errorResponse } from '@utils/api-response'
+import { errorResponse, sendResponse } from '@utils/api-response'
 // import { adaptCart } from '@adapters/cart.adapter'
 // import { createCheckoutSchema } from '@validations/checkout/create-checkout.validation'
 // import { CreateOrderDto, CreateOrderSchema } from '@validations/order'
 // import { NextRequest } from 'next/server'
 // import { getOneProductById } from '@services/product'
 // import { createOrder } from '@services/order'
-// import { verifySession } from '@lib/dal'
+import { verifySession } from '@lib/dal'
 import dbConnect from '@lib/database'
+import { NextRequest } from 'next/server'
+import { checkoutSchema } from '@validations/checkout'
+import { getOneCartById } from '@services/cart'
+import { getOneAddressById } from '@services/address'
+import { createOrder } from '@services/order'
+import { v4 as uuidv4, v4 } from 'uuid'
+import { getOneRegionById } from '@services/region'
+import { IProduct } from '@models/product.model'
+import { createOrderSchema } from '@validations/order'
+import { initiatePaystackPayment } from '@payment/payment'
 
-async function loadDb() {
+export async function POST(req: NextRequest) {
   await dbConnect()
-}
+  const session = await verifySession()
 
-loadDb()
+  const body = await req.json()
+  const result = checkoutSchema.safeParse(body)
 
-export async function POST() {
-  // // Validate user
-  // const session = await verifySession()
+  if (!result.success) {
+    const validationErrors = result.error.issues.map((detail) => ({
+      field: detail.path.join('.'),
+      message: detail.message
+    }))
+    return errorResponse('Validation failed', validationErrors, 400)
+  }
 
-  // // Parse and validate request body
-  // const body = await req.json()
-  // const result = createCheckoutSchema.safeParse(body)
-  // if (!result.success) {
-  //   const validationErrors = result.error.issues.map((detail) => ({
-  //     field: detail.path.join('.'),
-  //     message: detail.message
-  //   }))
-  //   return errorResponse('Validation failed', validationErrors, 400)
-  // }
+  const { cartId, addressId, regionId } = result.data
 
-  // // Fetch user carts
-  // const userCarts = await getAllCarts({ userId: session?.userId })
-  // console.log(userCarts)
-  // if (userCarts.length <= 0) {
-  //   return errorResponse('You currently have no cart items', null, 404)
-  // }
+  const cart = await getOneCartById(cartId)
+  if (!cart || cart.items.length < 1) return errorResponse('You currently have no cart items', null, 404)
 
-  // // Fetch region
-  // const region = await getOneRegionById(result.data.regionId)
-  // if (!region) {
-  //   return errorResponse('Region does not exist', null, 404)
-  // }
+  const address = await getOneAddressById(addressId)
+  if (!address) return errorResponse('No shipping address Provided', null, 404)
 
-  // // Calculate amount from carts
-  // const amount = userCarts.reduce((sum, cart) => {
-  //   const quantity = parseInt(cart.quantity)
-  //   if (isNaN(quantity)) {
-  //     throw new Error(`Invalid quantity for cart item ${cart.id}`)
-  //   }
-  //   return sum + cart.price * quantity
-  // }, 0)
+  const region = await getOneRegionById(regionId)
+  if (!region) return errorResponse('Region Not Found', null, 404)
 
-  // const products = await Promise.all(
-  //   userCarts.map(async (cart) => {
-  //     const transformed = adaptCart(cart)
-  //     const product = await getOneProductById(cart.product.id as string)
-  //     return {
-  //       id: product?.id as string,
-  //       name: product?.name as string,
-  //       price: transformed.price,
-  //       image: product?.images[0] as string,
-  //       category: ((product?.category as string) + ' - ' + product?.category_type) as string,
-  //       size: transformed.size,
-  //       quantity: transformed.quantity
-  //     }
-  //   })
-  // )
+  const orderValidation = createOrderSchema.safeParse({
+    userId: session?.userId,
+    reference: v4(),
+    total: cart.items.reduce((prev, curr) => (prev += curr.price * curr.quantity), 0),
+    deliveryFee: region.price,
+    items: cart.items.map((item) => {
+      const product: IProduct = item.product as IProduct
+      return {
+        name: item.name,
+        price: item.price,
+        fitting: item.fitting,
+        size: item.size,
+        measurements: item.measurements,
+        quantity: item.quantity,
+        product: {
+          id: product.id,
+          name: product.name,
+          type: product.type,
+          category: product.category,
+          images: product.images
+        }
+      }
+    }),
+    shippingAddress: {
+      fullName: address.fullName,
+      email: address.email,
+      phoneNumber: address.phoneNumber,
+      altPhoneNumber: address.altPhoneNumber,
+      city: address.city,
+      state: address.state,
+      address: address.address
+    }
+  })
+
+  if (!orderValidation.success) {
+    const validationErrors = orderValidation.error.issues.map((detail) => ({
+      field: detail.path.join('.'),
+      message: detail.message
+    }))
+
+    return errorResponse('Error Validating Order', validationErrors, 400)
+  }
 
   try {
-  //   // Initiate Paystack payment
-  //   const paymentData = {
-  //     amount,
-  //     email: result.data.email,
-  //     reference: `ORDER_${Date.now()}_${session?.userId}`
-  //   }
-  //   const paymentResult = await InitiatePaystackPayment(paymentData)
+    // Initiate Paystack payment
+    const paymentData: InitiatePayment = {
+      amount: orderValidation.data.total,
+      email: orderValidation.data.shippingAddress.email,
+      reference: orderValidation.data.reference,
+      metadata: { cartId }
+    }
 
-  //   // Create order data
-  //   const orderData: Partial<CreateOrderDto> = {
-  //     reference: paymentResult.reference,
-  //     userId: session?.userId.toString(),
-  //     address: result.data.address,
-  //     state: result.data.state,
-  //     region: result.data.region,
-  //     deliveryFee: region.price,
-  //     email: result.data.email,
-  //     amount,
-  //     totalAmount: amount + region.price,
-  //     fullName: result.data.fullName,
-  //     phoneNumber: result.data.phoneNumber,
-  //     paymentStatus: 'unpaid',
-  //     status: 'not_start',
-  //     products
-  //   }
-  //   const orderResult = CreateOrderSchema.safeParse(orderData)
-  //   if (!orderResult.success) {
-  //     const validationErrors = orderResult.error.issues.map((detail) => ({
-  //       field: detail.path.join('.'),
-  //       message: detail.message
-  //     }))
-  //     return errorResponse('Validation failed', validationErrors, 400)
-  //   }
-  //   const saveOrder = await createOrder(orderResult.data)
+    const paymentResult = await initiatePaystackPayment(paymentData)
 
-  //   return sendResponse('Checkout completed', {
-  //     id: saveOrder.id,
-  //     reference: saveOrder.reference,
-  //     checkoutUrl: paymentResult.checkoutUrl,
-  //     checkoutCode: paymentResult.checkoutCode
-  //   })
+    const order = await createOrder(orderValidation.data)
+
+    return sendResponse('Checkout completed', {
+      id: order.id,
+      reference: order.reference,
+      checkoutUrl: paymentResult.checkoutUrl,
+      checkoutCode: paymentResult.checkoutCode
+    })
   } catch (error) {
     console.error(error)
     return errorResponse('Failed to create order', null, 500)

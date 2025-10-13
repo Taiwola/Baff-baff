@@ -5,7 +5,7 @@ import { NextRequest } from 'next/server'
 import mongoose, { ClientSession } from 'mongoose'
 import ProductModel, { IProduct, ISizeDetails } from '@models/product.model'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { deleteManyCarts, getAllCarts } from '@services/cart'
+import { deleteManyCarts, getAllCarts, getCartById } from '@services/cart'
 import dbConnect from '@lib/database'
 
 async function loadDb() {
@@ -15,21 +15,23 @@ async function loadDb() {
 loadDb()
 
 export async function POST(req: NextRequest) {
-  console.log('webhook ran')
-
   const body: PaystackWebhook<PaystackChargeSuccess> = await req.json()
+  sendResponse('success', 200)
 
   if (body.event === 'charge.success') {
-    // const data = body.data
-    // const order = await getOrderByFilter({ reference: data.reference })
-    // const carts = await getAllCarts({ userId: order?.userId })
+    const data = body.data as PaystackChargeSuccess
+    const order = await getOrderByFilter({ reference: data.reference })
+    const cart = await getCartById(String(data.metadata.cartId))
 
-    // if (!order || !order.products || order.products.length <= 0) {
-    //   return errorResponse('Order or products not found', null, 404)
-    // }
+    if (!order || order.status !== 'pending') {
+      return
+    }
 
-    // const session: ClientSession = await mongoose.startSession()
-    // session.startTransaction()
+    try {
+      
+    } catch (error) {
+      console.error('Transaction aborted due to error:', error)
+    }
 
     // try {
     //   const products = order.products
