@@ -70,6 +70,17 @@ export async function getRegion(id: string) {
   return response.data
 }
 
+export async function getRegionSC(state: string, city: string) {
+  const response = await ServerApiClient.get<Region>(`/regions/states/${state}/cities/${city}`)
+
+  if (response.code >= 400) {
+    console.log('region error: ', response)
+    return null
+  }
+
+  return response.data
+}
+
 export async function updateRegion(id: string, state: UpdateRegionFormState, formData: FormData) {
   const parsedValues: UpdateRegionDto = {
     state: String(formData.get('state')) || '',

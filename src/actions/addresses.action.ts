@@ -68,6 +68,17 @@ export async function getAddress(id: string) {
   return response.data
 }
 
+export async function getActveAddress() {
+  const response = await ServerApiClient.get<Address>(`/addresses/active`)
+
+  if (response.code >= 400) {
+    console.log('address error: ', response)
+    return null
+  }
+
+  return response.data
+}
+
 export async function updateAddress(id: string, state: UpdateAddressFormState, formData: FormData) {
   const parsedValues: UpdateAddressDto = {
     state: String(formData.get('state')),
