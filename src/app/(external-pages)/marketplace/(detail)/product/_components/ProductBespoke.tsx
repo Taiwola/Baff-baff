@@ -6,11 +6,13 @@ type Props = {
   type: ProductType
   shirtMeasurement: ShirtMeasurement
   trouserMeasurement: TrouserMeasurement
+  saveMeasurements: boolean
   onChangeShirtMeasurement: (measurement: ShirtMeasurement) => void
   onChangeTrouserMeasurement: (measurement: TrouserMeasurement) => void
+  toggleSaveMeasurements: (value: boolean) => void
 }
 
-export default function ProductBespoke({ type, shirtMeasurement, trouserMeasurement, onChangeShirtMeasurement, onChangeTrouserMeasurement }: Props) {
+export default function ProductBespoke({ type, shirtMeasurement, trouserMeasurement, saveMeasurements, onChangeShirtMeasurement, onChangeTrouserMeasurement, toggleSaveMeasurements }: Props) {
   let fields = [
     { key: 'chest', label: 'Chest', value: shirtMeasurement.chest },
     { key: 'arm', label: 'Arm', value: shirtMeasurement.arm },
@@ -73,6 +75,8 @@ export default function ProductBespoke({ type, shirtMeasurement, trouserMeasurem
           type="checkbox"
           id="save-measurements"
           className="w-4 h-4 accent-black cursor-pointer"
+          checked={saveMeasurements}
+          onChange={(e) => toggleSaveMeasurements(e.target.checked)}
         />
         <label
           htmlFor="save-measurements"

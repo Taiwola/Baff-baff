@@ -10,8 +10,8 @@ import { cartSchema } from '@validations/cart'
 import { adaptCart } from '@adapters/cart.adapter'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { createCart, getCartByFilter, getOneCartById, mergeItems } from '@services/cart'
-
-
+import { IMeasurement } from '@models/measurement.model'
+import { createMeasurement, getMeasurementByFilter, updateMeasurement } from '@services/measurement'
 
 export async function GET() {
   await dbConnect()
@@ -24,8 +24,8 @@ export async function GET() {
   // if the user is logged in
   if (session?.userId) {
     cart = await getCartByFilter({ userId: session.userId })
-  } 
-  
+  }
+
   // if the user is a guest and has a guest cart
   else if (guestCartId) {
     cart = await getOneCartById(guestCartId)
@@ -75,6 +75,20 @@ export async function POST(req: NextRequest) {
         // Merge incoming items with existing cart
         cart.items = mergeItems(cart.items, result.data.items)
         await cart.save()
+      }
+
+      let measurements = null
+
+      for (const item of result.data.items) {
+        if (item.saveMeasurements && item.size === 'Bespoke') {
+          measurements = item.measurements
+        }
+      }
+
+      if (measurements) {
+        const userMeasurement = await getMeasurementByFilter({ userId })
+        if (userMeasurement) updateMeasurement(userMeasurement.id, { ...measurements })
+        else createMeasurement({ ...measurements, userId })
       }
     }
 

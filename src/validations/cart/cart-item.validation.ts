@@ -13,7 +13,8 @@ export const cartItemSchema = z.object({
   quantity: z.number('Quantity is required'),
   fitting: z.enum(['fit', 'baggy', 'straight']),
   size: z.enum(['s', 'm', 'l', 'xl', 'xxl', 'xxxl', 'Bespoke']),
-  measurements: createMeasurementSchema.optional()
+  measurements: createMeasurementSchema.optional(),
+  saveMeasurements: z.boolean().default(false).optional()
 })
 
 export type CartItemDto = z.infer<typeof cartItemSchema>

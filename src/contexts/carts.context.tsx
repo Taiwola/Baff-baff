@@ -49,13 +49,6 @@ export const CartProvider = ({ children }: Props) => {
   async function addItem(item: CartItem) {
     // find index of identical item
     const idx = cart.items.findIndex((i) => isIdenticalItem(i, item));
-    console.log('cart', cart);
-    
-    console.log('idx', idx);
-    
-    console.log('items >>>>>', cart.items);
-    console.log('item >>>>>', item);
-    
     let newCartItems: CartItem[];
 
     if (idx > -1) {
@@ -72,11 +65,10 @@ export const CartProvider = ({ children }: Props) => {
     try {
       // if there is a cart id (user is logged in), sync with server
       if (cart.id) {
-        console.log('updating');
-        
         const { product, ...dto } = item
         const payload: UpdateCartDto = { action: 'add', item: { ...dto, productId: product.id } }
-        await updateCart(cart.id, payload)
+        const updatedCart = await updateCart(cart.id, payload)
+        if (updatedCart) setCart(updatedCart)
       } else {
         await syncWithServer({ ...cart, items: newCartItems });
       }

@@ -5,7 +5,8 @@ type CartItem = {
   price: number
   fitting: Fitting
   size: CartProductSize
-  measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string }
+  measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string },
+  saveMeasurements?: boolean
   quantity: number
 }
 

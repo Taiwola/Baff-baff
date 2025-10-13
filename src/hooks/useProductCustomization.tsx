@@ -7,6 +7,7 @@ export type CustomizationAction =
    | { type: 'quantity'; payload: number }
    | { type: 'shirtMeasurement'; payload: Partial<ShirtMeasurement> }
    | { type: 'trouserMeasurement'; payload: Partial<TrouserMeasurement> }
+   | { type: 'saveMeasurements'; payload: boolean }
 
 export interface ProductCustomizationState {
    productId: string
@@ -15,6 +16,7 @@ export interface ProductCustomizationState {
    size: CartProductSize
    shirtMeasurement: ShirtMeasurement
    trouserMeasurement: TrouserMeasurement
+   saveMeasurements: boolean
 }
 
 // --- Reducer ---
@@ -34,7 +36,7 @@ function productCustomizationReducer(state: ProductCustomizationState, action: C
             ...state,
             shirtMeasurement: {
                ...state.shirtMeasurement,
-               ...action.payload, 
+               ...action.payload,
             },
          }
 
@@ -43,9 +45,12 @@ function productCustomizationReducer(state: ProductCustomizationState, action: C
             ...state,
             trouserMeasurement: {
                ...state.trouserMeasurement,
-               ...action.payload, 
+               ...action.payload,
             },
          }
+
+      case 'saveMeasurements':
+         return { ...state, saveMeasurements: action.payload }
 
       default:
          return state
@@ -71,5 +76,7 @@ export function useProductCustomization(initialState: ProductCustomizationState)
    const setTrouserMeasurements = (measurements: Partial<TrouserMeasurement>) =>
       dispatch({ type: 'trouserMeasurement', payload: measurements })
 
-   return { state, setFitting, setSize, setQuantity, setShirtMeasurements, setTrouserMeasurements }
+   const toggleSaveMeasurements = (value: boolean) => dispatch({ type: 'saveMeasurements', payload: value })
+
+   return { state, setFitting, setSize, setQuantity, setShirtMeasurements, setTrouserMeasurements, toggleSaveMeasurements }
 }

@@ -9,6 +9,7 @@ export interface ICartItem {
   fitting: Fitting
   size: CartProductSize
   measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string }
+  saveMeasurements?: boolean
   quantity: number
 }
 
@@ -38,7 +39,8 @@ const CartItemSchema = new Schema<ICartItem>({
     trouserLength: { type: String, default: '' },
     knee: { type: String, default: '' }
   },
-  quantity: { type: Number, default: 1 }
+  quantity: { type: Number, default: 1 },
+  saveMeasurements: { type: Boolean, default: false }
 })
 
 const cartSchema: Schema<ICart> = new Schema(

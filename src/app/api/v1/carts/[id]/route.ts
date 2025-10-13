@@ -7,6 +7,7 @@ import { adaptCart } from '@adapters/cart.adapter'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { getCartById, getOneCartById, getCartItemKey, updateCart } from '@services/cart'
 import { updateCartSchema } from '@validations/cart/update-cart.validation'
+import { createMeasurement, getMeasurementByFilter, updateMeasurement } from '@services/measurement'
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await dbConnect()
@@ -37,7 +38,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (action === 'add' && map.has(key)) {
       const duplicateItemQuantity = map.get(key)?.quantity || 0
       map.set(key, { ...item, product: item.productId, quantity: item.quantity + duplicateItemQuantity })
-    } else if(action === 'add') {
+    } else if (action === 'add') {
       map.set(key, { ...item, product: item.productId })
     } else if (action === 'update') {
       if (map.has(key)) map.set(key, { ...item, product: item.productId })
@@ -48,6 +49,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const cartItems = Array.from(map.values())
     const updatedCart = await updateCart(id, { items: cartItems })
     if (!updatedCart) return errorResponse('Error updating cart', null, 404)
+    if (item.saveMeasurements && item.size === 'Bespoke' && cart.userId) {
+      const userMeasurement = await getMeasurementByFilter({ userId: cart.userId })
+      if (userMeasurement) updateMeasurement(userMeasurement.id, { ...item.measurements })
+      else createMeasurement({ ...item.measurements, userId: cart.userId.toString() })
+    }
     return sendResponse('Cart updated', adaptCart(updatedCart))
   } catch (error) {
     console.error('Error updating Cart', error)

@@ -23,15 +23,16 @@ type Props = {
 export default function ProductCustomization({ product, shirtMeasurement, trouserMeasurement }: Props) {
   const router = useRouter()
   const { addItem } = useCart()
-  const { state, setFitting, setSize, setQuantity, setShirtMeasurements, setTrouserMeasurements } = useProductCustomization({
+  const { state, setFitting, setSize, setQuantity, setShirtMeasurements, setTrouserMeasurements, toggleSaveMeasurements } = useProductCustomization({
     productId: product.id,
     fitting: 'fit',
     size: 'l',
     quantity: 1,
     shirtMeasurement,
-    trouserMeasurement
+    trouserMeasurement,
+    saveMeasurements: false
   })
-
+  
   const price = state.size !== 'Bespoke' ? product.sizes[state.size].price : 100
   const discountPrice = state.size !== 'Bespoke' && product.sizes[state.size].discountPrice ? product.sizes[state.size].discountPrice : undefined
 
@@ -43,6 +44,7 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
       name: product.name,
       fitting: state.fitting,
       size: state.size,
+      saveMeasurements: state.saveMeasurements,
       measurements: { ...state.shirtMeasurement, ...state.trouserMeasurement, length: state.shirtMeasurement.length, trouserLength: state.trouserMeasurement.length },
       quantity: state.quantity
     })
@@ -81,10 +83,12 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
           <Tab key="Bespoke" title="BESPOKE">
             <ProductBespoke
               type={product.type}
+              saveMeasurements={state.saveMeasurements}
               shirtMeasurement={state.shirtMeasurement}
               trouserMeasurement={state.trouserMeasurement}
               onChangeShirtMeasurement={setShirtMeasurements}
               onChangeTrouserMeasurement={setTrouserMeasurements}
+              toggleSaveMeasurements={toggleSaveMeasurements}
             />
           </Tab>
         </Tabs>
