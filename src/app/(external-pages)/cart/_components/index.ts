@@ -1,2 +1,2 @@
 export { default as EmptyCart } from './EmptyCart'
-export { default as CartContent } from './CartContent'
+export { default as CartList } from './CartList'

@@ -23,7 +23,7 @@ export type PaystackChargeSuccess<T = any> = {
   period_end: Date
   currency: string
   ip_address: string
-  metadata: any
+  metadata: Record<string, unknown>
   fees_breakdown: any | null
   log: any | null
   fees: number

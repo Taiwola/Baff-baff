@@ -1,30 +1,58 @@
 import mongoose, { Schema, Document, Model, model } from 'mongoose'
 import { IProduct } from './product.model'
 
-export interface ICart extends Document {
-  id: string
+export interface ICartItem {
+  id: string;
+  product: IProduct | mongoose.Types.ObjectId | string
+  name: string
   price: number
-  size: string
-  product: IProduct
-  quantity: string
-  userId: mongoose.Types.ObjectId | string
+  fitting: Fitting
+  size: CartProductSize
+  measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string }
+  saveMeasurements?: boolean
+  quantity: number
+}
+
+export interface ICart extends Document {
+  _id: mongoose.Types.ObjectId
+  userId?: mongoose.Types.ObjectId | string
+  items: ICartItem[]
   createdAt: Date
   updatedAt: Date
 }
 
+const CartItemSchema = new Schema<ICartItem>({
+  product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+  name: String,
+  price: Number,
+  fitting: { type: String, required: true, enum: ['fit', 'baggy', 'straight'] },
+  size: { type: String, required: true },
+  measurements: {
+    chest: { type: String, default: '' },
+    arm: { type: String, default: '' },
+    sleeve: { type: String, default: '' },
+    shoulder: { type: String, default: '' },
+    length: { type: String, default: '' },
+    neck: { type: String, default: '' },
+    waist: { type: String, default: '' },
+    lap: { type: String, default: '' },
+    trouserLength: { type: String, default: '' },
+    knee: { type: String, default: '' }
+  },
+  quantity: { type: Number, default: 1 },
+  saveMeasurements: { type: Boolean, default: false }
+})
+
 const cartSchema: Schema<ICart> = new Schema(
   {
-    price: { type: Number, default: 0 },
-    size: { type: String, default: '' },
-    quantity: { type: String, default: '' },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    product: { type: Schema.Types.ObjectId, ref: 'Product', required: true }
+    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    items: { type: [CartItemSchema], default: [] }
   },
   {
     timestamps: true
   }
 )
 
-const CartModel: Model<ICart> = model<ICart>('Cart', cartSchema)
+const CartModel: Model<ICart> = mongoose.models.Cart || model<ICart>('Cart', cartSchema)
 
 export default CartModel

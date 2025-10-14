@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { SortButton, Title } from '../../_components'
-import { MarketPlaceProducts } from '@components/features/products'
+// import { MarketPlaceProducts } from '@components/features/products'
 
 type Props = {
    params: Promise<{ search: string }>
@@ -24,7 +24,7 @@ export default async function SearchMarketplace({ params }: Props) {
             </div>
          </div>
 
-         <MarketPlaceProducts />
+         {/* <MarketPlaceProducts /> */}
       </div>
    )
 }

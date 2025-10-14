@@ -1,73 +1,70 @@
 'use server'
 
-import { deleteCart, getOneCartById, updateCart } from '@services/cart'
-import { errorResponse, sendResponse } from '@utils/api-response'
-import { adaptCart } from '@adapters/cart.adapter'
-import { updateCartSchema } from '@validations/cart'
 import { NextRequest } from 'next/server'
+
 import dbConnect from '@lib/database'
+import { adaptCart } from '@adapters/cart.adapter'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { getCartById, getOneCartById, getCartItemKey, updateCart } from '@services/cart'
+import { updateCartSchema } from '@validations/cart/update-cart.validation'
+import { createMeasurement, getMeasurementByFilter, updateMeasurement } from '@services/measurement'
 
-async function loadDb() {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await dbConnect()
-}
-
-loadDb()
-
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
-
-  const body = await req.json()
-
-  const result = updateCartSchema.safeParse(body)
-  if (!result.success) {
-    const validationErrors = result.error.issues.map((detail) => ({
-      field: detail.path.join('.'),
-      message: detail.message
-    }))
-    return errorResponse('Validation failed', validationErrors, 400)
-  }
-
-  const Cart = await getOneCartById(id)
-
-  if (!Cart) {
-    return errorResponse('Cart does not exist', null, 404)
-  }
+  const { id } = await params
 
   try {
-    const update = await updateCart(Cart?.id, result.data)
+    const body = await req.json()
 
-    if (!update) {
-      return errorResponse('Cart failed to update', null, 400)
+    const result = updateCartSchema.safeParse(body)
+
+    if (!result.success) {
+      const validationErrors = result.error.issues.map((detail) => ({
+        field: detail.path.join('.'),
+        message: detail.message
+      }))
+
+      return errorResponse('Validation failed', validationErrors, 400)
     }
 
-    return sendResponse('Cart updated')
+    const { action, item } = result.data
+
+    const cart = await getCartById(id)
+    if (!cart) return errorResponse('Cart not found', null, 404)
+
+    const key = getCartItemKey({ id: item.productId, fitting: item.fitting, size: item.size })
+    const map = new Map(cart.items.map((it) => [getCartItemKey({ id: it.product.toString(), fitting: it.fitting, size: it.size }), it]))
+
+    if (action === 'add' && map.has(key)) {
+      const duplicateItemQuantity = map.get(key)?.quantity || 0
+      map.set(key, { ...item, product: item.productId, quantity: item.quantity + duplicateItemQuantity })
+    } else if (action === 'add') {
+      map.set(key, { ...item, product: item.productId })
+    } else if (action === 'update') {
+      if (map.has(key)) map.set(key, { ...item, product: item.productId })
+    } else if (action === 'remove') {
+      map.delete(key)
+    }
+
+    const cartItems = Array.from(map.values())
+    const updatedCart = await updateCart(id, { items: cartItems })
+    if (!updatedCart) return errorResponse('Error updating cart', null, 404)
+    if (item.saveMeasurements && item.size === 'Bespoke' && cart.userId) {
+      const userMeasurement = await getMeasurementByFilter({ userId: cart.userId })
+      if (userMeasurement) updateMeasurement(userMeasurement.id, { ...item.measurements })
+      else createMeasurement({ ...item.measurements, userId: cart.userId.toString() })
+    }
+    return sendResponse('Cart updated', adaptCart(updatedCart))
   } catch (error) {
     console.error('Error updating Cart', error)
     return sendResponse('Internal server error', null, 500)
   }
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  await dbConnect()
+  const { id } = await params
   const Cart = await getOneCartById(id)
-
-  if (!Cart) {
-    return errorResponse('Cart does not exist', null, 404)
-  }
-
-  const transfromData = adaptCart(Cart)
-
-  return sendResponse('Cart found', transfromData, 200)
-}
-
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
-
-  try {
-    await deleteCart(id)
-    return sendResponse('Cart deleted successfully')
-  } catch (error) {
-    console.error('Error deleting Cart', error)
-    return errorResponse('Internal server error')
-  }
+  if (!Cart) return errorResponse('Cart not found', null, 404)
+  return sendResponse('Cart found', adaptCart(Cart), 200)
 }

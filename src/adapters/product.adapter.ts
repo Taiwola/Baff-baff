@@ -17,7 +17,7 @@ export function adaptProduct(data: IProduct): Product {
       l: getSize(data.l),
       xl: getSize(data.xl),
       xxl: getSize(data.xxl),
-      xxxl: getSize(data.xxxl)
+      xxxl: getSize(data.xxxl),
     },
     status: data.status,
     material: data.material.toString(),

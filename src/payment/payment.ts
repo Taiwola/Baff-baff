@@ -1,7 +1,6 @@
 import 'server-only'
 
 import axios, { AxiosError } from 'axios'
-import { InitiatePayment, InitiatePaymentResponse } from '@index'
 
 const url: string = 'https://api.paystack.co'
 const secret = process.env.PAYSTACK_SECRET as string
@@ -10,7 +9,7 @@ const headers = {
   'Content-Type': 'application/json'
 }
 
-export async function InitiatePaystackPayment({ currency = 'NGN', ...payload }: InitiatePayment): Promise<InitiatePaymentResponse> {
+export async function initiatePaystackPayment({ currency = 'NGN', ...payload }: InitiatePayment): Promise<InitiatePaymentResponse> {
   try {
     const response = await axios.post(`${url}/transaction/initialize`, { ...payload, currency, amount: payload.amount * 100 }, { headers })
 

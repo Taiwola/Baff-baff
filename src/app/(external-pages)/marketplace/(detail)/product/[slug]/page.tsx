@@ -1,12 +1,13 @@
 import React from 'react'
+import { notFound } from 'next/navigation'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
-import { BreadCrumbItemType, BreadCrumbs, Button, ProductGallery } from '@components/ui'
-import { Description, ProductItemTab, QuantityButton } from '../_components'
+import { ProductCustomization, Description } from '../_components'
+import { BreadCrumbItemType, BreadCrumbs, ProductGallery } from '@components/ui'
 
-import { capitalizeFirstLetter, formatCurrency } from '@utils'
+import { capitalizeFirstLetter } from '@utils'
 import { getProductBySlug } from '@actions/products.action'
-import { notFound } from 'next/navigation'
+import { getUserMeasurement } from '@actions/measurements.action'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -17,6 +18,8 @@ export default async function ProductDetail({ params }: Props) {
 
   const product = await getProductBySlug(slug)
   if (!product) return notFound()
+
+  const userMeasurements = await getUserMeasurement()
 
   const breadcrumbs: BreadCrumbItemType[] = [
     {
@@ -61,31 +64,11 @@ export default async function ProductDetail({ params }: Props) {
 
           <h1 className='font-normal mt-7.5 md:mt-5.5 mb-5 text-[36px] w-full'>{product.name}</h1>
 
-          <div className='flex justify-start items-center gap-1'>
-            <h6 className='text-[1.25rem]'>{formatCurrency(product.sizes.l.price)}</h6>
-            {product.sizes.l.discountPrice ? <h6 className='text-[1.25rem]'>{`-${formatCurrency(product.sizes.l.discountPrice)}`}</h6> : null}
-          </div>
-
-          <p className='text-[0.6875rem]'>Bulk pricing available for quantities of 5 units or more</p>
-
-          <div className='w-full mt-5'>
-            <ProductItemTab product={product} />
-          </div>
-
-        
-          <div className='mt-5'>
-            <p className='text-sm'>QUANTITY</p>
-            <QuantityButton />
-          </div>
-
-          <Button
-            fullWidth={true}
-            className='bg-black mt-5 mb-7.5 font-montserrat text-base font-bold'
-            size='md'
-            rounded='md'
-          >
-            ADD TO CART
-          </Button>
+          <ProductCustomization
+            product={product}
+            shirtMeasurement={userMeasurements.shirt}
+            trouserMeasurement={userMeasurements.trouser}
+          />
 
           <Description />
 

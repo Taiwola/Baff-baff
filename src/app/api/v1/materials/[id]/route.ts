@@ -16,14 +16,16 @@ async function loadDb() {
 
 loadDb()
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await verifySession()
 
   if (auth?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 
-  const material = await getMaterialById(params.id)
+  const id = (await params).id
+
+  const material = await getMaterialById(id)
   if (!material) {
     return errorResponse('Material not found', null, 404)
   }

@@ -2,15 +2,42 @@
 
 import React from 'react'
 
-export default function ProductBespoke() {
-  const fields = [
-    { key: 'chest', label: 'Chest' },
-    { key: 'arm', label: 'Arm' },
-    { key: 'sleeve', label: 'Sleeve' },
-    { key: 'shoulder', label: 'Shoulder' },
-    { key: 'length', label: 'Length' },
-    { key: 'neck', label: 'Neck' },
+type Props = {
+  type: ProductType
+  shirtMeasurement: ShirtMeasurement
+  trouserMeasurement: TrouserMeasurement
+  saveMeasurements: boolean
+  onChangeShirtMeasurement: (measurement: ShirtMeasurement) => void
+  onChangeTrouserMeasurement: (measurement: TrouserMeasurement) => void
+  toggleSaveMeasurements: (value: boolean) => void
+}
+
+export default function ProductBespoke({ type, shirtMeasurement, trouserMeasurement, saveMeasurements, onChangeShirtMeasurement, onChangeTrouserMeasurement, toggleSaveMeasurements }: Props) {
+  let fields = [
+    { key: 'chest', label: 'Chest', value: shirtMeasurement.chest },
+    { key: 'arm', label: 'Arm', value: shirtMeasurement.arm },
+    { key: 'sleeve', label: 'Sleeve', value: shirtMeasurement.sleeve },
+    { key: 'shoulder', label: 'Shoulder', value: shirtMeasurement.shoulder },
+    { key: 'length', label: 'Length', value: shirtMeasurement.length },
+    { key: 'neck', label: 'Neck', value: shirtMeasurement.neck },
   ]
+
+  if (type === 'trouser' || type === 'short') {
+    fields = [
+      { key: 'waist', label: 'Waist', value: trouserMeasurement.waist },
+      { key: 'lap', label: 'Lap', value: trouserMeasurement.lap },
+      { key: 'length', label: 'Length', value: trouserMeasurement.length },
+      { key: 'Knee', label: 'Knee', value: trouserMeasurement.knee },
+    ]
+  }
+
+  function handleChange(key: string, value: string) {
+    if (type === 'shirt' || type === 'jacket') {
+      onChangeShirtMeasurement({ ...shirtMeasurement, [key]: value })
+    } else if (type === 'trouser' || type === 'short') {
+      onChangeTrouserMeasurement({ ...trouserMeasurement, [key]: value })
+    }
+  }
 
   return (
     <form className="flex flex-col gap-6 w-full">
@@ -24,10 +51,14 @@ export default function ProductBespoke() {
             >
               {field.label}
             </label>
+
             <div className="relative">
               <input
                 id={field.key}
+                name={field.key}
                 type="number"
+                value={field.value}
+                onChange={(e) => handleChange(field.key, e.target.value)}
                 className="w-[70px] h-[40px] pr-6 pl-2 text-sm text-black focus:outline-none border border-black rounded-none"
               />
               <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">
@@ -44,6 +75,8 @@ export default function ProductBespoke() {
           type="checkbox"
           id="save-measurements"
           className="w-4 h-4 accent-black cursor-pointer"
+          checked={saveMeasurements}
+          onChange={(e) => toggleSaveMeasurements(e.target.checked)}
         />
         <label
           htmlFor="save-measurements"

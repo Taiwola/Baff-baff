@@ -50,7 +50,7 @@ export default function LoginForm() {
          </div>
 
          <Button rounded='md' size='md' className='bg-black mt-5'>
-            {pending ? <Spinner size="sm" color="default" /> : 'Login'}
+            {pending ? <Spinner size="sm" color="default" className='animate-spin' /> : 'Login'}
          </Button>
 
          <div className='flex justify-center items-center mt-5'>

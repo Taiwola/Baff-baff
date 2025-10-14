@@ -1,78 +1,72 @@
-import mongoose, { Schema, Document } from 'mongoose'
-
-export type IOrderProduct = {
-  id: string
-  name: string
-  price: number
-  image: string
-  category: string
-  size: string
-  quantity: string
-}
+import mongoose, { Schema, Document, Model } from 'mongoose'
 
 export interface IOrder extends Document {
-  id: string
+  _id: string
+  userId?: mongoose.Types.ObjectId | string
   reference: string
-  userId: mongoose.Types.ObjectId | string
-  datePlaced: Date
-  totalAmount: number
-  email: string
-  amount: number
-  deliveryFee: number
-  address: string
-  state: string
-  region: string
-  fullName: string
-  paymentStatus: string
+  items: OrderItem[]
+  total: number
   status: OrderStatus
-  phoneNumber: string
-  products: IOrderProduct[]
+  shippingAddress: OrderShippingAddress
+  deliveryFee: number
+  createdAt: Date
+  updatedAt: Date
 }
-
-const productSchema: Schema<IOrderProduct> = new Schema({
-  id: { type: String, required: true },
-  name: { type: String, required: true },
-  price: { type: Number, required: true },
-  image: { type: String, required: true },
-  category: { type: String, required: true },
-  size: { type: String, required: true },
-  quantity: { type: String, required: true }
-})
 
 const orderSchema: Schema<IOrder> = new Schema(
   {
+    userId: { type: mongoose.Types.ObjectId, ref: 'User' },
     reference: { type: String, required: true, unique: true },
-    userId: { type: String, required: true, ref: 'User' },
-    datePlaced: { type: Date, required: true, default: Date.now },
-    totalAmount: { type: Number, required: true },
-    email: { type: String, required: true },
-    amount: { type: Number, required: true },
-    deliveryFee: { type: Number, required: true, default: 0 },
-    address: { type: String, required: true },
-    state: { type: String, required: true },
-    region: { type: String, required: true },
-    fullName: { type: String, required: true },
-    paymentStatus: {
-      type: String,
-      required: true,
-      enum: ['unpaid', 'paid'],
-      default: 'unpaid'
-    },
+    items: [
+      {
+        product: {
+          id: { type: String, required: true },
+          name: { type: String, required: true },
+          type: { type: String, required: true },
+          category: { type: String, required: true },
+          images: { type: [String], default: [] }
+        },
+        name: { type: String, required: true },
+        price: { type: Number, required: true },
+        fitting: { type: String, required: true, enum: ['fit', 'baggy', 'straight'] },
+        size: { type: String, required: true },
+        measurements: {
+          chest: { type: String, default: '' },
+          arm: { type: String, default: '' },
+          sleeve: { type: String, default: '' },
+          shoulder: { type: String, default: '' },
+          length: { type: String, default: '' },
+          neck: { type: String, default: '' },
+          waist: { type: String, default: '' },
+          lap: { type: String, default: '' },
+          trouserLength: { type: String, default: '' },
+          knee: { type: String, default: '' }
+        },
+        quantity: { type: Number, required: true }
+      }
+    ],
+    total: { type: Number, required: true },
     status: {
       type: String,
       required: true,
-      enum: ['notStart', 'processing', 'delivered'],
-      default: 'notStart'
+      enum: ['pending', 'paid', 'delivered', 'cancelled', 'failed'],
+      default: 'pending'
     },
-    phoneNumber: { type: String, required: true },
-    products: [productSchema]
+    shippingAddress: {
+      fullName: { type: String, required: true },
+      email: { type: String, required: true },
+      phoneNumber: { type: String, required: true },
+      altPhoneNumber: { type: String, required: true },
+      city: { type: String, required: true },
+      state: { type: String, required: true },
+      address: { type: String, required: true }
+    },
+    deliveryFee: { type: Number, required: true, default: 0 }
   },
   {
     timestamps: true
   }
 )
 
-// Export the model
-const OrderModel = mongoose.model<IOrder>('Order', orderSchema)
-
+const OrderModel: Model<IOrder> = mongoose.models.Order || mongoose.model<IOrder>('Order', orderSchema)
 export default OrderModel

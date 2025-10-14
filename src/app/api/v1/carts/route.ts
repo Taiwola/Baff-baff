@@ -1,76 +1,130 @@
 'use server'
 
-import { createCart, getAllCarts } from '@services/cart'
-import { getUserById } from '@services/user'
-import { errorResponse, sendResponse } from '@utils/api-response'
-import { adaptCart, adaptCarts } from '@adapters/cart.adapter'
-import { cartQueryFilter, createCartSchema } from '@validations/cart'
+import { cookies } from 'next/headers'
 import { NextRequest } from 'next/server'
-import { verifySession } from '@lib/dal'
+
 import dbConnect from '@lib/database'
+import { verifySession } from '@lib/dal'
+import { ICart } from '@models/cart.model'
+import { cartSchema } from '@validations/cart'
+import { adaptCart } from '@adapters/cart.adapter'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { createCart, getCartByFilter, getOneCartById, mergeItems } from '@services/cart'
+import { createMeasurement, getMeasurementByFilter, updateMeasurement } from '@services/measurement'
 
-async function loadDb() {
+export async function GET() {
   await dbConnect()
-}
-
-loadDb()
-
-export async function GET(req: NextRequest) {
   const session = await verifySession()
-  const { searchParams } = new URL(req.url)
+  const cookieStore = await cookies()
+  const guestCartId = cookieStore.get('guestCartId')?.value
 
-  const parsed = cartQueryFilter.safeParse({
-    page: searchParams.get('page'),
-    limit: searchParams.get('limit')
-  })
+  let cart: ICart | null = null
 
-  const queries = parsed.data
-
-  const filters: CartFilter = {}
-
-  if (session !== null) {
-    filters.userId = session.userId
+  // if the user is logged in
+  if (session?.userId) {
+    cart = await getCartByFilter({ userId: session.userId })
   }
 
-  if (queries?.limit) {
-    filters.limit = queries.limit || 10
+  // if the user is a guest and has a guest cart
+  else if (guestCartId) {
+    cart = await getOneCartById(guestCartId)
   }
 
-  const page = queries?.page || 1
-  const pageSize = queries?.limit || 10
+  if (!cart) return errorResponse('cart not found', null, 404)
 
-  const carts = await getAllCarts(filters)
-  const transform = adaptCarts({ data: carts, page, pageSize })
-
-  return sendResponse('Request was successful', transform, 200)
+  const adaptedCart = adaptCart(cart)
+  return sendResponse('success', adaptedCart)
 }
 
+// user is not logged in, has no cart in cookie or db
+// user is not logged in, has cart in cookie
+// user is logged in, has cart in cookie, no cart in db
+// user is logged in has in cookie and db
 export async function POST(req: NextRequest) {
+  await dbConnect()
   const session = await verifySession()
+  const userId = session?.userId
 
-  const findUser = await getUserById(session?.userId as string)
+  const cookieStore = await cookies()
+  const guestCartId = cookieStore.get('guestCartId')?.value
 
-  if (!findUser) {
-    return errorResponse('User does not exist', null, 404)
-  }
   try {
     const body = await req.json()
+    const result = cartSchema.safeParse(body)
 
-    const result = createCartSchema.safeParse(body)
     if (!result.success) {
       const validationErrors = result.error.issues.map((detail) => ({
         field: detail.path.join('.'),
         message: detail.message
       }))
+
       return errorResponse('Validation failed', validationErrors, 400)
     }
 
-    result.data.userId = session?.userId
+    let cart: ICart | null = null
 
-    const cart = await createCart(result.data)
-    const transform = adaptCart(cart)
+    // If user is logged in
+    if (userId) {
+      cart = await getCartByFilter({ userId })
 
-    return sendResponse('Cart created successfully', transform, 201)
+      if (!cart) {
+        // Create a new cart for logged-in user
+        cart = await createCart({ ...result.data, userId })
+      } else {
+        // Merge incoming items with existing cart
+        cart.items = mergeItems(cart.items, result.data.items)
+        await cart.save()
+      }
+
+      let measurements = null
+
+      for (const item of result.data.items) {
+        if (item.saveMeasurements && item.size === 'Bespoke') {
+          measurements = item.measurements
+        }
+      }
+
+      if (measurements) {
+        const userMeasurement = await getMeasurementByFilter({ userId })
+        if (userMeasurement) updateMeasurement(userMeasurement.id, { ...measurements })
+        else createMeasurement({ ...measurements, userId })
+      }
+    }
+
+    // If user is a guest but has a guest cart
+    else if (guestCartId) {
+      cart = await getOneCartById(guestCartId)
+
+      if (cart) {
+        cart.items = mergeItems(cart.items, result.data.items)
+        await cart.save()
+      } else {
+        cart = await createCart(result.data)
+      }
+    }
+
+    // Guest without a cart
+    else {
+      cart = await createCart(result.data)
+    }
+
+    const adaptedCart = adaptCart(cart)
+
+    // Set/update guest cart cookie if user is not logged in
+    if (!userId && !guestCartId) {
+      const expiry = new Date()
+      expiry.setDate(expiry.getDate() + 30)
+
+      cookieStore.set('guestCartId', cart.id, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        path: '/',
+        expires: expiry
+      })
+    }
+
+    return sendResponse('Cart created successfully', adaptedCart, 201)
   } catch (error) {
     console.error('Cart creation error:', error)
     return errorResponse('Internal server error', null, 500)

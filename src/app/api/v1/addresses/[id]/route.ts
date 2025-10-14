@@ -11,8 +11,8 @@ async function loadDb() {
 
 loadDb()
 
-export async function GET(__req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
+export async function GET(__req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const id = (await params).id
 
   const address = await getOneAddressById(id)
 
@@ -24,8 +24,8 @@ export async function GET(__req: NextRequest, { params }: { params: { id: string
   return sendResponse('Request successfull', transform)
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const id = (await params).id
   const body = await req.json()
 
   const result = updateAddressSchema.safeParse(body)
@@ -53,9 +53,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(__req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(__req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = await params.id
+    const id = (await params).id
 
     const remove = await deleteAddress(id)
 

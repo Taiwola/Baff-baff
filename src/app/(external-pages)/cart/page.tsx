@@ -1,5 +1,5 @@
 import React from 'react'
-import { CartContent, EmptyCart } from './_components'
+import { CartList } from './_components'
 import { ProductList } from '@components/ui'
 import { products } from '@models/product.model'
 
@@ -9,7 +9,7 @@ export default function Cart() {
          <h1 className='text-[1.125rem] md:text-[2.25rem] font-montserrat mb-5 font-bold'>SHOPPING BAG</h1>
 
          <section className='w-full'>
-            {cartItems.length <= 0 ? <EmptyCart /> : <CartContent />}
+            <CartList />
          </section>
 
          <section className='w-full mt-12'>
@@ -19,5 +19,3 @@ export default function Cart() {
       </main>
    )
 }
-
-const cartItems = [1]

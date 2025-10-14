@@ -1,8 +1,6 @@
-'use server'
-
 import { getAllOrders } from '@services/order'
 import { errorResponse, sendResponse } from '@utils/api-response'
-import { transformOrders } from '@adapters/order.adapter'
+import { adaptOrders } from '@adapters/order.adapter'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
@@ -44,7 +42,7 @@ export async function GET(req: NextRequest) {
       orders = await getAllOrders(filters)
     }
 
-    const transform = transformOrders({ data: orders, page, pageSize })
+    const transform = adaptOrders({ data: orders, page, pageSize })
 
     return sendResponse('Orders fetched successfully', transform, 200)
   } catch (error) {

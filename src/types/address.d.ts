@@ -1,6 +1,6 @@
 type Address = {
   id: string
-  userId: string
+  userId?: string
   fullName: string
   email: string
   phoneNumber: string

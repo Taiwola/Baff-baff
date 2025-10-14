@@ -6,6 +6,7 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { createAddress, getAllAddresss } from '@services/address'
 import { adaptAddress, adaptAddresses } from '@adapters/address.adapter'
 import { addressQueryFilter, createAddressSchema } from '@validations/address'
+import { cookies } from 'next/headers'
 
 async function loadDb() {
   await dbConnect()
@@ -46,10 +47,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const session = await verifySession()
-
-  if (!session?.userId) {
-    return errorResponse('UnAuthenticated', null, 401)
-  }
+  const cookieStore = await cookies()
+  const guestCartId = cookieStore.get('guestCartId')?.value
 
   const body = await req.json()
 
@@ -64,8 +63,16 @@ export async function POST(req: NextRequest) {
     return errorResponse('Validation failed', validationErrors, 400)
   }
 
+  let d = {}
+
+  if (session?.userId) {
+    d = { userId: session.userId }
+  } else if (guestCartId) {
+    d = { cartId: guestCartId }
+  }
+
   try {
-    const address = await createAddress({ ...result.data, userId: session.userId })
+    const address = await createAddress({ ...result.data, ...d })
     const transform = adaptAddress(address)
     return sendResponse('Request successfull', transform, 201)
   } catch (error) {

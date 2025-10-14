@@ -7,6 +7,10 @@ type Measurement = {
   updatedAt: string
 }
 
+type BespokeMeasurement = ShirtMeasurement & TrouserMeasurement & {
+  tLength: string
+}
+
 type ShirtMeasurement = {
   chest: string
   arm: string

@@ -4,6 +4,11 @@ type Size = 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl'
 
 type IProductSizes = Record<Size, SizeDetails>
 
+const StatusMap: Record<ProductStatus, string> = {
+  inStock: 'In Stock',
+  outOfStock: 'Out of Stock'
+}
+
 type SizeDetails = {
   price: number
   discountPrice?: number

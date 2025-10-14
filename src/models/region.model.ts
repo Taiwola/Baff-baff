@@ -20,6 +20,6 @@ const regionSchema: Schema<IRegion> = new Schema(
   }
 )
 
-const RegionModel: Model<IRegion> = mongoose.model<IRegion>('Region', regionSchema)
+const RegionModel: Model<IRegion> = mongoose.models.Region || mongoose.model<IRegion>('Region', regionSchema)
 
 export default RegionModel

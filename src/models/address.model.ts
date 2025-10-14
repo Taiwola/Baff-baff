@@ -1,9 +1,9 @@
 import mongoose, { Schema, model, Document } from 'mongoose'
 
-// Updated Address interface with userId
 export interface IAddress extends Document {
   id: string
-  userId: mongoose.Types.ObjectId | string
+  userId?: mongoose.Types.ObjectId | string
+  cartId?: mongoose.Types.ObjectId | string
   fullName: string
   email: string
   phoneNumber: string
@@ -21,8 +21,11 @@ const addressSchema = new Schema<IAddress>(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: [true, 'User ID is required']
+      ref: 'User'
+    },
+    cartId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Cart'
     },
     fullName: {
       type: String,
@@ -75,7 +78,18 @@ const addressSchema = new Schema<IAddress>(
   }
 )
 
-// Mongoose model for Address
-const AddressModel = model<IAddress>('Address', addressSchema)
+addressSchema.pre('save', async function (next) {
+  // Only run if this address is being set as active
+  if (!this.isModified('active') || !this.active || !this.userId) {
+    return next()
+  }
+
+  // Set all other addresses of this user to inactive
+  await mongoose.model('Address').updateMany({ userId: this.userId, _id: { $ne: this._id } }, { $set: { active: false } })
+
+  next()
+})
+
+const AddressModel = mongoose.models.Address || model<IAddress>('Address', addressSchema)
 
 export default AddressModel

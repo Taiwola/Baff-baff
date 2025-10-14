@@ -4,6 +4,7 @@ import HeroUiProvider from "../providers/herouiProvider"
 import ToastProvider from "@providers/ToastProvider"
 
 import "@styles/globals.css"
+import { CartProvider } from "@contexts/carts.context"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -47,7 +48,11 @@ export default async function RootLayout({
         className={`${poppins.variable} ${montserrat.variable} ${roboto.variable} ${lexendDeca.variable} min:h-screen w-full`}
       >
         <ToastProvider>
-          <HeroUiProvider>{children}</HeroUiProvider>
+          <HeroUiProvider>
+            <CartProvider>
+              {children}
+            </CartProvider>
+          </HeroUiProvider>
         </ToastProvider>
       </body>
     </html>

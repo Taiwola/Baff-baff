@@ -13,8 +13,8 @@ async function loadDb() {
 
 loadDb()
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const id = (await params).id
 
   const body = await req.json()
 
@@ -49,8 +49,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function GET(__req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
+export async function GET(__req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const id = (await params).id
   const measurement = await getOneMeasurementById(id)
 
   if (!measurement) {
@@ -62,8 +62,8 @@ export async function GET(__req: NextRequest, { params }: { params: { id: string
   return sendResponse('Measurement found', transfromData, 200)
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = await params.id
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const id = (await params).id
 
   try {
     await deleteMeasurement(id)
