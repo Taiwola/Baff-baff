@@ -4,5 +4,6 @@ export const CLOUDINARY_FOLDERS = {
   USERS: 'users',
   PRODUCTS: 'products',
   EVENTS: 'events',
-  TEMP: 'temp'
+  TEMP: 'temp',
+  COLLABORATORS: 'collaborators'
 } as const

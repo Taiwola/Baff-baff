@@ -3,8 +3,16 @@ import React from 'react'
 import { Button } from '@components/ui'
 import { CollaboratorsList } from './_components'
 import { FilterButton, Header, Search } from '@components/features/dashboard'
+import { getCollaborators } from '@actions/collaborators.action'
 
-export default function CollaboratorsPage() {
+type Props = {
+  searchParams: Promise<CollaboratorFilter>;
+}
+
+export default async function CollaboratorsPage({ searchParams }: Props) {
+  const query = await searchParams
+  const promise = getCollaborators(query)
+
   return (
     <div className="w-full h-auto">
       <Header title='Collaborators'>
@@ -28,7 +36,7 @@ export default function CollaboratorsPage() {
       </Header>
 
       <div className="w-full">
-        <CollaboratorsList />
+        <CollaboratorsList promise={promise} />
       </div>
     </div>
   )

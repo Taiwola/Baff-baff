@@ -22,12 +22,13 @@ export default function CollaboratorItem({ collaborator }: Props) {
                width={174}
                height={174}
                className="rounded-full object-cover"
+               unoptimized
             />
          </div>
 
          <Link
             href={`/dashboard/products?collaboratorId=${collaborator.id}`}
-            className="mt-3.5 text-lg text-black transition-colors duration-300 group-hover:text-blue-600"
+            className="mt-3.5 text-lg text-black transition-colors duration-300 group-hover:text-blue-600 text-nowrap"
          >
             {collaborator.name}
          </Link>
