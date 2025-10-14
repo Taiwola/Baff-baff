@@ -10,7 +10,7 @@ import ProductSizes from './ProductSizes'
 import ProductBespoke from './ProductBespoke'
 import { QuantityButton } from '@components/features/cart'
 
-import { formatCurrency } from '@utils'
+import { formatCurrency, getSize } from '@utils'
 import { useCart } from '@contexts/carts.context'
 import { useProductCustomization } from '@hooks/useProductCustomization'
 
@@ -32,15 +32,16 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
     trouserMeasurement,
     saveMeasurements: false
   })
-  
-  const price = state.size !== 'Bespoke' ? product.sizes[state.size].price : 100
-  const discountPrice = state.size !== 'Bespoke' && product.sizes[state.size].discountPrice ? product.sizes[state.size].discountPrice : undefined
+
+  const measurements = product.type === 'trouser' || product.type === 'short' ? trouserMeasurement : shirtMeasurement
+  const price = state.size !== 'Bespoke' ? product.sizes[state.size].price : product.sizes[getSize(measurements)].price
+  const discountPrice = state.size !== 'Bespoke' && product.sizes[state.size].discountPrice ? product.sizes[state.size].discountPrice : product.sizes[getSize(measurements)].discountPrice
 
   function handleAddToCart() {
     addItem({
       id: uuidv4(),
       product,
-      price,
+      price: discountPrice ?? price,
       name: product.name,
       fitting: state.fitting,
       size: state.size,
@@ -82,6 +83,7 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
 
           <Tab key="Bespoke" title="BESPOKE">
             <ProductBespoke
+              sizes={product.sizes}
               type={product.type}
               saveMeasurements={state.saveMeasurements}
               shirtMeasurement={state.shirtMeasurement}

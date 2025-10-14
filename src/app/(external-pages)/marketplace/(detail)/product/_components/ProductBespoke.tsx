@@ -1,9 +1,11 @@
 'use client'
 
 import React from 'react'
+import { formatCurrency, getSize } from '@utils'
 
 type Props = {
   type: ProductType
+  sizes: IProductSizes
   shirtMeasurement: ShirtMeasurement
   trouserMeasurement: TrouserMeasurement
   saveMeasurements: boolean
@@ -12,7 +14,8 @@ type Props = {
   toggleSaveMeasurements: (value: boolean) => void
 }
 
-export default function ProductBespoke({ type, shirtMeasurement, trouserMeasurement, saveMeasurements, onChangeShirtMeasurement, onChangeTrouserMeasurement, toggleSaveMeasurements }: Props) {
+export default function ProductBespoke({ type, sizes, shirtMeasurement, trouserMeasurement, saveMeasurements, onChangeShirtMeasurement, onChangeTrouserMeasurement, toggleSaveMeasurements }: Props) {
+  const measurements = type === 'trouser' || type === 'short' ? trouserMeasurement : shirtMeasurement
   let fields = [
     { key: 'chest', label: 'Chest', value: shirtMeasurement.chest },
     { key: 'arm', label: 'Arm', value: shirtMeasurement.arm },
@@ -85,6 +88,9 @@ export default function ProductBespoke({ type, shirtMeasurement, trouserMeasurem
           Save measurements
         </label>
       </div>
+
+      <p className='text-sm'>PRICE</p>
+      <p className='font-medium'>{formatCurrency(sizes[getSize(measurements)].discountPrice || sizes[getSize(measurements)].price)}</p>
     </form>
   )
 }
