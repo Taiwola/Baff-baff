@@ -25,6 +25,7 @@ export default function EditProduct({ materials, product }: Props) {
          description: product.description,
          category: product.category,
          type: product.type,
+         design: product.design,
          materialId: product.material,
          yard: product.yard,
          s: product.sizes.s,

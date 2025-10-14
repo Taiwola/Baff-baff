@@ -8,6 +8,7 @@ export function adaptProduct(data: IProduct): Product {
     images: data.images,
     category: data.category,
     type: data.type,
+    design: data.design,
     yard: data.yard,
     description: data.description,
     name: data.name,

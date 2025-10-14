@@ -13,15 +13,10 @@ import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { createProductSchema, productFilterSchema } from '@validations/product'
 import { parseProductForm } from '@utils/formatting'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 const isLocal = process.env.NODE_ENV !== 'production'
 
 export async function GET(req: NextRequest) {
+  await dbConnect()
   const { searchParams } = new URL(req.url)
 
   // may like, featured
@@ -67,6 +62,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  await dbConnect()
   const auth = await verifySession()
 
   const session = isLocal ? undefined : await mongoose.startSession()

@@ -37,6 +37,7 @@ type Product = {
   slug: string
   images: string[]
   description: string
+  design: ProductDesign
   category: ProductCategory
   type: ProductType
   material: string

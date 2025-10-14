@@ -7,13 +7,8 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { getOneProductById, updateProduct } from '@services/product'
 import { statusSchema } from '@validations/product/shared.validation'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+   await dbConnect()
   const { id: productId } = await params
 
   const userSession = await verifySession()
