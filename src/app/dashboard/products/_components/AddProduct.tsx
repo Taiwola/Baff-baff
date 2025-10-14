@@ -18,6 +18,7 @@ const initialState: CreateProductFormState = {
       images: [],
       description: '',
       category: '',
+      design: '',
       type: '',
       materialId: '',
       yard: 0

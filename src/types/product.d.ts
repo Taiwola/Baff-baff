@@ -21,6 +21,17 @@ type ProductSortType = 'featured' | 'best-selling' | 'a-z' | 'z-a' | 'o-n' | 'n-
 // low = 0 - 10,000; mid = 10,000 - 100,000; high = 100,000 +
 type PriceRange = 'low' | 'mid' | 'high'
 
+type ShirtDesign = 'plain' | 'checkered' | 'patterned' | 'striped' | 'abstract' | 'print'
+
+type TrouserDesign = 'plain' | 'patterned' | 'jeans' | 'chinos' | 'corduroy' | 'striped' | 'abstract'
+
+type ProductDesign = ShirtDesign | TrouserDesign
+
+type ProductDesignItem = {
+  key: ProductDesign
+  label: string
+}
+
 type Product = {
   id: string
   slug: string
@@ -45,9 +56,10 @@ type ProductFilter = {
   limit?: number
 }
 
-type ProductQuery = PaginationParams & MaketplaceFilter & {
-  search?: string
-}
+type ProductQuery = PaginationParams &
+  MaketplaceFilter & {
+    search?: string
+  }
 
 type MaketplaceFilter = {
   type?: ProductType

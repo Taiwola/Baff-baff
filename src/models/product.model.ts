@@ -25,6 +25,7 @@ export interface IProduct extends Document {
   category: ProductCategory
   type: ProductType
   material: mongoose.Types.ObjectId | string
+  design: ProductDesign
   yard: number
   name: string
   status: ProductStatus
@@ -50,6 +51,11 @@ const productSchema: Schema = new Schema<IProduct>(
     category: { type: String, required: true },
     type: { type: String, required: true },
     description: { type: String, required: true },
+    design: {
+      type: String,
+      required: true,
+      enum: ['plain', 'checkered', 'patterned', 'striped', 'abstract', 'print', 'jeans', 'chinos', 'corduroy']
+    },
     material: { type: Schema.Types.ObjectId, ref: 'Material', required: true },
     yard: { type: Number, required: true },
     name: { type: String, required: true },

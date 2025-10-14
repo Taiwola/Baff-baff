@@ -4,6 +4,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import Images from './Images'
 import { Button, Input } from '@components/ui'
 import { CreateProductErrors, CreateProductFormValues, UpdateProductErrors, UpdateProductFormValues } from '@validations/product'
+import { productDesigns } from '@lib/product'
 
 
 interface Props {
@@ -16,6 +17,8 @@ interface Props {
 }
 
 export default function ProductForm({ type = 'create', pending, initialState, errors, materials, action }: Props) {
+   const [currentType, setCurrentType] = useState(String(initialState.type));
+   const [currentCategory, setCurrentCategory] = useState(String(initialState.category));
    const [images, setImages] = useState<(File | string)[]>(initialState.images || [])
 
    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -96,6 +99,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                      options={categories}
                      value={initialState.category}
                      error={errors.category}
+                     onChange={setCurrentCategory}
                   />
                   <Input
                      label='Product Type'
@@ -104,7 +108,18 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                      options={types}
                      value={initialState.type}
                      error={errors.type}
+                     onChange={setCurrentType}
                   />
+
+                  <Input
+                     label='Design'
+                     name='design'
+                     type='select'
+                     options={productDesigns.getItem(currentType as ProductType, currentCategory as ProductCategory)}
+                     value={initialState.design}
+                     error={errors.design}
+                  />
+
                   <Input
                      label='MATERIAL'
                      name='materialId'
