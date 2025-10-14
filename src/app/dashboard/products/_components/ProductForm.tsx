@@ -328,5 +328,7 @@ const categories: Array<{ key: ProductCategory, label: string }> = [
 
 const types: Array<{ key: ProductType, label: string }> = [
    { key: 'shirt', label: 'Shirt' },
-   { key: 'trouser', label: 'Trouser' }
+   { key: 'trouser', label: 'Trouser' },
+   { key: 'jacket', label: 'Jacket' },
+   { key: 'short', label: 'Short' },
 ]
