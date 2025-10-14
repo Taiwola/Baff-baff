@@ -5,8 +5,6 @@ export function cn(...inputs: unknown[]) {
   return twMerge(clsx(inputs))
 }
 
-// src/utils/formatting.ts
-
 /**
  * Formats a number into currency format.
  * @param amount The number to format

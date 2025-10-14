@@ -1,11 +1,13 @@
-import { getCollaborator } from '@actions/collaborators.action'
-import { getProducts } from '@actions/products.action'
-import ProductsList from '@app/dashboard/products/_components/ProductsList'
-import { BreadCrumbItemType, BreadCrumbs, DashboardProductsSkeleton } from '@components/ui'
-import { notFound } from 'next/navigation'
-import React, { Suspense } from 'react'
 import Image from 'next/image'
+import { Pencil } from 'lucide-react'
+import React, { Suspense } from 'react'
+import { notFound } from 'next/navigation'
 import { FaInstagram, FaFacebook, FaTiktok, FaXTwitter } from 'react-icons/fa6'
+
+import { getProducts } from '@actions/products.action'
+import { getCollaborator } from '@actions/collaborators.action'
+import ProductsList from '@app/dashboard/products/_components/ProductsList'
+import { BreadCrumbItemType, BreadCrumbs, Button, DashboardProductsSkeleton } from '@components/ui'
 
 type Props = {
    params: Promise<{ id: string }>
@@ -41,7 +43,7 @@ export default async function CollaboratorPage({ params }: Props) {
          </div>
 
          {/* Collaborator details */}
-         <section className="flex flex-col md:flex-row items-center md:items-start gap-8 py-10 px-8 bg-white rounded-[1.25rem] mt-8 shadow-sm">
+         <section className="flex flex-col sm:flex-row items-center sm:items-start justify-start gap-6 py-10 px-6 border-b border-brand-dark/20">
             {/* Profile Image */}
             <div className="relative w-[160px] h-[160px] rounded-full overflow-hidden shadow-md flex-shrink-0">
                <Image
@@ -114,14 +116,23 @@ export default async function CollaboratorPage({ params }: Props) {
                   })}
                </p>
             </div>
-         </section>
+
+            <Button
+               as={'link'}
+               href={`/dashboard/collaborators/${collaborator.id}/edit`}
+               className="ml-auto flex items-center gap-2 px-4 py-2 bg-brand-dark text-white rounded-lg hover:bg-brand-dark/90 transition"
+            >
+               <Pencil size={16} />
+               Edit Collaborator
+            </Button>
+         </section >
 
          {/* Collaborator Products */}
-         <div className="w-full mt-10">
+         < div className="w-full mt-10" >
             <Suspense fallback={<DashboardProductsSkeleton />}>
                <ProductsList promise={collaboratorProductsPromise} />
             </Suspense>
-         </div>
-      </div>
+         </div >
+      </div >
    )
 }

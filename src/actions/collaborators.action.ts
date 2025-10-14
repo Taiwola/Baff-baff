@@ -18,25 +18,26 @@ import {
   UpdateCollaboratorValues
 } from '@validations/collaborators'
 import { emptyMetaData } from '@utils/pagination'
+import { image } from '@heroui/react'
 
 export async function createCollaborator(state: CreateCollaboratorFormState, formData: FormData): Promise<CreateCollaboratorFormState> {
   const parsedValues: CreateCollaboratorDto = parseCollaboratorFormData(formData)
   console.log('i got here 1')
   const result = createCollaboratorSchema.safeParse(parsedValues)
-console.log('i got here 2')
+  console.log('i got here 2')
   if (!result.success) {
     const errors = formatError<CreateCollaboratorErrors, CreateCollaboratorValues>(result.error)
-    console.log('errors >>>', errors);
-    
+    console.log('errors >>>', errors)
+
     return { ...state, errors, values: parsedValues }
   }
-console.log('i got here 3')
+  console.log('i got here 3')
   const response = await ServerApiClient.post<Collaborator>('/collaborators', formData)
-console.log('i got here 4')
+  console.log('i got here 4')
   if (response.code >= 400) {
     return { ...state, error: response.message, values: parsedValues }
   }
-console.log('i got here 5')
+  console.log('i got here 5')
   redirect('/dashboard/collaborators', RedirectType.replace)
 }
 
@@ -72,7 +73,7 @@ export async function getCollaborator(id: string): Promise<Collaborator | null> 
 
 export async function updateCollaborator(id: string, state: UpdateCollaboratorFormState, formData: FormData): Promise<UpdateCollaboratorFormState> {
   const parsedValues: UpdateCollaboratorDto = parseCollaboratorFormData(formData)
-  const result = updateCollaboratorSchema.safeParse(parsedValues)
+  const result = updateCollaboratorSchema.safeParse({ ...parsedValues, image: parsedValues.image || state.values.image })
 
   if (!result.success) {
     const errors = formatError<UpdateCollaboratorErrors, UpdateCollaboratorValues>(result.error)

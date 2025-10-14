@@ -25,7 +25,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const formData = await req.formData()
 
-  const result = updateCollaboratorSchema.safeParse(parseCollaboratorFormData(formData))
+  const parsed = parseCollaboratorFormData(formData)
+
+  const result = updateCollaboratorSchema.safeParse({... parsed, image: parsed.image || collaborator.image})
 
   if (!result.success) {
     const validationErrors = result.error.issues.map((detail) => ({
@@ -37,7 +39,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   const image = result.data.image || collaborator.image
-
+  console.log('image>>>>', image)
   if (image && image instanceof File) {
     const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
 
