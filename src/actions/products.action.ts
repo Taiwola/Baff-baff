@@ -46,6 +46,7 @@ export async function getProducts(options: ProductQuery = {}): Promise<Paginatio
   if (options.sort) params.set('sort', options.sort)
   if (options.category) params.set('category', options.category)
   if (options.search) params.set('search', options.search)
+  if (options.collaboratorId) params.set('collaboratorId', options.collaboratorId)
 
   const queryString = params.toString()
   const url = `/products${queryString ? `?${queryString}` : ''}`

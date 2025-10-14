@@ -14,24 +14,28 @@ type Props = {
 
 export default function CollaboratorItem({ collaborator }: Props) {
    return (
-      <div className="flex flex-col items-center text-center group cursor-pointer">
-         <div className="transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg rounded-full">
+      <Link
+         href={`/dashboard/collaborators/${collaborator.id}`}
+         className="
+        group flex flex-col items-center text-center cursor-pointer
+        transition-all duration-300
+        rounded-xl p-2 relative
+        hover:scale-105 hover:shadow-lg hover:bg-gray-50
+      "
+      >
+         <div className="rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-105">
             <Image
                src={collaborator.image}
                alt={collaborator.name}
                width={174}
                height={174}
-               className="rounded-full object-cover"
-               unoptimized
+               className="object-cover rounded-full"
             />
          </div>
 
-         <Link
-            href={`/dashboard/products?collaboratorId=${collaborator.id}`}
-            className="mt-3.5 text-lg text-black transition-colors duration-300 group-hover:text-blue-600 text-nowrap"
-         >
+         <span className="mt-3.5 text-base text-black transition-colors duration-300 group-hover:text-red-600 text-nowrap">
             {collaborator.name}
-         </Link>
-      </div>
+         </span>
+      </Link>
    )
 }

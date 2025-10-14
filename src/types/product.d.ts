@@ -60,6 +60,7 @@ type ProductFilter = {
 type ProductQuery = PaginationParams &
   MaketplaceFilter & {
     search?: string
+    collaboratorId?: string
   }
 
 type MaketplaceFilter = {
