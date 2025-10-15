@@ -161,4 +161,6 @@ export async function logout() {
     toast.error({ title: 'Logout Failed', description: response.message })
     return { error: response.message }
   }
+
+  redirect('/login')
 }
