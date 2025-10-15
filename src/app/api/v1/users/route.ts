@@ -26,12 +26,12 @@ export async function GET(req: NextRequest) {
     limit: searchParams.get('limit'),
     role: searchParams.get('role')
   })
-console.log('parsed', parsed)
+  
   const queries = parsed.data 
 
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
-console.log('queries', queries);
+  
 
   const users = await getAllUsers(queries)
   const transformedUsers = adaptUsers({ data: users, page, pageSize })

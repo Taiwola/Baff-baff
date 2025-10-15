@@ -44,7 +44,7 @@ export async function PATCH(req: NextRequest) {
       return errorResponse('Password could not be updated', null, 400)
     }
 
-    return sendResponse('Password reset successfully', null, 200)
+    return sendResponse('Password reset successful', null, 200)
   } catch (error) {
     console.error('Error resetting password:', error)
     return errorResponse('Internal server error', null, 500)

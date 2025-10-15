@@ -4,6 +4,10 @@ import { ApiClient } from '@utils/api'
 import { toast } from '@hooks/useToast'
 import { formatError } from '@utils/formatting'
 import {
+  ChangePasswordFormErrors,
+  ChangePasswordFormState,
+  ChangePasswordFormValues,
+  changePasswordSchema,
   ForgotPasswordFormErrors,
   ForgotPasswordFormState,
   ForgotPasswordFormValues,
@@ -123,6 +127,32 @@ export async function resetPassword(state: ResetPasswordFormState, formData: For
   toast.success({ title: 'Success', description: response.message })
 
   redirect('/login')
+}
+
+export async function changePassword(state: ChangePasswordFormState, formData: FormData): Promise<ChangePasswordFormState> {
+  const parsedValues = {
+    oldPassword: String(formData.get('oldPassword') || ''),
+    password: String(formData.get('password') || ''),
+    confirmPassword: String(formData.get('confirmPassword') || '')
+  }
+
+  const result = changePasswordSchema.safeParse(parsedValues)
+
+  if (!result.success) {
+    const errors = formatError<ChangePasswordFormErrors, ChangePasswordFormValues>(result.error)
+    return { ...state, errors, values: parsedValues }
+  }
+
+  const response = await ApiClient.post<void>('/auth/change-password', result.data)
+
+  if (response.code >= 400) {
+    toast.error({ title: 'Change Password Failed', description: response.message })
+    return { ...state, error: response.message }
+  }
+
+  toast.success({ title: 'Success', description: response.message })
+
+  redirect('/dashboard/settings')
 }
 
 export async function logout() {

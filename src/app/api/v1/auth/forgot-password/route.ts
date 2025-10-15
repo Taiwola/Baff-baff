@@ -6,7 +6,7 @@ import { encrypt } from '@lib/session'
 import { getUserByEmail } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { generateResetPasswordEmail } from '@utils/mail-content'
-import { forgotPasswordSchema } from '@validations/auth/forgot-password.validation'
+import { forgotPasswordSchema } from '@validations/auth'
 
 async function loadDb() {
   await dbConnect()
