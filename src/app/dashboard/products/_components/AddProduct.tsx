@@ -21,6 +21,7 @@ const initialState: CreateProductFormState = {
       design: '',
       type: '',
       materialId: '',
+      collaborator: '',
       yard: 0
    }
 }

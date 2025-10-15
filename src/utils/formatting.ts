@@ -52,6 +52,7 @@ export function parseProductForm(formData: FormData): CreateProductDto {
     design: formData.get('design') as ProductDesign,
     materialId: String(formData.get('materialId')),
     material: String(formData.get('materialId')),
+    collaborator: formData.get('collaborator') ? String(formData.get('collaborator')) : undefined,
     yard: Number(formData.get('yard')),
     images,
     s: parseSize(formData, 's'),

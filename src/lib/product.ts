@@ -8,13 +8,13 @@ interface ProductDesign {
 
 export const productDesigns: ProductDesign = {
   getItem(type: ProductType, category: ProductCategory) {
-    if (type === 'shirt' && category === 'corporates') {
+    if ((type === 'shirt' || type === 'jacket') && category === 'corporates') {
       return this.corporateShirtItems
-    } else if (type === 'shirt' && category === 'casuals') {
+    } else if ((type === 'shirt' || type === 'jacket') && category === 'casuals') {
       return this.casualShirtItems
-    } else if (type === 'trouser' && category === 'corporates') {
+    } else if ((type === 'trouser' || type === 'short') && category === 'corporates') {
       return this.corporateTrouserItems
-    } else if (type === 'trouser' && category === 'casuals') {
+    } else if ((type === 'trouser' || type === 'short') && category === 'casuals') {
       return this.causualTrouserItems
     } else return []
   },

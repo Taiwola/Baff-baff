@@ -8,26 +8,26 @@ export async function createProduct(data: CreateProductDto, session?: ClientSess
   })
 
   await products.save({ session })
-  return products
+  return ProductModel.populate(products, { path: 'collaborator' })
 }
 
 export async function getAllProducts({ limit, ...filter }: FilterQuery<ProductFilter>): Promise<IProduct[]> {
-  return await ProductModel.find(filter).limit(limit)
+  return await ProductModel.find(filter).limit(limit).populate('collaborator')
 }
 
 export async function getOneProductById(id: string): Promise<IProduct | null> {
-  return await ProductModel.findById(id)
+  return await ProductModel.findById(id).populate('collaborator')
 }
 
 export async function getProductByFilter(filter: FilterQuery<IProduct>): Promise<IProduct | null> {
-  return await ProductModel.findOne(filter)
+  return await ProductModel.findOne(filter).populate('collaborator')
 }
 
 export async function updateProduct(id: string, data: Partial<UpdateProductDto>, session?: ClientSession): Promise<IProduct | null> {
   const product = await ProductModel.findByIdAndUpdate(id, { $set: data }, { new: true, session })
-  return product
+  return ProductModel.populate(product, { path: 'collaborator' })
 }
 
 export async function deleteProduct(id: string): Promise<IProduct | null> {
-  return await ProductModel.findByIdAndDelete(id)
+  return await ProductModel.findByIdAndDelete(id).populate('collaborator')
 }

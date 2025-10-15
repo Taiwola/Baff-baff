@@ -13,6 +13,7 @@ export const createProductSchema = z
       message: 'Product type is required'
     }),
     materialId: z.string().nonempty('Material is required'),
+    collaborator: z.string().optional(),
     design: z.string().nonempty('Design is required'),
     material: z.string().optional(),
     yard: z.number().min(1, 'Yard is required'),

@@ -26,7 +26,8 @@ export async function GET(req: NextRequest) {
     status: searchParams.get('status') ?? undefined,
     page: searchParams.get('page') || '',
     limit: searchParams.get('limit') || '',
-    search: searchParams.get('search') ?? undefined
+    search: searchParams.get('search') ?? undefined,
+    collaboratorId: searchParams.get('collaboratorId') ?? undefined
   })
 
   const queries = parsed.data
@@ -51,6 +52,10 @@ export async function GET(req: NextRequest) {
 
   if (queries?.limit) {
     filters.limit = queries.limit || 10
+  }
+
+  if(queries?.collaboratorId) {
+    filters.collaborator = queries.collaboratorId
   }
 
   const page = queries?.page || 1

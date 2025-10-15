@@ -39,6 +39,7 @@ type Product = {
   description: string
   design: ProductDesign
   category: ProductCategory
+  collaborator?: { id: string; name: string }
   type: ProductType
   material: string
   yard: number
@@ -55,6 +56,7 @@ type ProductFilter = {
   type?: ProductType
   status?: ProductStatus
   limit?: number
+  collaborator?: string
 }
 
 type ProductQuery = PaginationParams &

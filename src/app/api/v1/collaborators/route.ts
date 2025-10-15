@@ -81,8 +81,8 @@ export async function GET(req: NextRequest) {
   const pageSize = queries?.limit || 10
 
   const filters: Record<string, unknown> = {
-    skip: (page - 1) * pageSize,
-    limit: pageSize
+    skip: queries?.page ? (page - 1) * pageSize : undefined,
+    limit: queries?.limit ? pageSize : undefined
   }
 
   if (queries?.search) {
@@ -91,6 +91,5 @@ export async function GET(req: NextRequest) {
 
   const collaborators = await getAllCollaborators(filters)
   const response = adaptCollaborators({ data: collaborators, page, pageSize })
-
   return sendResponse('Materials fetched successfully', response, 200)
 }
