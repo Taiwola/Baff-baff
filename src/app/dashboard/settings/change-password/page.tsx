@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 
-import ChangePasswordForm from './ChangePasswordForm'
+import { ChangePasswordForm } from '@components/features/auth'
 import { BreadCrumbItemType, BreadCrumbs } from '@components/ui'
 
 export default function ChangePasswordPage() {
