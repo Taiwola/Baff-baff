@@ -1,9 +1,10 @@
 import { z } from 'zod'
-import { categorySchema, priceSchema, sortShema, statusSchema, typeSchema } from './shared.validation'
+import { categorySchema, designSchema, priceSchema, sortShema, statusSchema, typeSchema } from './shared.validation'
 
 export const productFilterSchema = z.object({
   category: categorySchema.optional().or(z.literal('')),
   type: typeSchema.optional().or(z.literal('')),
+  design: designSchema.optional().or(z.literal('')),
   status: statusSchema.or(z.literal('')).optional(),
   search: z.string().optional(),
   collaboratorId: z.string().optional(),

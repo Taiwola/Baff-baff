@@ -59,6 +59,7 @@ type ProductFilter = {
   name?: { $regex: string; $options: string }
   category?: ProductCategory
   type?: ProductType
+  design?: ProductDesign
   status?: ProductStatus
   limit?: number
   sort?: ProductSort

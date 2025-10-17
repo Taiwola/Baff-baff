@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
   const parsed = productFilterSchema.safeParse({
     category: searchParams.get('category') || '',
     type: searchParams.get('type') || '',
+    design: searchParams.get('design') || '',
     status: searchParams.get('status') ?? undefined,
     page: searchParams.get('page') || '',
     limit: searchParams.get('limit') || '',
@@ -47,6 +48,10 @@ export async function GET(req: NextRequest) {
 
   if (queries?.type) {
     filters.type = queries.type
+  }
+
+  if (queries?.design) {
+    filters.design = queries.design
   }
 
   if (queries?.status) {
