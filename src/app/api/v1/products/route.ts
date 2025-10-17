@@ -20,6 +20,8 @@ async function loadDb() {
 
 loadDb()
 
+console.log('here')
+
 const isLocal = process.env.NODE_ENV !== 'production'
 
 export async function GET(req: NextRequest) {
@@ -34,7 +36,7 @@ export async function GET(req: NextRequest) {
     limit: searchParams.get('limit') || '',
     search: searchParams.get('search') ?? undefined,
     priceRange: searchParams.get('priceRange') || undefined,
-    flag: searchParams.get('flag') ?? undefined
+    sort: searchParams.get('sort') ?? undefined
   })
 
   const queries = parsed.data
@@ -85,25 +87,23 @@ export async function GET(req: NextRequest) {
     ]
   }
 
-  if (queries?.flag) {
+  if (queries?.sort) {
     filters.sort = {}
-    if (queries.flag === 'best-selling') {
+    if (queries.sort === 'best-selling') {
       filters.sort.numberOfSales = -1
-    } else if (queries.flag === 'n-o') {
+    } else if (queries.sort === 'n-o') {
       filters.sort.createdAt = 1
-    } else if (queries.flag === 'o-n') {
+    } else if (queries.sort === 'o-n') {
       filters.sort.createdAt = -1
-    } else if (queries.flag === 'a-z') {
+    } else if (queries.sort === 'a-z') {
       filters.sort.name = 1
-    } else if (queries.flag === 'z-a') {
+    } else if (queries.sort === 'z-a') {
       filters.sort.name = -1
     }
   }
 
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
-
-  console.log(filters.sort)
 
   const products = await getAllProducts(filters)
   const transform = adaptProducts({ data: products, page, pageSize })

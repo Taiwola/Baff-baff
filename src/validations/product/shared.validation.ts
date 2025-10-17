@@ -8,7 +8,7 @@ export const typeSchema = z.enum(['shirt', 'trouser', 'jacket', 'short'], "Type 
 
 export const fittingSchema = z.enum(['fit', 'baggy', 'straight'], 'Fitting must be one of: fit, baggy, straight')
 
-export const flagSchema = z.enum(['featured', 'best-selling', 'a-z', 'z-a', 'o-n', 'n-o'])
+export const sortShema = z.enum(['featured', 'best-selling', 'a-z', 'z-a', 'o-n', 'n-o'])
 
 export const priceSchema = z.enum(['low', 'mid', 'high'])
 

@@ -11,6 +11,7 @@ import { getOneRegionById } from '@services/region'
 import { IProduct } from '@models/product.model'
 import { createOrderSchema } from '@validations/order'
 import { initiatePaystackPayment } from '@payment/payment'
+import { getOneProductById } from '@services/product'
 
 export async function POST(req: NextRequest) {
   await dbConnect()
@@ -79,6 +80,36 @@ export async function POST(req: NextRequest) {
     }))
 
     return errorResponse('Error Validating Order', validationErrors, 400)
+  }
+
+  const orders = orderValidation.data
+
+  for (const item of orders.items) {
+    const product = await getOneProductById(item.product.id)
+    if (!product) {
+      return errorResponse(`Product with ID ${item.product.id} not found`, null, 404)
+    }
+
+    const size = item.size as keyof IProduct
+    const productSize = product[size] as SizeDetails
+
+    if (!productSize || productSize.quantity <= 0) {
+      return errorResponse(
+        `Size ${size} not found for product ID ${item.product.name}
+        or the quantity of this size is zero
+        `,
+        null,
+        400
+      )
+    }
+    const quantityToDeductFromProductYard = productSize.quantity * item.quantity
+    if (product.yard < quantityToDeductFromProductYard) {
+      return errorResponse(
+        `Insufficient yard for product ${item.product.name}. Required: ${quantityToDeductFromProductYard}, Available: ${product.yard}`,
+        null,
+        400
+      )
+    }
   }
 
   try {

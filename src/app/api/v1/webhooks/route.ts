@@ -27,11 +27,6 @@ export async function POST(req: NextRequest) {
       return
     }
 
-    // try {
-    // } catch (error) {
-    //   console.error('Transaction aborted due to error:', error)
-    // }
-
     const session = await mongoose.startSession()
 
     try {
@@ -47,30 +42,11 @@ export async function POST(req: NextRequest) {
         const size = item.size as keyof IProduct
         const requestedQuantity = item.quantity
 
-        // if (!['s', 'm', 'l', 'xl', 'xxl', 'xxxl'].includes(size.toLowerCase())) {
-        //   console.error(`Invalid size: ${size} for product ID: ${product.id}`)
-        //   continue
-        // }
-
-        // if (isNaN(requestedQuantity) || requestedQuantity <= 0) {
-        //   console.error(`Invalid quantity: ${product.quantity} for product ID: ${product.id}`)
-        //   continue
-        // }
-
         const sizeDetails = prod[size] as ISizeDetails
-        // if (!sizeDetails || sizeDetails.quantity <= 0) {
-        //   console.error(`No quantity available for size ${size} in product ID: ${product.id}`)
-        //   continue
-        // }
 
-        const totalYardDeduction = sizeDetails.quantity * requestedQuantity
+        const totalYardToBeDeducted = sizeDetails.quantity * requestedQuantity
 
-        if (prod.yard < totalYardDeduction) {
-          console.error(`Insufficient yard for product ID: ${item.product.id}. Required: ${totalYardDeduction}, Available: ${prod.yard}`)
-          continue
-        }
-
-        const updatedYard = prod.yard - totalYardDeduction
+        const updatedYard = prod.yard - totalYardToBeDeducted
 
         await updateProduct(
           item.product.id,

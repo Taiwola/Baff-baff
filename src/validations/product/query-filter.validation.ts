@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { categorySchema, flagSchema, priceSchema, statusSchema, typeSchema } from './shared.validation'
+import { categorySchema, priceSchema, sortShema, statusSchema, typeSchema } from './shared.validation'
 
 export const productFilterSchema = z.object({
   category: categorySchema.optional().or(z.literal('')),
@@ -14,6 +14,6 @@ export const productFilterSchema = z.object({
     .string()
     .transform((val) => (val ? Number(val) : 10)) // default to 10
     .pipe(z.number().int().positive().max(100)), // max 100 for sanity
-  flag: flagSchema.optional().or(z.literal('')),
+  sort: sortShema.optional().or(z.literal('')),
   priceRange: priceSchema.optional().or(z.literal(''))
 })
