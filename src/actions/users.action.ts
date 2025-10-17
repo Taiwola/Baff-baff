@@ -13,8 +13,17 @@ import {
 } from '@validations/users/update-user.validation'
 import { formatError } from '@utils/formatting'
 
-export async function getUsers(options: PaginationParams = {}): Promise<Pagination<User>> {
-  const response = await ServerApiClient.get<Pagination<User>>(`/users?page=${options.page ?? 1}&limit=${10}`)
+export async function getUsers(options: UserFilter = {}): Promise<Pagination<User>> {
+  const params = new URLSearchParams()
+
+  if (options.page) params.set('page', options.page.toString())
+  if (options.limit) params.set('limit', options.limit.toString())
+  if (options.role) params.set('role', options.role.toString())
+
+  const queryString = params.toString()
+  const url = `/users${queryString ? `?${queryString}` : ''}`
+
+  const response = await ServerApiClient.get<Pagination<User>>(url)
 
   if (response.code >= 400) {
     console.log('users error: ', response)
@@ -37,10 +46,10 @@ export async function getUser(id: string): Promise<User | null> {
 
 export async function updateUser(id: string, state: UpdateUserFormState, formData: FormData) {
   const parsedValues: UpdateUserDto = {
-    firstName: String(formData.get('firstName')) || '',
-    lastName: String(formData.get('lastName')) || '',
-    phoneNumber: String(formData.get('phoneNumber')) ?? '',
-    gender: String(formData.get('gender')) as Gender
+    firstName: String(formData.get('firstName')) || state.values.firstName,
+    lastName: String(formData.get('lastName')) || state.values.lastName,
+    phoneNumber: String(formData.get('phoneNumber')) ?? state.values.phoneNumber,
+    gender: (String(formData.get('gender')) as Gender) || state.values.gender
   }
 
   const result = updateUserSchema.safeParse(parsedValues)
@@ -59,4 +68,14 @@ export async function updateUser(id: string, state: UpdateUserFormState, formDat
   if (response.data.role === 'admin') {
     redirect('/dashboard/settings/profile', RedirectType.replace)
   } else redirect('/profile', RedirectType.replace)
+}
+
+export async function updateRole(user: User, role: UserRole): Promise<User> {
+  const response = await ServerApiClient.patch<User>(`/users/${user.id}`, { role })
+
+  if (response.code >= 400) {
+     throw new Error(response.message);
+  }
+
+  return response.data
 }

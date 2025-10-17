@@ -18,8 +18,10 @@ const initialState: CreateProductFormState = {
       images: [],
       description: '',
       category: '',
+      design: '',
       type: '',
       materialId: '',
+      collaborator: '',
       yard: 0
    }
 }

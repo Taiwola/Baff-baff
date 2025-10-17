@@ -33,8 +33,15 @@ export async function getUserById(id: string): Promise<IUser | null> {
   return await UserModel.findById(id)
 }
 
-export async function getAllUsers(filters?: FilterQuery<UserFilter>): Promise<IUser[]> {
-  return UserModel.find().limit(filters?.limit)
+export async function getAllUsers({ limit, page = 1, ...filter }: FilterQuery<UserFilter> = {}): Promise<IUser[]> {
+  const query = UserModel.find(filter)
+
+  if (limit) {
+    const skip = (page - 1) * limit
+    query.limit(limit).skip(skip)
+  }
+
+  return await query
 }
 
 export async function deleteUser(id: string): Promise<{ deletedCount?: number }> {

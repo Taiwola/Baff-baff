@@ -13,6 +13,8 @@ export const updateProductSchema = z
       message: 'Product type is required'
     }),
     materialId: z.string().nonempty('Material is required'),
+    collaborator: z.string().optional(),
+    design: z.string().nonempty('Design is required'),
     material: z.string().optional(),
     status: z.string().optional(),
     numberOfSales: z.number().optional(),
@@ -74,6 +76,7 @@ export type UpdateProductErrors = {
   images?: string | undefined
   description?: string | undefined
   category?: string | undefined
+  design?: string | undefined
   type?: string | undefined
   materialId?: string | undefined
   yard?: string | undefined

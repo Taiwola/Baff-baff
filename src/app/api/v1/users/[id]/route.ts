@@ -50,6 +50,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
     return errorResponse('Validation failed', validationErrors, 400)
   }
+
   try {
     const updatedUser = await updateUser(user, result.data)
     if (!updatedUser) {

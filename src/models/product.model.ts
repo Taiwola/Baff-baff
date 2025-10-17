@@ -1,4 +1,5 @@
 import slugify from 'slugify'
+import { ICollaborator } from './collaborator.model'
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
 export const products: Product[] = []
@@ -25,6 +26,8 @@ export interface IProduct extends Document {
   category: ProductCategory
   type: ProductType
   material: mongoose.Types.ObjectId | string
+  collaborator?: mongoose.Types.ObjectId | string | ICollaborator
+  design: ProductDesign
   yard: number
   name: string
   numberOfSales: number
@@ -51,7 +54,13 @@ const productSchema: Schema = new Schema<IProduct>(
     category: { type: String, required: true },
     type: { type: String, required: true },
     description: { type: String, required: true },
+    design: {
+      type: String,
+      required: true,
+      enum: ['plain', 'checkered', 'patterned', 'striped', 'abstract', 'print', 'jeans', 'chinos', 'corduroy']
+    },
     material: { type: Schema.Types.ObjectId, ref: 'Material', required: true },
+    collaborator: { type: Schema.Types.ObjectId, ref: 'Collaborator' },
     yard: { type: Number, required: true },
     name: { type: String, required: true },
     slug: { type: String, unique: true, index: true },

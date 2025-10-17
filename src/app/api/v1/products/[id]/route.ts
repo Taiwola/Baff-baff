@@ -14,15 +14,10 @@ import { getMaterialById, updateMaterial } from '@services/material'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { deleteProduct, getOneProductById, updateProduct } from '@services/product'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 const isLocal = process.env.NODE_ENV !== 'production'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  await dbConnect()
   const { id } = await params
 
   const userSession = await verifySession()
@@ -38,6 +33,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  await dbConnect()
   const { id: productId } = await params
 
   const userSession = await verifySession()
@@ -148,6 +144,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  await dbConnect()
   const { id } = await params
 
   const remove = await deleteProduct(id)

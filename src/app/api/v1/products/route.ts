@@ -14,17 +14,12 @@ import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { createProductSchema, productFilterSchema } from '@validations/product'
 import { parseProductForm } from '@utils/formatting'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 console.log('here')
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
 export async function GET(req: NextRequest) {
+  await dbConnect()
   const { searchParams } = new URL(req.url)
 
   // may like, featured
@@ -35,6 +30,7 @@ export async function GET(req: NextRequest) {
     page: searchParams.get('page') || '',
     limit: searchParams.get('limit') || '',
     search: searchParams.get('search') ?? undefined,
+    collaboratorId: searchParams.get('collaboratorId') ?? undefined,
     priceRange: searchParams.get('priceRange') || undefined,
     sort: searchParams.get('sort') ?? undefined
   })
@@ -102,6 +98,10 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  if (queries?.collaboratorId) {
+    filters.collaborator = queries.collaboratorId
+  }
+
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
 
@@ -111,6 +111,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  await dbConnect()
   const auth = await verifySession()
 
   const session = isLocal ? undefined : await mongoose.startSession()

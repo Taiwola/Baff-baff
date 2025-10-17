@@ -16,6 +16,7 @@ type UserRole = 'user' | 'admin'
 type UserFilter = {
   page?: number
   limit?: number
+  role?: UserRole
 }
 
 type Gender = 'Male' | 'Female'

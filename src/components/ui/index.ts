@@ -1,5 +1,6 @@
 export { default as Button } from './Button'
 export { default as Input } from './Input'
+export { default as ImageInput } from './ImageInput'
 export { default as BreadCrumbs } from './BreadCrumbs'
 export { default as Pagination } from './Pagination'
 export { default as DatePicker } from './DatePicker'
@@ -13,6 +14,7 @@ export { default as DashboardProductsSkeleton } from './Skeletons/DashboardProdu
 export { default as AddressesSkeleton } from './Skeletons/AddressesSkeleton'
 export { default as MeasurementsSkeleton } from './Skeletons/MeasurementsSkeleton'
 export { default as CartSkeleton } from './Skeletons/CartSkeleton'
+export { default as CollaboratorSkeleton } from './Skeletons/CollaboratorSkeleton'
 
 export { default as ProductList } from './Products/ProductList'
 export { default as ProductGallery } from './Products/ProductGallery'

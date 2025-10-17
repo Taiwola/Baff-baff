@@ -5,8 +5,6 @@ export function cn(...inputs: unknown[]) {
   return twMerge(clsx(inputs))
 }
 
-// src/utils/formatting.ts
-
 /**
  * Formats a number into currency format.
  * @param amount The number to format
@@ -56,5 +54,35 @@ export function getSortOption(key: string) {
     default:
       return { createdAt: -1 }
   }
+}
+
+export function getSize(measurements: TrouserMeasurement | ShirtMeasurement): Size {
+  if ('waist' in measurements) {
+    return getTrouserSize(measurements)
+  }
+
+  return getShirtSize(measurements)
+}
+
+function getShirtSize(measurements: ShirtMeasurement): Size {
+  if (Number(measurements.chest) >= 0 && Number(measurements.chest) <= 40) {
+    return 's'
+  } else if (Number(measurements.chest) > 40 && Number(measurements.chest) <= 45) {
+    return 'm'
+  } else if (Number(measurements.chest) > 45 && Number(measurements.chest) <= 50) {
+    return 'l'
+  } else if (Number(measurements.chest) > 50 && Number(measurements.chest) <= 55) {
+    return 'xl'
+  } else if (Number(measurements.chest) > 55 && Number(measurements.chest) <= 60) {
+    return 'xxl'
+  }
+
+  else return 'xxxl'
+
+}
+
+function getTrouserSize(measurements: TrouserMeasurement): Size {
+  console.log(measurements);
+  return 'l'
 }
 

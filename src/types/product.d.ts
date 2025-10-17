@@ -26,12 +26,25 @@ type ProductSortType = 'featured' | 'best-selling' | 'a-z' | 'z-a' | 'o-n' | 'n-
 // low = 0 - 10,000; mid = 10,000 - 100,000; high = 100,000 +
 type PriceRange = 'low' | 'mid' | 'high'
 
+type ShirtDesign = 'plain' | 'checkered' | 'patterned' | 'striped' | 'abstract' | 'print'
+
+type TrouserDesign = 'plain' | 'patterned' | 'jeans' | 'chinos' | 'corduroy' | 'striped' | 'abstract'
+
+type ProductDesign = ShirtDesign | TrouserDesign
+
+type ProductDesignItem = {
+  key: ProductDesign
+  label: string
+}
+
 type Product = {
   id: string
   slug: string
   images: string[]
   description: string
+  design: ProductDesign
   category: ProductCategory
+  collaborator?: { id: string; name: string }
   type: ProductType
   material: string
   yard: number
@@ -55,17 +68,20 @@ type ProductSort = {
   numberOfSales?: -1 | 1
   createdAt?: -1 | 1
   name?: -1 | 1
+  collaborator?: string
 }
 
 type ProductQuery = PaginationParams &
+ 
   MaketplaceFilter & {
-    search?: string
+      search?: string
   }
 
 const statusMap: Record<ProductStatus, string> = {
   inStock: 'In Stock',
   outOfStock: 'Out of Stock'
-}
+    collaboratorId?: string
+  }
 
 type MaketplaceFilter = {
   type?: ProductType

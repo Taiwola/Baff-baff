@@ -1,10 +1,13 @@
-import React, { startTransition, useState } from 'react'
+import { useDisclosure } from '@heroui/react'
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
+import React, { startTransition, useRef, useState } from 'react'
 
 import Images from './Images'
 import { Button, Input } from '@components/ui'
-import { CreateProductErrors, CreateProductFormValues, UpdateProductErrors, UpdateProductFormValues } from '@validations/product'
+import SaveProductModal from './SaveProductModal'
 
+import { productDesigns } from '@lib/product'
+import { CreateProductErrors, CreateProductFormValues, UpdateProductErrors, UpdateProductFormValues } from '@validations/product'
 
 interface Props {
    type?: 'create' | 'edit'
@@ -16,7 +19,14 @@ interface Props {
 }
 
 export default function ProductForm({ type = 'create', pending, initialState, errors, materials, action }: Props) {
+   const formRef = useRef<HTMLFormElement>(null)
+   const { onOpen, onOpenChange, isOpen } = useDisclosure()
+
+   const [currentType, setCurrentType] = useState(String(initialState.type));
    const [images, setImages] = useState<(File | string)[]>(initialState.images || [])
+   const [currentCategory, setCurrentCategory] = useState(String(initialState.category));
+   const [selectedCollaboratorId, setSelectedCollaboratorId] = useState(initialState.collaborator)
+   const [collaborationType, setCollaborationType] = useState<'baffa' | 'collab'>(initialState.collaborator ? 'collab' : 'baffa')
 
    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
@@ -27,13 +37,27 @@ export default function ProductForm({ type = 'create', pending, initialState, er
          formData.append(`images[${index}]`, image)
       })
 
+      if (selectedCollaboratorId) formData.append('collaborator', selectedCollaboratorId)
+
       startTransition(async () => {
          action(formData)
       })
    }
 
+   function handleChangeCollabType(type: 'baffa' | 'collab') {
+      if (type === 'baffa') {
+         setSelectedCollaboratorId(undefined)
+      }
+
+      setCollaborationType(type)
+   }
+
+   const handleSave = () => {
+      formRef.current?.requestSubmit()
+   }
+
    return (
-      <form className='w-full h-auto' onSubmit={handleSubmit}>
+      <form ref={formRef} className='w-full h-auto' onSubmit={handleSubmit}>
          <div className='w-full flex justify-between items-start'>
             <Button as={'link'} href={'/dashboard/products'} className='bg-transparent text-brand-dark p-0 hover:p-2 hover:text-white gap-5 font-bold'>
                <ArrowLeftIcon className='w-5 h-5' />
@@ -53,12 +77,12 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                ) : null}
 
                <Button
-                  type='submit'
-                  disabled={pending}
+                  onClick={onOpen}
+                  type='button'
                   rounded='sm'
                   className='w-[8.0625rem] text-sm'
                >
-                  {pending ? 'Saving...' : 'Save Product'}
+                  {'Save Product'}
                </Button>
             </div>
 
@@ -96,6 +120,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                      options={categories}
                      value={initialState.category}
                      error={errors.category}
+                     onChange={setCurrentCategory}
                   />
                   <Input
                      label='Product Type'
@@ -104,7 +129,18 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                      options={types}
                      value={initialState.type}
                      error={errors.type}
+                     onChange={setCurrentType}
                   />
+
+                  <Input
+                     label='Design'
+                     name='design'
+                     type='select'
+                     options={productDesigns.getItem(currentType as ProductType, currentCategory as ProductCategory)}
+                     value={initialState.design}
+                     error={errors.design}
+                  />
+
                   <Input
                      label='MATERIAL'
                      name='materialId'
@@ -317,6 +353,18 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                />
             </div>
          </section>
+         {isOpen ? (
+            <SaveProductModal
+               isOpen={isOpen}
+               pending={pending}
+               onSave={handleSave}
+               type={collaborationType}
+               collaboratorId={selectedCollaboratorId}
+               onOpenChange={onOpenChange}
+               onChangeType={handleChangeCollabType}
+               onSelectCollaborator={setSelectedCollaboratorId}
+            />
+         ) : null}
       </form>
    )
 }
@@ -328,5 +376,7 @@ const categories: Array<{ key: ProductCategory, label: string }> = [
 
 const types: Array<{ key: ProductType, label: string }> = [
    { key: 'shirt', label: 'Shirt' },
-   { key: 'trouser', label: 'Trouser' }
+   { key: 'trouser', label: 'Trouser' },
+   { key: 'jacket', label: 'Jacket' },
+   { key: 'short', label: 'Short' },
 ]

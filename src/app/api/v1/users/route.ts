@@ -23,21 +23,17 @@ export async function GET(req: NextRequest) {
 
   const parsed = userQueryFilter.safeParse({
     page: searchParams.get('page'),
-    limit: searchParams.get('limit')
+    limit: searchParams.get('limit'),
+    role: searchParams.get('role')
   })
-
-  const queries = parsed.data
-
-  const filters: MeasurementFilter = {}
-
-  if (queries?.limit) {
-    filters.limit = queries.limit || 10
-  }
+  
+  const queries = parsed.data 
 
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
+  
 
-  const users = await getAllUsers(filters)
+  const users = await getAllUsers(queries)
   const transformedUsers = adaptUsers({ data: users, page, pageSize })
 
   return sendResponse('Users fetched successfully', transformedUsers, 200)

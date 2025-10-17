@@ -6,6 +6,7 @@ export const productFilterSchema = z.object({
   type: typeSchema.optional().or(z.literal('')),
   status: statusSchema.or(z.literal('')).optional(),
   search: z.string().optional(),
+  collaboratorId: z.string().optional(),
   page: z
     .string()
     .transform((val) => (val ? Number(val) : 1)) // default to 1
