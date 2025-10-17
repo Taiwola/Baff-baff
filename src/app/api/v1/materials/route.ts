@@ -90,12 +90,11 @@ export async function GET(req: NextRequest) {
 
   const filters: MaterialFilter = {}
 
-  if (queries?.limit) {
-    filters.limit = queries.limit || 10
-  }
-
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
+
+  filters.page = page
+  filters.limit = pageSize
 
   const materials = await getAllMaterials(filters)
   const transforms = adaptMaterials({ data: materials, page, pageSize })

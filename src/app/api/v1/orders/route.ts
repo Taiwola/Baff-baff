@@ -35,6 +35,9 @@ export async function GET(req: NextRequest) {
       filters.id = { $regex: queries.search, $options: 'i' }
     }
 
+    filters.page = page
+    filters.limit = pageSize
+
     let orders
     if (session?.role === 'admin') {
       orders = await getAllOrders(filters.id ? { id: filters.id } : filters)

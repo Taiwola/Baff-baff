@@ -17,8 +17,15 @@ export async function getMaterialById(id: string): Promise<IMaterial | null> {
   return MaterialModel.findById(id)
 }
 
-export async function getAllMaterials(filters: FilterQuery<MaterialFilter>): Promise<IMaterial[]> {
-  return MaterialModel.find().limit(filters?.limit)
+export async function getAllMaterials({ limit, page = 1, ...filter }: FilterQuery<MaterialFilter>): Promise<IMaterial[]> {
+  const query = MaterialModel.find(filter)
+
+  if (limit) {
+    const skip = (page - 1) * limit
+    query.limit(limit).skip(skip)
+  }
+
+  return await query
 }
 
 export async function updateMaterial(id: string, updateData: UpdateMaterialDto, session?: ClientSession): Promise<IMaterial | null> {

@@ -11,8 +11,19 @@ export async function createOrder(data: CreateOrderDto, session?: ClientSession)
   return Orders
 }
 
-export async function getAllOrders(filter?: FilterQuery<OrderFilter>): Promise<IOrder[]> {
-  return await OrderModel.find(filter || {}).limit(filter?.limit)
+export async function getAllOrders({ limit, sort, page = 1, ...filter }: FilterQuery<OrderFilter>): Promise<IOrder[]> {
+  const query = OrderModel.find(filter)
+
+  if (sort) {
+    query.sort(sort)
+  }
+
+  if (limit) {
+    const skip = (page - 1) * limit
+    query.limit(limit).skip(skip)
+  }
+
+  return await query
 }
 
 export async function getOneOrderById(id: string): Promise<IOrder | null> {

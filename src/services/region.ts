@@ -12,8 +12,15 @@ export async function createRegion(data: CreateRegionDto, session?: ClientSessio
   return Regions
 }
 
-export async function getAllRegions(filter?: FilterQuery<RegionFilter>): Promise<IRegion[]> {
-  return await RegionModel.find(filter || {}).limit(filter?.limit)
+export async function getAllRegions({ limit, page = 1, ...filter }: FilterQuery<RegionFilter>): Promise<IRegion[]> {
+  const query = RegionModel.find(filter)
+
+  if (limit) {
+    const skip = (page - 1) * limit
+    query.limit(limit).skip(skip)
+  }
+
+  return await query
 }
 
 export async function getOneRegionById(id: string): Promise<IRegion | null> {

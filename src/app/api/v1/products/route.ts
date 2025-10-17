@@ -14,8 +14,6 @@ import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { createProductSchema, productFilterSchema } from '@validations/product'
 import { parseProductForm } from '@utils/formatting'
 
-console.log('here')
-
 const isLocal = process.env.NODE_ENV !== 'production'
 
 export async function GET(req: NextRequest) {
@@ -53,10 +51,6 @@ export async function GET(req: NextRequest) {
 
   if (queries?.status) {
     filters.status = queries.status
-  }
-
-  if (queries?.limit) {
-    filters.limit = queries.limit || 10
   }
 
   if (queries?.priceRange) {
@@ -104,6 +98,9 @@ export async function GET(req: NextRequest) {
 
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
+
+  filters.page = page
+  filters.limit = pageSize
 
   const products = await getAllProducts(filters)
   const transform = adaptProducts({ data: products, page, pageSize })

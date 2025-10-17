@@ -62,6 +62,8 @@ type ProductFilter = {
   status?: ProductStatus
   limit?: number
   sort?: ProductSort
+  collaborator?: string
+  page?: number
 }
 
 type ProductSort = {
@@ -72,16 +74,15 @@ type ProductSort = {
 }
 
 type ProductQuery = PaginationParams &
- 
   MaketplaceFilter & {
-      search?: string
+    search?: string
+    collaboratorId?: string
   }
 
 const statusMap: Record<ProductStatus, string> = {
   inStock: 'In Stock',
   outOfStock: 'Out of Stock'
-    collaboratorId?: string
-  }
+}
 
 type MaketplaceFilter = {
   type?: ProductType

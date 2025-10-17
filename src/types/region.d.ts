@@ -10,4 +10,8 @@ type Region = {
 type RegionFilter = {
   page?: number
   limit?: number
+  page?: number
+  city?: string
+  state?: string
+  price?: number
 }

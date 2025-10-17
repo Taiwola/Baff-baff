@@ -33,12 +33,11 @@ export async function GET(req: NextRequest) {
     userId: session.userId
   }
 
-  if (queries?.limit) {
-    filters.limit = queries.limit || 10
-  }
-
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
+
+  filters.page = page
+  filters.limit = pageSize
 
   const measurement = await getAllMeasurements(filters)
   const transform = transformMeasurements({ data: measurement, page, pageSize })

@@ -31,12 +31,11 @@ export async function GET(req: NextRequest) {
     filters.userId = session.userId
   }
 
-  if (queries?.limit) {
-    filters.limit = queries.limit || 10
-  }
-
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
+
+  filters.page = page
+  filters.limit = pageSize
 
   const address = await getAllAddresss(filters)
 
