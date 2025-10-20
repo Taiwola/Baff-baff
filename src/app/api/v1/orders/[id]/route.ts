@@ -1,56 +1,12 @@
-import { deleteOrder, getOneOrderById, updateOrder } from '@services/order'
+import { getOneOrderById } from '@services/order'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptOrder } from '@adapters/order.adapter'
-import { UpdateOrderSchema } from '@validations/order'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
-import { verifySession } from '@lib/dal'
-
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await verifySession()
-  const id = (await params).id
-  if (session?.role !== 'admin') {
-    return errorResponse('Forbidden', 403)
-  }
-
-  const body = await req.json()
-
-  const result = UpdateOrderSchema.safeParse(body)
-  if (!result.success) {
-    const validationErrors = result.error.issues.map((detail) => ({
-      field: detail.path.join('.'),
-      message: detail.message
-    }))
-    return errorResponse('Validation failed', validationErrors, 400)
-  }
-
-  const Order = await getOneOrderById(id)
-
-  if (!Order) {
-    return errorResponse('Order does not exist', null, 404)
-  }
-
-  try {
-    const update = await updateOrder(Order.id, result.data)
-
-    if (!update) {
-      return errorResponse('Order failed to update', null, 400)
-    }
-
-    return sendResponse('Order updated')
-  } catch (error) {
-    console.error('Error updating Order', error)
-    return errorResponse('Internal server error', null, 500)
-  }
-}
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  await dbConnect()
+
   const id = (await params).id
   const Order = await getOneOrderById(id)
 
@@ -61,20 +17,4 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const transfromData = adaptOrder(Order)
 
   return sendResponse('Order found', transfromData, 200)
-}
-
-export async function DELETE(__req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await verifySession()
-  const id = (await params).id
-  if (session?.role !== 'admin') {
-    return errorResponse('Forbidden', null, 403)
-  }
-
-  try {
-    await deleteOrder(id)
-    return sendResponse('Order deleted successfully')
-  } catch (error) {
-    console.error('Error deleting Order', error)
-    return errorResponse('Internal server error')
-  }
 }

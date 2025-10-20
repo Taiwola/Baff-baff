@@ -1,8 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
-import { Header } from '@components/features/dashboard'
-import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
+import { notFound } from 'next/navigation'
+import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+
+import { formatCurrency } from '@utils'
+import { getOrder } from '@actions/orders.action'
+import { Header } from '@components/features/dashboard'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -10,6 +14,9 @@ type Props = {
 
 export default async function OrderDetailPage({ params }: Props) {
   const { id } = await params
+
+  const order = await getOrder(id)
+  if (!order) return notFound()
 
   return (
     <div className="w-full h-auto">
@@ -50,25 +57,25 @@ export default async function OrderDetailPage({ params }: Props) {
 
           {/* Product Rows */}
           <div className="flex flex-col gap-3">
-            {products.map((product) => (
+            {order.items.map((item) => (
               <div
-                key={product.id}
+                key={item.product.id + item.fitting + item.size}
                 className="flex flex-col sm:grid sm:grid-cols-[100px_2fr_1fr_1fr_1fr_1fr] gap-2 sm:gap-4 py-3 items-center border-b border-gray-200 text-sm text-brand-dark font-medium"
               >
                 <div className="w-[70px] h-[70px] relative">
                   <Image
-                    src={product.image}
-                    alt={product.name}
+                    src={item.product.images[0]}
+                    alt={item.product.name}
                     fill
                     className="object-cover rounded"
                   />
                 </div>
 
-                <span>{product.name}</span>
-                <span>{product.category}</span>
-                <span>{product.quantity}</span>
-                <span>{product.size}</span>
-                <span>{product.price}</span>
+                <span>{item.product.name}</span>
+                <span>{item.product.category}</span>
+                <span>{item.quantity}</span>
+                <span className='uppercase'>{item.size}</span>
+                <span>{item.price}</span>
               </div>
             ))}
           </div>
@@ -78,29 +85,19 @@ export default async function OrderDetailPage({ params }: Props) {
         <div className="w-full px-2 sm:px-5 mt-6 flex flex-col gap-2 max-w-xs ml-auto">
           <div className="flex justify-between text-sm text-gray-600">
             <span>SUBTOTAL</span>
-            <span>N60,000</span>
+            <span>{formatCurrency(order.total)}</span>
           </div>
           <div className="flex justify-between text-sm text-gray-600">
             <span>DELIVERY FEE</span>
-            <span>N3,000</span>
+            <span>{formatCurrency(order.deliveryFee)}</span>
           </div>
           <hr className="my-1 border-gray-300" />
           <div className="flex justify-between text-base font-semibold text-black">
             <span>TOTAL</span>
-            <span>N63,000</span>
+            <span>{formatCurrency(order.total + order.deliveryFee)}</span>
           </div>
         </div>
       </section>
     </div>
   )
 }
-
-const products = Array.from({ length: 2 }).map((_, i) => ({
-  id: `${i + 1}`,
-  image: `https://picsum.photos/seed/${i + 1}/70/70`,
-  name: `Product ${i + 1}`,
-  category: ["Clothing", "Shoes", "Accessories"][i % 3],
-  quantity: Math.floor(Math.random() * 10) + 1,
-  size: ["S", "M", "L", "XL"][i % 4],
-  price: `$${(Math.random() * 100).toFixed(2)}`
-}))

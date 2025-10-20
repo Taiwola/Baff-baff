@@ -23,3 +23,14 @@ export async function getOrders(query: OrderQuery = {}): Promise<Pagination<Orde
 
   return response.data
 }
+
+export async function getOrder(id: string) {
+  const response = await ServerApiClient.get<Order>(`/orders/${id}`)
+
+  if (response.code >= 400) {
+    console.log('order error: ', response)
+    return null
+  }
+
+  return response.data
+}
