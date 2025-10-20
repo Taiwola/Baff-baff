@@ -12,6 +12,7 @@ import { IProduct } from '@models/product.model'
 import { createOrderSchema } from '@validations/order'
 import { initiatePaystackPayment } from '@payment/payment'
 import { getOneProductById } from '@services/product'
+import { getSize } from '@utils'
 
 export async function POST(req: NextRequest) {
   await dbConnect()
@@ -90,8 +91,14 @@ export async function POST(req: NextRequest) {
       return errorResponse(`Product with ID ${item.product.id} not found`, null, 404)
     }
 
-    const size = item.size as keyof IProduct
-    const productSize = product[size] as SizeDetails
+    let size = item.size
+
+    if (size === 'Bespoke') {
+      if (!item.measurements) continue
+      size = getSize(item.measurements)
+    }
+    
+    const productSize = product[size]
 
     if (!productSize || productSize.quantity <= 0) {
       return errorResponse(
@@ -126,7 +133,7 @@ export async function POST(req: NextRequest) {
     const order = await createOrder(orderValidation.data)
 
     return sendResponse('Checkout completed', {
-      id: order.id,
+      orderId: order.id,
       reference: order.reference,
       checkoutUrl: paymentResult.checkoutUrl,
       checkoutCode: paymentResult.checkoutCode

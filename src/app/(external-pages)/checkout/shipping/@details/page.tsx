@@ -80,7 +80,7 @@ export default async function ShippingDetailsPage() {
             </div>
          </div>
 
-         <DetailsButton address={address} />
+         <DetailsButton address={address} region={region} cart={response.data} />
       </>
    )
 }

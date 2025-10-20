@@ -56,7 +56,7 @@ export function getSortOption(key: string) {
   }
 }
 
-export function getSize(measurements: TrouserMeasurement | ShirtMeasurement): Size {
+export function getSize(measurements: TrouserMeasurement | ShirtMeasurement | CartMeasurements): Size {
   if ('waist' in measurements) {
     return getTrouserSize(measurements)
   }
@@ -64,7 +64,7 @@ export function getSize(measurements: TrouserMeasurement | ShirtMeasurement): Si
   return getShirtSize(measurements)
 }
 
-function getShirtSize(measurements: ShirtMeasurement): Size {
+function getShirtSize(measurements: ShirtMeasurement | CartMeasurements): Size {
   if (Number(measurements.chest) >= 0 && Number(measurements.chest) <= 40) {
     return 's'
   } else if (Number(measurements.chest) > 40 && Number(measurements.chest) <= 45) {
@@ -81,7 +81,7 @@ function getShirtSize(measurements: ShirtMeasurement): Size {
 
 }
 
-function getTrouserSize(measurements: TrouserMeasurement): Size {
+function getTrouserSize(measurements: TrouserMeasurement | CartMeasurements): Size {
   console.log(measurements);
   return 'l'
 }

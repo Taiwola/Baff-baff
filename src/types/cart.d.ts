@@ -5,7 +5,7 @@ type CartItem = {
   price: number
   fitting: Fitting
   size: CartProductSize
-  measurements?: Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string },
+  measurements?: CartMeasurements
   saveMeasurements?: boolean
   quantity: number
 }
@@ -31,3 +31,12 @@ type DistinctCartItem = {
 }
 
 type CartProductSize = Size | 'Bespoke'
+
+type CheckoutResponse = {
+  orderId: string
+  reference: string
+  checkoutUrl: string
+  checkoutCode: string
+}
+
+type CartMeasurements = Partial<ShirtMeasurement> & Partial<TrouserMeasurement> & { trouserLength?: string }

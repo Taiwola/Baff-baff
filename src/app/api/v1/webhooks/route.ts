@@ -3,18 +3,16 @@ import { getOrderByFilter, updateOrder } from '@services/order'
 import { getOneProductById, updateProduct } from '@services/product'
 import { NextRequest } from 'next/server'
 import mongoose from 'mongoose'
-import { IProduct, ISizeDetails } from '@models/product.model'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { deleteCart, getCartById } from '@services/cart'
 import dbConnect from '@lib/database'
+import { getSize } from '@utils'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
+const isLocal = process.env.NODE_ENV !== 'production'
 
 export async function POST(req: NextRequest) {
+  await dbConnect()
+
   const body: PaystackWebhook<PaystackChargeSuccess> = await req.json()
   sendResponse('success', 200)
 
@@ -27,22 +25,29 @@ export async function POST(req: NextRequest) {
       return
     }
 
-    const session = await mongoose.startSession()
+    const session = isLocal ? undefined : await mongoose.startSession()
+    if (session) session.startTransaction()
 
     try {
       const items = order.items
 
       for (const item of items) {
         const prod = await getOneProductById(item.product.id)
+
         if (!prod) {
           console.error(`Product not found for ID: ${item.product.id}`)
           continue
         }
 
-        const size = item.size as keyof IProduct
+        let size = item.size
         const requestedQuantity = item.quantity
 
-        const sizeDetails = prod[size] as ISizeDetails
+        if (size === 'Bespoke') {
+          if (!item.measurements) continue
+          size = getSize(item.measurements)
+        }
+
+        const sizeDetails = prod[size]
 
         const totalYardToBeDeducted = sizeDetails.quantity * requestedQuantity
 
@@ -66,13 +71,13 @@ export async function POST(req: NextRequest) {
         await deleteCart(cart.id, session)
       }
 
-      await session.commitTransaction()
-      session.endSession()
+      if (session) await session.commitTransaction()
+      if (session) session.endSession()
 
       return sendResponse('Webhook processed successfully')
     } catch (error) {
-      await session.abortTransaction()
-      session.endSession()
+      if (session) await session.abortTransaction()
+      if (session) session.endSession()
       console.error('Transaction aborted due to error:', error)
       return errorResponse('Webhook processed failed')
     }

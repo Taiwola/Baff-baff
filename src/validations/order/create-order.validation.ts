@@ -31,7 +31,7 @@ const OrderItemSchema = z.object({
   name: z.string(),
   price: z.number().nonnegative(),
   fitting: FittingEnum,
-  size: z.string(),
+  size: z.enum(['s', 'm', 'l', 'xl', 'xxl', 'xxxl', 'Bespoke']),
   measurements: MeasurementSchema.optional(),
   quantity: z.number().int().positive()
 })
