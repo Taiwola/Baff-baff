@@ -7,7 +7,7 @@ type Props = Readonly<{
    children: React.ReactNode
 }>
 
-export default function OrdersLayout({ children }: Props) {
+export default function OrdersLayout({ children }: Props) { 
    return (
       <div className="w-full h-auto">
          <Header title='Orders'>
@@ -16,7 +16,7 @@ export default function OrdersLayout({ children }: Props) {
             <div className='w-[17.5rem]'>
                <Search
                   label="Search Order ID"
-                  action='/dashboard/orders'
+                  action='#'
                   placeholder="Search Order ID"
                />
             </div>
