@@ -15,6 +15,7 @@ export { default as AddressesSkeleton } from './Skeletons/AddressesSkeleton'
 export { default as MeasurementsSkeleton } from './Skeletons/MeasurementsSkeleton'
 export { default as CartSkeleton } from './Skeletons/CartSkeleton'
 export { default as CollaboratorSkeleton } from './Skeletons/CollaboratorSkeleton'
+export { default as OrderListSkeleton } from './Skeletons/OrdersSkeleton'
 
 export { default as ProductList } from './Products/ProductList'
 export { default as ProductGallery } from './Products/ProductGallery'

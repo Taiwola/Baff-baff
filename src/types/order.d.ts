@@ -21,4 +21,5 @@ type OrderFilter = {
   limit?: number
   userId?: string
   id?: { $regex: string; $options: string }
+  status?: OrderStatus
 }

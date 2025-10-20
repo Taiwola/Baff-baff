@@ -21,6 +21,7 @@ const MeasurementSchema = z.object({
 const OrderProductSchema = z.object({
   id: z.string(),
   name: z.string(),
+  slug: z.string(),
   type: z.string(),
   category: z.string(),
   images: z.array(z.string()).default([])

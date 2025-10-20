@@ -19,9 +19,10 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
 
     const parsed = orderQueryFilter.safeParse({
-      page: searchParams.get('page'),
-      limit: searchParams.get('limit'),
-      search: searchParams.get('search')
+      page: Number(searchParams.get('page')) ?? undefined,
+      limit: Number(searchParams.get('limit')) ?? undefined,
+      search: String(searchParams.get('search') || ''),
+      status: String(searchParams.get('status') || '')
     })
 
     const queries = parsed.data
@@ -33,6 +34,10 @@ export async function GET(req: NextRequest) {
 
     if (queries?.search) {
       filters.id = { $regex: queries.search, $options: 'i' }
+    }
+
+    if (queries?.status) {
+      filters.status = queries.status
     }
 
     filters.page = page

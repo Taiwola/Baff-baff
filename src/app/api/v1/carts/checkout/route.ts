@@ -59,7 +59,8 @@ export async function POST(req: NextRequest) {
           name: product.name,
           type: product.type,
           category: product.category,
-          images: product.images
+          images: product.images,
+          slug: product.slug
         }
       }
     }),

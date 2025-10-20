@@ -19,6 +19,7 @@ export function adaptOrder(data: IOrder): Order {
       product: {
         id: item.product.id,
         name: item.product.name,
+        slug: item.product.slug,
         category: item.product.category,
         type: item.product.type,
         images: item.product.images
