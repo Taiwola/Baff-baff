@@ -7,6 +7,8 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { deleteCart, getCartById } from '@services/cart'
 import dbConnect from '@lib/database'
 import { getSize } from '@utils'
+import { generateOrderPaymentEmail } from '@utils/mail-content'
+import { sendEmail } from '@lib/mail'
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
@@ -73,6 +75,14 @@ export async function POST(req: NextRequest) {
 
       if (session) await session.commitTransaction()
       if (session) session.endSession()
+
+    
+      const content = generateOrderPaymentEmail({name: order.shippingAddress.fullName, email: order.shippingAddress.email}, order.id)
+      const { error, errorMessage } = await sendEmail(order.shippingAddress.email, content, 'Payment confirmation', 'Baffa Baffa')
+      
+      if (error) {
+          console.error('Failed to send invitation email:', errorMessage)
+      }
 
       return sendResponse('Webhook processed successfully')
     } catch (error) {

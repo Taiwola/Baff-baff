@@ -21,6 +21,7 @@
     "cloudinary": "^2.7.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.12",
+    "googleapis": "^164.1.0",
     "joi": "^18.0.1",
     "jose": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
