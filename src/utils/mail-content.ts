@@ -90,13 +90,6 @@ export const generateOrderPaymentEmail = (user: { name?: string; email: string }
         Thank you for your purchase and for choosing us!
       </p>
 
-      <div style="text-align: center; margin: 30px 0;">
-        <a href="${CLIENT_URL}/orders/${orderId}" 
-           style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
-           View Order Details
-        </a>
-      </div>
-
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
       <p style="color: #999; font-size: 12px; text-align: center;">
         This email was sent to ${user.email}. If you have questions about your order, please contact support@yourapp.com.

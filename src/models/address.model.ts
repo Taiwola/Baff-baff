@@ -48,7 +48,7 @@ const addressSchema = new Schema<IAddress>(
     altPhoneNumber: {
       type: String,
       match: [/^\+?\d{10,15}$/, 'Please provide a valid alternate phone number'],
-      default: ''
+      default: '0'
     },
     city: {
       type: String,
