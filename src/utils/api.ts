@@ -26,16 +26,25 @@ async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<
 
   // Handle error or non-OK response
   if (error || !response?.ok) {
-    // Try to parse error response if available
-    const errorData = error ? error : { ...(await response?.json()), status: response?.status }
+    let errorBody = {}
+
+    try {
+      // Try parsing JSON if there's content
+      if (response && response.headers.get('content-length') !== '0') {
+        errorBody = await response.json()
+      }
+    } catch {
+      // Ignore JSON parsing errors — response might not be JSON
+      errorBody = {}
+    }
+
+    const errorData = error ? { message: error.message, status: 500 } : { ...errorBody, status: response?.status }
 
     // 401 Unauthorized → redirect automatically
     if (response?.status === 401) {
-      // If server, use next.js redirect
       if (typeof window === 'undefined') {
         redirect('/login')
       } else {
-        // Client-side
         window.location.href = '/login'
       }
       return createFailure<T>({ message: 'Unauthorized', status: 401 })
