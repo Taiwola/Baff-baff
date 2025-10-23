@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
   const orderValidation = createOrderSchema.safeParse({
     userId: session?.userId,
     reference: v4(),
-    total: cart.items.reduce((prev, curr) => (prev += curr.price * curr.quantity), 0),
+    total: cart.items.reduce((prev, curr) => (prev += curr.price * curr.quantity), 0) + region.price,
     deliveryFee: region.price,
     items: cart.items.map((item) => {
       const product: IProduct = item.product as IProduct

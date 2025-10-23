@@ -10,7 +10,7 @@ loadDb()
 
 export async function GET() {
   try {
-    const regions = await getAllRegions()
+    const regions = await getAllRegions({})
     const set = new Set<string>()
 
     for (const region of regions) {

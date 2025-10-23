@@ -11,6 +11,8 @@ export async function GET() {
       }
     })
 
+    console.log('States fetched successfully:', response.data)
+
     const states: NGA[] = response.data.map((item) => ({ key: item, label: item }))
     return sendResponse('Request was successfull', states)
   } catch (error) {
