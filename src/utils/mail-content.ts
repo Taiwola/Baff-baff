@@ -68,7 +68,6 @@ export const generateAdminInvite = (user: { name?: string; email: string }, link
  */
 export const generateOrderPaymentEmail = (user: { name?: string; email: string }, orderId: string): string => {
   const displayName = user.name || "Valued Customer"
-  const CLIENT_URL = process.env.CLIENT_BASE_URL || "http://localhost:3000"
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
