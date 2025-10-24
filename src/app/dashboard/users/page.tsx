@@ -12,7 +12,8 @@ type Props = {
 
 export default async function UsersPage({ searchParams }: Props) {
   const { page } = await searchParams
-  const promise = getUsers({ page })
+  const pageNumber = page ? parseInt(page, 10) : undefined
+  const promise = getUsers({ page: pageNumber })
 
   return (
     <div className="w-full h-auto">
