@@ -1,0 +1,95 @@
+import mongoose, { Schema, model, Document } from 'mongoose'
+
+export interface IAddress extends Document {
+  id: string
+  userId?: mongoose.Types.ObjectId | string
+  cartId?: mongoose.Types.ObjectId | string
+  fullName: string
+  email: string
+  phoneNumber: string
+  altPhoneNumber: string
+  city: string
+  state: string
+  address: string
+  active: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Mongoose schema for Address
+const addressSchema = new Schema<IAddress>(
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    cartId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Cart'
+    },
+    fullName: {
+      type: String,
+      required: [true, 'Full name is required'],
+      minlength: [2, 'Full name must be at least 2 characters long'],
+      maxlength: [100, 'Full name must be at most 100 characters long']
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address']
+    },
+    phoneNumber: {
+      type: String,
+      required: [true, 'Phone number is required'],
+      trim: true,
+      match: [/^\+?\d{10,15}$/, 'Please provide a valid phone number']
+    },
+    altPhoneNumber: {
+      type: String,
+      match: [/^\+?\d{10,15}$/, 'Please provide a valid alternate phone number'],
+      default: ''
+    },
+    city: {
+      type: String,
+      required: [true, 'City is required'],
+      minlength: [2, 'City must be at least 2 characters long'],
+      maxlength: [50, 'City must be at most 50 characters long']
+    },
+    state: {
+      type: String,
+      required: [true, 'State is required'],
+      minlength: [2, 'State must be at least 2 characters long'],
+      maxlength: [50, 'State must be at most 50 characters long']
+    },
+    address: {
+      type: String,
+      required: [true, 'Address is required'],
+      minlength: [5, 'Address must be at least 5 characters long'],
+      maxlength: [200, 'Address must be at most 200 characters long']
+    },
+    active: {
+      type: Boolean,
+      default: true
+    }
+  },
+  {
+    timestamps: true
+  }
+)
+
+addressSchema.pre('save', async function (next) {
+  // Only run if this address is being set as active
+  if (!this.isModified('active') || !this.active || !this.userId) {
+    return next()
+  }
+
+  // Set all other addresses of this user to inactive
+  await mongoose.model('Address').updateMany({ userId: this.userId, _id: { $ne: this._id } }, { $set: { active: false } })
+
+  next()
+})
+
+const AddressModel = mongoose.models.Address || model<IAddress>('Address', addressSchema)
+
+export default AddressModel

@@ -1,0 +1,30 @@
+:root {
+  --background: #eeeeee;
+  --foreground: #e0e0e0;
+
+  /* Brand colors */
+  --color-brand: #eeeeee;
+  --color-brand-dark: #202020;
+  --color-brand-light: #ffffff;
+  --color-brand-purple: #5504D4;
+  --color-light: #F5F5F5;
+  --color-grey: #BCBCBC;
+  --color-grey-2: #B5B5B5;
+
+   /* Font families */
+   --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-mono: "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-roboto: "Roboto", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+
+  /* Spacing */
+  --layout-x: 4.375rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #eeeeee;
+    --foreground: #e0e0e0;
+  }
+}
