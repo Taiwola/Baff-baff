@@ -6,13 +6,8 @@ import { createUser, getUserByEmail } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { registerSchema } from '@validations/auth'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function POST(req: NextRequest): Promise<NextResponse> {
+    await dbConnect()
   const json: User = await req.json()
   const result = registerSchema.safeParse(json)
 

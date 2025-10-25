@@ -6,13 +6,8 @@ import { verifySession } from '@lib/dal'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptRegion } from '@adapters/region.adapter'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const { id } = await params
   const auth = await verifySession()
 
@@ -52,6 +47,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const { id } = await params
   const region = await getOneRegionById(id)
 

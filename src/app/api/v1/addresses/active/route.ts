@@ -4,8 +4,10 @@ import { adaptAddress } from '@adapters/address.adapter'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { cookies } from 'next/headers'
 import { IAddress } from '@models/address.model'
+import dbConnect from '@lib/database'
 
 export async function GET() {
+    await dbConnect()
   const session = await verifySession()
   const cookieStore = await cookies()
   const guestCartId = cookieStore.get('guestCartId')?.value

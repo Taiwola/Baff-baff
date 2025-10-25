@@ -3,13 +3,8 @@ import { getAllRegions } from '@services/region'
 import { sendResponse } from '@utils/api-response'
 import { NextRequest, NextResponse } from 'next/server'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function GET(req: NextRequest) {
+    await dbConnect()
   const { searchParams } = new URL(req.url)
   const state = searchParams.get('state')
 

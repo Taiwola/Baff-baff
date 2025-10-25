@@ -2,13 +2,9 @@ import dbConnect from '@lib/database'
 import { getAllRegions } from '@services/region'
 import { sendResponse } from '@utils/api-response'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
 
 export async function GET() {
+    await dbConnect()
   try {
     const regions = await getAllRegions({})
     const set = new Set<string>()
