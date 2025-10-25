@@ -8,13 +8,8 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { generateResetPasswordEmail } from '@utils/mail-content'
 import { forgotPasswordSchema } from '@validations/auth'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function POST(req: NextRequest) {
+    await dbConnect()
   const body = await req.json()
 
   try {

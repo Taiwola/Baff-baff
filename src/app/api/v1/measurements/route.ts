@@ -7,13 +7,9 @@ import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
 import { measurementQueryFilter } from '@validations/measurement/query-filter.validation'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
 
 export async function GET(req: NextRequest) {
+    await dbConnect()
   const session = await verifySession()
 
   if (!session?.userId) {
@@ -46,6 +42,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+    await dbConnect()
   const session = await verifySession()
 
   if (!session?.userId) {

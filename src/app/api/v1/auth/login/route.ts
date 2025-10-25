@@ -8,13 +8,8 @@ import { compareUserPassword, getUserByEmail } from '@services/user'
 import { cookies } from 'next/headers'
 import { createCart, deleteCart, getCartByFilter, getCartById, syncItems, updateCart } from '@services/cart'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function POST(req: NextRequest) {
+    await dbConnect()
   try {
     const cookieStore = await cookies()
     const guestCartId = cookieStore.get('guestCartId')?.value

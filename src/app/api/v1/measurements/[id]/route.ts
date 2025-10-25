@@ -7,13 +7,9 @@ import { updateMeasurementSchema } from '@validations/measurement'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const id = (await params).id
 
   const body = await req.json()
@@ -50,6 +46,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function GET(__req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const id = (await params).id
   const measurement = await getOneMeasurementById(id)
 

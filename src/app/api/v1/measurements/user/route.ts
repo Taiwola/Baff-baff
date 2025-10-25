@@ -7,13 +7,8 @@ import { updateMeasurementSchema } from '@validations/measurement'
 import { transformMeasurement } from '@adapters/measurement.adapter'
 import { getMeasurementByFilter, upsertMeasurementByUserId } from '@services/measurement'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function POST(req: NextRequest) {
+    await dbConnect()
   const session = await verifySession()
 
   if (!session?.userId) {
@@ -42,6 +37,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
+    await dbConnect()
   const session = await verifySession()
 
   if (!session?.userId) {

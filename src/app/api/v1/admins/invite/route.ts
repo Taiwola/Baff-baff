@@ -1,3 +1,4 @@
+import dbConnect from '@lib/database'
 import { sendEmail } from '@lib/mail'
 import { createUser, getUserByEmail, updateUser } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
@@ -9,6 +10,7 @@ import { NextRequest } from 'next/server'
 const generateSecurePassword = () => randomBytes(8).toString('hex')
 
 export async function POST(req: NextRequest) {
+    await dbConnect()
   const body = await req.json()
 
   try {

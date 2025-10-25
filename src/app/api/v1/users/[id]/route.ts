@@ -7,14 +7,13 @@ import { deleteUser, getUserById, updateUser } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { updateUserSchema } from '@validations/users/update-user.validation'
 import { verifySession } from '@lib/dal'
+import { randomBytes } from 'crypto'
 
-async function loadDb() {
-  await dbConnect()
-}
 
-loadDb()
+const generateRandomNumber = () => randomBytes(3).toString('hex')
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const { id } = await params
 
   try {
@@ -32,6 +31,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const { id } = await params
   const user = await getUserById(id)
   if (!user) {
@@ -65,6 +65,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(__req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const { id } = await params
   const session = await verifySession()
   const user = await getUserById(id)
@@ -75,8 +76,9 @@ export async function DELETE(__req: NextRequest, { params }: { params: Promise<{
   if (user.id !== session?.userId && session?.role === 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
+
   try {
-    await deleteUser(user.id)
+    await updateUser(user, {email: `deleted_${generateRandomNumber}_`+user.email, firstName: 'Deleted', lastName: 'User'})
     return sendResponse('User deleted successfully', null, 200)
   } catch (error) {
     console.error('Error deleting user:', error)

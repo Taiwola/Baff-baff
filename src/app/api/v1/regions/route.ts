@@ -8,13 +8,8 @@ import { CreateRegionSchema } from '@validations/region/create-region.validation
 import dbConnect from '@lib/database'
 import { regionQueryFilter } from '@validations/region'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function GET(req: NextRequest) {
+    await dbConnect()
   const { searchParams } = new URL(req.url)
 
   const parsed = regionQueryFilter.safeParse({
