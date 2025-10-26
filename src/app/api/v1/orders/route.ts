@@ -38,6 +38,8 @@ export async function GET(req: NextRequest) {
     filters.page = page
     filters.limit = pageSize
 
+    filters.sort = {createdAt: -1}
+
     let orders
     if (session?.role === 'admin') {
       orders = await getAllOrders(filters.id ? { id: filters.id } : filters)
