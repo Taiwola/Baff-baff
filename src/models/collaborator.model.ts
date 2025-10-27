@@ -26,6 +26,6 @@ const collaboratorSchema: Schema<ICollaborator> = new Schema(
   }
 )
 
-const CollaboratorModel: Model<ICollaborator> = mongoose.models.Collaborator || mongoose.model<ICollaborator>('Collaborator', collaboratorSchema);
+const CollaboratorModel: Model<ICollaborator> = mongoose.models.Collaborator ?? mongoose.model<ICollaborator>('Collaborator', collaboratorSchema);
 
 export default CollaboratorModel;

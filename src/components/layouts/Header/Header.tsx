@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion } from 'framer-motion'
 import { Menu, X } from "lucide-react";
+import { useSession } from "next-auth/react"
 import { usePathname, useRouter } from "next/navigation";
 import { UserIcon, ShoppingBagIcon, MagnifyingGlassIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Modal, ModalContent, ModalBody, useDisclosure, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User } from "@heroui/react";
@@ -20,14 +21,11 @@ type UserAccount = {
   href: string
 }
 
-type Props = {
-  user?: User | null
-}
-
-export default function Header({ user }: Props) {
+export default function Header() {
   const router = useRouter();
   const { reset } = useCart()
   const pathname = usePathname()
+ const { data: session, status } = useSession()
 
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false); // mobile menu
@@ -35,8 +33,9 @@ export default function Header({ user }: Props) {
 
   const { isOpen: searchOpen, onOpen, onClose } = useDisclosure();
 
-  const isAuth = !!user
-  const isAdmin = user?.role === 'admin'
+  const user = session?.user
+  const isAuth = status === 'authenticated'
+  const isAdmin = session?.user?.role === 'admin'
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -167,7 +166,7 @@ export default function Header({ user }: Props) {
                               description: "text-[11px] font-light text-black font-lexend",
                             }}
                             description={user?.email}
-                            name={user?.fullName}
+                            name={user?.name}
                           />
                         </DropdownItem>
 
