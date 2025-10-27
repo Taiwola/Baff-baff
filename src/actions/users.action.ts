@@ -12,6 +12,7 @@ import {
   updateUserSchema
 } from '@validations/users/update-user.validation'
 import { formatError } from '@utils/formatting'
+import { InviteAdminDto, InviteAdminFormErrors, InviteAdminFormState, InviteAdminFormValues, inviteAdminSchema } from '@validations/users'
 
 export async function getUsers(options: UserFilter = {}): Promise<Pagination<User>> {
   const params = new URLSearchParams()
@@ -74,8 +75,32 @@ export async function updateRole(user: User, role: UserRole): Promise<User> {
   const response = await ServerApiClient.patch<User>(`/users/${user.id}`, { role })
 
   if (response.code >= 400) {
-     throw new Error(response.message);
+    throw new Error(response.message)
   }
 
   return response.data
+}
+
+export async function inviteAdmin(state: InviteAdminFormState, formData: FormData): Promise<InviteAdminFormState> {
+  const parsedValues: InviteAdminDto = {
+    email: String(formData.get('email') || '')
+  }
+console.log('i got hewre 1');
+
+  const result = inviteAdminSchema.safeParse(parsedValues)
+
+  if (!result.success) {
+    const errors = formatError<InviteAdminFormErrors, InviteAdminFormValues>(result.error)
+    console.log('errors', errors);
+    
+    return { ...state, errors, error: '', values: parsedValues }
+  }
+console.log('i got hewre 2');
+  const response = await ServerApiClient.post<void>('/users/admins/invite', result.data)
+
+  if (response.code >= 400) {
+    return { ...state, error: response.message, values: parsedValues }
+  }
+console.log('i got hewre 3');
+  redirect('/dashboard/settings/manage', RedirectType.replace)
 }

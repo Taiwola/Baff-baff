@@ -12,7 +12,7 @@ export async function getUserByEmail(email: string): Promise<IUser | null> {
   return user
 }
 
-export async function createUser(data: RegisterDto): Promise<IUser> {
+export async function createUser(data: Omit<RegisterDto, 'confirmPassword'>): Promise<IUser> {
   const newUser = new UserModel({
     ...data
   })

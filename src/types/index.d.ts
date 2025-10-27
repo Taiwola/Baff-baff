@@ -2,6 +2,7 @@ type FormState<T, E = Partial<Record<keyof T, string | undefined>>> = {
   values: T
   error?: string
   errors: E
+  success?: boolean
 }
 
 type Result<T> = {

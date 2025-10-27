@@ -1,10 +1,11 @@
-import { sendEmail } from '@lib/mail'
-import { createUser, getUserByEmail, updateUser } from '@services/user'
-import { errorResponse, sendResponse } from '@utils/api-response'
-import { generateAdminInvite } from '@utils/mail-content'
-import { createInviteSchema } from '@validations/invite/create-invite.validation'
 import { randomBytes } from 'crypto'
 import { NextRequest } from 'next/server'
+
+import { sendEmail } from '@lib/mail'
+import { inviteAdminSchema } from '@validations/users'
+import { generateAdminInvite } from '@utils/mail-content'
+import { errorResponse, sendResponse } from '@utils/api-response'
+import { createUser, getUserByEmail, updateUser } from '@services/user'
 
 const generateSecurePassword = () => randomBytes(8).toString('hex')
 
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json()
 
   try {
-    const result = createInviteSchema.safeParse(body)
+    const result = inviteAdminSchema.safeParse(body)
 
     if (!result.success) {
       const validationErrors = result.error.issues.map((detail) => ({
@@ -24,20 +25,17 @@ export async function POST(req: NextRequest) {
     }
 
     const userExist = await getUserByEmail(result.data.email)
-    let password: string | undefined
 
     if (userExist) {
       await updateUser(userExist, { role: 'admin' })
     } else {
-      password = generateSecurePassword()
       await createUser({
         firstName: 'User',
         lastName: 'Admin',
         email: result.data.email,
         role: 'admin',
-        password: password,
+        password: generateSecurePassword(),
         termsAndCondition: true,
-        confirmPassword: password
       })
     }
 

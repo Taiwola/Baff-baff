@@ -1,16 +1,32 @@
 'use client'
 
-import React from 'react'
+import React, { useActionState, useEffect } from 'react'
 import { X } from 'lucide-react';
 import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@heroui/react';
 
 import { Button, Input } from '@components/ui';
 import { EnvelopeIcon } from '@heroicons/react/24/outline';
+import { InviteAdminFormState } from '@validations/users';
+import { inviteAdmin } from '@actions/users.action';
+import { useToast } from '@hooks/useToast';
+
+const initialState: InviteAdminFormState = {
+   errors: {},
+   error: '',
+   success: false,
+   values: { email: '' }
+}
 
 export default function AddNewAdmin() {
+   const toast = useToast()
    const { isOpen, onOpenChange, onOpen } = useDisclosure()
-
-   async function handleSubmit() { }
+   const [{ errors, error, values }, action, pending] = useActionState(inviteAdmin, initialState)
+console.log('errors', errors)
+   useEffect(() => {
+      if (error) {
+         toast.error({ title: 'Oops! An Error Occured', description: error })
+      }
+   }, [toast, error]);
 
    return (
       <>
@@ -51,13 +67,15 @@ export default function AddNewAdmin() {
 
                      {/* Body (form content goes here) */}
                      <ModalBody className="p-4">
-                        <form action={handleSubmit} className="flex flex-col gap-6 w-full">
+                        <form action={action} className="flex flex-col gap-6 w-full">
 
                            <Input
                               name="email"
                               label="Email Address"
                               type='email'
                               placeholder='Enter'
+                              value={values.email}
+                              error={errors.email}
                            />
 
                            {/* Buttons */}
@@ -66,9 +84,9 @@ export default function AddNewAdmin() {
                                  Cancel
                               </Button>
 
-                              <Button type="submit" variant="filled" rounded="md" fullWidth className='gap-2'>
+                              <Button disabled={pending} type="submit" variant="filled" rounded="md" fullWidth className='gap-2'>
                                  <EnvelopeIcon className='w-5 h-5 text-white' />
-                                 <span>Send Invite</span>
+                                 <span>{pending ? 'Sending..' : 'Send Invite'}</span>
                               </Button>
                            </div>
                         </form>
