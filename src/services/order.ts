@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import OrderModel, { IOrder } from '@models/order.model'
 import { CreateOrderDto, UpdateOrderDto } from '@validations/order'
 import { FilterQuery, ClientSession } from 'mongoose'

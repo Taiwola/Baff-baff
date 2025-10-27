@@ -1,6 +1,19 @@
-import React from 'react'
+import React, { use } from 'react'
 
-export default function StatCards() {
+type Props = {
+   promise: Promise<OverviewStats>
+}
+
+export default function StatCards({ promise }: Props) {
+   const data = use(promise)
+
+   const stats = [
+   { title: "Total Products", value: data.totalProducts },
+   { title: "Total Orders", value: data.totalOrders },
+   { title: "Completed Orders", value: data.totalCompletedOrders },
+   { title: "Pending Orders", value: data.totalPendingOrders },
+]
+
    return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
          {stats.map((s, i) => (
@@ -9,13 +22,6 @@ export default function StatCards() {
       </div>
    )
 }
-
-const stats = [
-   { title: "Total Prdocuts", value: 245 },
-   { title: "Total Orders", value: 182 },
-   { title: "Completed Orders", value: 893 },
-   { title: "Pending Orders", value: 34 },
-]
 
 type StatCardProps = {
    title: string
