@@ -15,6 +15,7 @@ type BaseProps = {
   disabled?: boolean
   error?: string
   isClearable?: boolean
+  className?: string
 }
 
 type TextOrNumberProps = BaseProps & {
@@ -41,7 +42,8 @@ export default function DynamicInput({
   startContent,
   disabled,
   error,
-  isClearable
+  isClearable,
+  className = ''
 }: Props) {
   const id = React.useId()
   const normalizedValue = value != null ? String(value) : ''
@@ -125,6 +127,7 @@ export default function DynamicInput({
     inputContent = (
       <Select
         id={id}
+        color='primary'
         placeholder={placeholder}
         name={name}
         aria-label={name}
@@ -138,7 +141,7 @@ export default function DynamicInput({
           border ${borderClass} ${bgClass} rounded-md py-5 px-2.5 w-full text-sm ${textClass}
           transition-all duration-200 ease-in-out
           ${hasError ? '' : 'hover:border-brand-dark/70'}
-          data-[open=true]:scale-[1.02]
+          data-[open=true]:scale-[1.02] ${className}
         `,
           listbox: `
           border-foreground rounded-md bg-light text-black text-sm py-2 w-full 

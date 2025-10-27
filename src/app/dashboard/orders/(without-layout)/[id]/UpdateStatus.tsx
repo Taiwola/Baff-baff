@@ -1,10 +1,12 @@
 'use client'
 
-import { updateOrder } from '@actions/orders.action'
-import { Input } from '@components/ui'
-import { useToast } from '@hooks/useToast'
-import { UpdateOrderFormState } from '@validations/order'
 import React, { useActionState, useEffect, useRef } from 'react'
+
+import { Input } from '@components/ui'
+
+import { useToast } from '@hooks/useToast'
+import { updateOrder } from '@actions/orders.action'
+import { UpdateOrderFormState } from '@validations/order'
 
 const initialState: UpdateOrderFormState = {
    errors: {},
@@ -42,6 +44,7 @@ export default function UpdateStatus({ id }: Props) {
                { key: 'cancelled', label: 'Cancelled' }
             ]}
             onChange={handleChange}
+            className='bg-green-500'
          />
       </form>
    )
