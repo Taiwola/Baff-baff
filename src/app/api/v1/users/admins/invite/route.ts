@@ -2,6 +2,7 @@ import { randomBytes } from 'crypto'
 import { NextRequest } from 'next/server'
 
 import { sendEmail } from '@lib/mail'
+import dbConnect from '@lib/database'
 import { inviteAdminSchema } from '@validations/users'
 import { generateAdminInvite } from '@utils/mail-content'
 import { errorResponse, sendResponse } from '@utils/api-response'
