@@ -10,6 +10,7 @@ import { createUser, getUserByEmail, updateUser } from '@services/user'
 const generateSecurePassword = () => randomBytes(8).toString('hex')
 
 export async function POST(req: NextRequest) {
+    await dbConnect()
   const body = await req.json()
 
   try {

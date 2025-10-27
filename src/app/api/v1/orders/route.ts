@@ -6,13 +6,8 @@ import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
 import { orderQueryFilter } from '@validations/order'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function GET(req: NextRequest) {
+    await dbConnect()
   try {
     const session = await verifySession()
 
@@ -42,6 +37,8 @@ export async function GET(req: NextRequest) {
 
     filters.page = page
     filters.limit = pageSize
+
+    filters.sort = {createdAt: -1}
 
     let orders
     if (session?.role === 'admin') {

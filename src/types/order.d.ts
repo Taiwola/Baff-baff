@@ -22,4 +22,5 @@ type OrderFilter = {
   userId?: string
   id?: { $regex: string; $options: string }
   status?: OrderStatus
+  sort?: Record<string, number>
 }

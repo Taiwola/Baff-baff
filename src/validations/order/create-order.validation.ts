@@ -41,7 +41,7 @@ const ShippingAddressSchema = z.object({
   fullName: z.string(),
   email: z.string().email(),
   phoneNumber: z.string(),
-  altPhoneNumber: z.string(),
+  altPhoneNumber: z.string().optional().or(z.literal('')),
   city: z.string(),
   state: z.string(),
   address: z.string()

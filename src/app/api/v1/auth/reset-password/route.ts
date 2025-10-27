@@ -6,13 +6,8 @@ import { getUserById, updateUser } from '@services/user'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { resetPasswordSchema } from '@validations/auth/reset-password.validation'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function PATCH(req: NextRequest) {
+    await dbConnect()
   const body = await req.json()
 
   const result = resetPasswordSchema.safeParse(body)

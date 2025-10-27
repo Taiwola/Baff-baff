@@ -8,13 +8,9 @@ import { adaptAddress, adaptAddresses } from '@adapters/address.adapter'
 import { addressQueryFilter, createAddressSchema } from '@validations/address'
 import { cookies } from 'next/headers'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
 
 export async function GET(req: NextRequest) {
+    await dbConnect()
   const session = await verifySession()
   const { searchParams } = new URL(req.url)
 
@@ -45,6 +41,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+    await dbConnect()
   const session = await verifySession()
   const cookieStore = await cookies()
   const guestCartId = cookieStore.get('guestCartId')?.value

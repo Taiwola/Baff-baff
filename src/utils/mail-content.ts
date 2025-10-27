@@ -68,7 +68,6 @@ export const generateAdminInvite = (user: { name?: string; email: string }, link
  */
 export const generateOrderPaymentEmail = (user: { name?: string; email: string }, orderId: string): string => {
   const displayName = user.name || "Valued Customer"
-  const CLIENT_URL = process.env.CLIENT_BASE_URL || "http://localhost:3000"
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -89,13 +88,6 @@ export const generateOrderPaymentEmail = (user: { name?: string; email: string }
         You will receive another notification once your order has been shipped. 
         Thank you for your purchase and for choosing us!
       </p>
-
-      <div style="text-align: center; margin: 30px 0;">
-        <a href="${CLIENT_URL}/orders/${orderId}" 
-           style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
-           View Order Details
-        </a>
-      </div>
 
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
       <p style="color: #999; font-size: 12px; text-align: center;">

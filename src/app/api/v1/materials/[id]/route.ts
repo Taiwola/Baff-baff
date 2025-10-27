@@ -10,13 +10,8 @@ import { UpdateMaterialDto, updateMaterialSchema } from '@validations/material'
 import { deleteMaterial, getMaterialById, updateMaterial } from '@services/material'
 import dbConnect from '@lib/database'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const auth = await verifySession()
 
   if (auth?.role !== 'admin') {
@@ -34,6 +29,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const auth = await verifySession()
 
   if (auth?.role !== 'admin') {
@@ -102,6 +98,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    await dbConnect()
   const auth = await verifySession()
 
   if (auth?.role !== 'admin') {

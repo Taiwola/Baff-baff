@@ -7,13 +7,9 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { NextRequest } from 'next/server'
 import { userQueryFilter } from '@validations/users/query-filter.validation'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
 
 export async function GET(req: NextRequest) {
+    await dbConnect()
   const auth = await verifySession()
   const { searchParams } = new URL(req.url)
 

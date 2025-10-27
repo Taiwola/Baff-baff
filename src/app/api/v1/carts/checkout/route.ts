@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
       fullName: address.fullName,
       email: address.email,
       phoneNumber: address.phoneNumber,
-      altPhoneNumber: address.altPhoneNumber,
+      altPhoneNumber: address.altPhoneNumber || "",
       city: address.city,
       state: address.state,
       address: address.address

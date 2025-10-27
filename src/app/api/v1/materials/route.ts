@@ -12,13 +12,8 @@ import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
 import { CreateMaterialDto, createMaterialSchema, materialQueryFilter } from '@validations/material'
 
-async function loadDb() {
-  await dbConnect()
-}
-
-loadDb()
-
 export async function POST(req: NextRequest) {
+    await dbConnect()
   const auth = await verifySession()
 
   if (auth?.role !== 'admin') {
@@ -74,6 +69,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+    await dbConnect()
   const auth = await verifySession()
   const { searchParams } = new URL(req.url)
 
