@@ -25,18 +25,23 @@ export default function TypeFilter({ defaultType }: Props) {
       router.replace(`${pathname}?${params.toString()}`)
    }
 
+   const path = pathname.split('/').pop()
+
    return (
       <div className='flex justify-start items-center gap-2 mb-5'>
          {productTypes.map((type) => (
-            <Button
-               key={type.key}
-               size='md'
-               variant='bordered'
-               className={`rounded-[2.5rem] font-montserrat ${type.key === defaultType ? '' : 'border-none bg-foreground'}`}
-               onClick={() => handleChange(type.key)}
-            >
-               <span>{type.label}</span>
-            </Button>
+            <React.Fragment key={type.key}>
+               {path === 'corporates' && type.key === 'short' ? null : (
+                  <Button
+                     size='md'
+                     variant='bordered'
+                     className={`rounded-[2.5rem] font-montserrat ${type.key === defaultType ? '' : 'border-none bg-foreground'}`}
+                     onClick={() => handleChange(type.key)}
+                  >
+                     <span>{type.label}</span>
+                  </Button>
+               )}
+            </React.Fragment>
          ))}
       </div>
    )

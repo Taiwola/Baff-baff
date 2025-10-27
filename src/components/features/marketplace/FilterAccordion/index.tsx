@@ -117,6 +117,13 @@ const sections = [
          { key: "chinos", label: "Chinos" },
          { key: "corduroy", label: "Corduroy" },
       ],
+      jacketItems: [
+         { key: "plain", label: "Plain" },
+         { key: "jeans", label: "Jeans" },
+         { key: "corduroy", label: "Corduroy" },
+         { key: "patterned", label: "Patterned" },
+         { key: "track", label: "Track" },
+      ],
       getItems(type: string, category: string) {
          if (type === 'shirt' && category === 'corporates') {
             return this.corporateShirtItems
@@ -125,6 +132,10 @@ const sections = [
          } else if (type === 'trouser' && category === 'corporates') {
             return this.corporateTrouserItems
          } else if (type === 'trouser' && category === 'casuals') {
+            return this.causualTrouserItems
+         } else if (type === 'jacket') {
+            return this.jacketItems
+         } else if (type === 'short') {
             return this.causualTrouserItems
          }
          else return this.items
