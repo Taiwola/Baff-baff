@@ -125,6 +125,7 @@ export default function DynamicInput({
     inputContent = (
       <Select
         id={id}
+        placeholder={placeholder}
         name={name}
         aria-label={name}
         isDisabled={disabled}

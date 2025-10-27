@@ -5,3 +5,4 @@ export const updateOrderSchema = createOrderSchema.partial()
 
 export type UpdateOrderDto = z.infer<typeof updateOrderSchema>
 export type UpdateOrderFormState = FormState<UpdateOrderDto>
+export type UpdateOrderFormErrors = UpdateOrderFormState['errors']

@@ -6,6 +6,8 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 
 import { formatCurrency } from '@utils'
 import { getOrder } from '@actions/orders.action'
+
+import UpdateStatus from './UpdateStatus'
 import { Header } from '@components/features/dashboard'
 
 type Props = {
@@ -31,10 +33,15 @@ export default async function OrderDetailPage({ params }: Props) {
           </Link>
 
           <div className='flex justify-end items-center gap-3 sm:gap-5 mt-2 sm:mt-0'>
-            <p className='text-sm sm:text-base text-brand-dark'>28 Nov 2023</p>
-            <div className='w-[6rem] sm:w-[7.5rem] h-[2.5rem] sm:h-[2.6875rem] rounded-[1.875rem] bg-[#DF8A09] flex justify-center items-center text-white text-sm sm:text-base'>
-              Process
-            </div>
+            <p className='text-sm sm:text-base text-brand-dark'>{new Date(order.createdAt).toLocaleDateString('default', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+
+            {order.status === 'paid' ? (
+              <UpdateStatus id={order.id} />
+            ) : (
+              <div className={`w-[6rem] sm:w-[7.5rem] h-[2.5rem] sm:h-[2.6875rem] rounded-[1.875rem] capitalize ${statusColors[order.status]} flex justify-center items-center text-white text-sm sm:text-base`}>
+                {order.status}
+              </div>
+            )}
           </div>
         </div>
 
@@ -100,4 +107,11 @@ export default async function OrderDetailPage({ params }: Props) {
       </section>
     </div>
   )
+}
+
+const statusColors: Record<OrderStatus, string> = {
+  cancelled: "bg-gray-400",
+  pending: "bg-orange-500",
+  paid: "bg-green-500",
+  delivered: "bg-green-500",
 }
