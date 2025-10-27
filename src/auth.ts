@@ -3,6 +3,7 @@ import dbConnect from '@lib/database'
 import { getUserByEmail } from '@services/user'
 import { SESSION_TOKEN_NAME } from '@lib/constants'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import Google from "next-auth/providers/google"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -25,7 +26,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         return { id: user.id, email: user.email, role: user.role, name: `${user.firstName} ${user.lastName}` }
       }
-    })
+    }),
+    // Google({
+    //   redirectProxyUrl: ''
+    // })
   ],
   session: {
     strategy: 'jwt',
