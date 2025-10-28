@@ -10,6 +10,7 @@ export interface IUser extends Document {
   gender?: Gender
   phoneNumber?: string
   termsAndCondition: boolean
+  googleProviderId: string
   password: string
   createdAt: Date
   updatedAt: Date
@@ -25,7 +26,8 @@ const usersSchema: Schema<IUser> = new Schema(
     password: { type: String, required: true },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     gender: { type: String, enum: ['Male', 'Female']},
-    termsAndCondition: { type: Boolean, default: false }
+    termsAndCondition: { type: Boolean, default: false },
+    googleProviderId: { type: String }
   },
   {
     timestamps: true

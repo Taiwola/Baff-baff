@@ -65,7 +65,7 @@ export async function login(state: LoginFormState, formData: FormData): Promise<
 
   if (!result.success) {
     const errors = formatError<LoginFormState['errors'], LoginFormState['values']>(result.error)
-    return { ...state, errors, values: parsedValues }
+    return { ...state, error: '', errors, values: parsedValues }
   }
 
   const [error, response] = await catchError(signIn('credentials', { ...result.data, redirect: false }))

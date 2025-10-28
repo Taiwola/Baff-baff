@@ -2,12 +2,13 @@
 
 import Image from 'next/image'
 import { Spinner } from '@heroui/react'
-import React, { useActionState } from 'react'
+import React, { useActionState, useEffect } from 'react'
 
 import { login } from '@actions/auth.action'
 import { Button, Input } from '@components/ui'
 import { LoginFormState } from '@validations/auth'
 import GoogleIcon from '@assets/svg/google-icon.svg'
+import { useToast } from '@hooks/useToast'
 
 const initialState: LoginFormState = {
    values: {
@@ -19,7 +20,14 @@ const initialState: LoginFormState = {
 }
 
 export default function LoginForm() {
-   const [{ errors, values }, action, pending] = useActionState(login, initialState)
+   const toast = useToast()
+   const [{ errors, values, error }, action, pending] = useActionState(login, initialState)
+
+   useEffect(() => {
+      if (error) {
+         toast.error({ description: error })
+      }
+   }, [toast, error]);
 
    return (
       <form action={action} className='grid grid-cols-1 gap-5'>

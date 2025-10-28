@@ -12,7 +12,12 @@ export async function getUserByEmail(email: string): Promise<IUser | null> {
   return user
 }
 
-export async function createUser(data: Omit<RegisterDto, 'confirmPassword'>): Promise<IUser> {
+export async function getOneUser(filter: FilterQuery<IUser>): Promise<IUser | null> {
+  const user = await UserModel.findOne(filter)
+  return user
+}
+
+export async function createUser(data: Omit<RegisterDto, 'confirmPassword'> & { googleProviderId?: string }): Promise<IUser> {
   const newUser = new UserModel({
     ...data
   })

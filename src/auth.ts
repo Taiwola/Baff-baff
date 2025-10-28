@@ -1,11 +1,9 @@
 import NextAuth from 'next-auth'
-import dbConnect from '@lib/database'
-import { getUserByEmail } from '@services/user'
-// import GoogleProvider from "next-auth/providers/google"
+import GoogleProvider from 'next-auth/providers/google'
 import CredentialsProvider from 'next-auth/providers/credentials'
+
 import { baseConfig } from '@lib/auth-config'
-
-
+import { ServerApiClient } from '@utils/api-server'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...baseConfig,
@@ -16,21 +14,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { type: 'password', label: 'Password', placeholder: '*****' }
       },
       authorize: async (credentials) => {
-        await dbConnect()
+        const response = await ServerApiClient.post<LoginResponseType>('/auth/login/credentials', credentials)
 
-        if (!credentials) throw new Error('Invalid credentieals')
+        if (response.code >= 400) {
+          throw new Error(response.message)
+        }
 
-        const user = await getUserByEmail(String(credentials.email))
-        if (!user) throw new Error('Invalid Credentials')
-
-        const isValid = await user.comparePassword(String(credentials.password))
-        if (!isValid) throw new Error('Invalid Credentials')
-
-        return { id: user.id, email: user.email, role: user.role, name: `${user.firstName} ${user.lastName}` }
+        return { ...response.data, name: response.data.fullName }
       }
-    })
-    // Google({
-    //   redirectProxyUrl: ''
-    // })
+    }),
+    GoogleProvider
   ]
 })
