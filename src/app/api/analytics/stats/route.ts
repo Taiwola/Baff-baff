@@ -14,13 +14,15 @@ export async function GET() {
         const totalCompletedOrders = completedOrders.length
         const pendingOrders =  orders.filter(i => i.status === 'pending')
         const totalPendingOrders = pendingOrders.length
-    
-        return sendResponse('Analytics stats fetched successfully', {
+
+        const overviewStats: OverviewStats = {
             totalProducts,
             totalOrders: orders.length,
             totalCompletedOrders,
             totalPendingOrders
-        }, 200)
+        } 
+    
+        return sendResponse('Analytics stats fetched successfully', overviewStats, 200)
         
     } catch (error) {
         console.log(error);

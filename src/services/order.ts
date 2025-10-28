@@ -45,8 +45,6 @@ export async function deleteOrder(id: string): Promise<IOrder | null> {
 }
 
 
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-
 /**
  * Returns sales totals grouped by the requested periods.
  *
@@ -58,10 +56,11 @@ const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 
 export async function salesData(
   startDate: Date,
   endDate: Date,
-  groupings = ['daily']
-) {
+  groupings: Grouping[] = ['daily']
+): Promise<SalesDataResult> {
   try {
 
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     // Build $facet pipelines dynamically
     const facetStage: Record<string, any[]> = {};
 
@@ -215,7 +214,7 @@ export async function salesData(
       { $facet: facetStage },
     ]);
 
-    const result: any = {};
+    const result: SalesDataResult = {};
 
     if (groupings.includes('yearly')) result.yearly = combinedSales[0].yearly ?? [];
     if (groupings.includes('monthly')) result.monthly = combinedSales[0].monthly ?? [];
