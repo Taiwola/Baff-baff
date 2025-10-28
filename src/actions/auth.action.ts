@@ -25,7 +25,6 @@ import {
 import { signIn, signOut } from '@auth'
 import { catchError } from '@utils/result'
 import { ServerApiClient } from '@utils/api-server'
-import { getUserByEmail } from '@services/user'
 
 export async function register(state: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
   const parsedValues = {
@@ -90,13 +89,7 @@ export async function login(state: LoginFormState, formData: FormData): Promise<
     return { ...state, error: response.error || 'Please check your credentials.' }
   }
 
-  const user = await getUserByEmail(result.data.email)
-  
-  if (user?.role === 'admin') {
-    redirect('/dashboard')
-  } else {
-    redirect('/')
-  }
+  redirect('/dashboard')
 }
 
 export async function forgotPassword(state: ForgotPasswordFormState, formData: FormData): Promise<ForgotPasswordFormState> {

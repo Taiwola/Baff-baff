@@ -49,7 +49,7 @@ export async function GET(req:NextRequest) {
           role: 'user',
           termsAndCondition: true,
           password,
-          confirmPassword: password,
+          // confirmPassword: password,
         })
 
         await createSession({ id: newUser.id, role: newUser.role })
