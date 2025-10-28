@@ -4,9 +4,11 @@ import { Header } from '@components/features/dashboard'
 import { NewOrders, RevenueChart, StatCards } from './_components'
 import { getStats } from '@actions/analytics.action'
 import { StatCardsSkeleton } from '@components/ui'
+import { getOrders } from '@actions/orders.action'
 
 export default async function OverviewPage() {
   const statsPromise = getStats()
+  const ordersPromise = getOrders({ limit: 3 })
 
   return (
     <div className="w-full h-auto">
@@ -17,8 +19,13 @@ export default async function OverviewPage() {
           <StatCards promise={statsPromise} />
         </Suspense>
 
-        <RevenueChart />
-        <NewOrders />
+        <Suspense fallback={<div>loading ....</div>}>
+          <RevenueChart />
+        </Suspense>
+
+        <Suspense fallback={<div>loading ....</div>}>
+          <NewOrders promise={ordersPromise} />
+        </Suspense>
       </section>
     </div>
   )

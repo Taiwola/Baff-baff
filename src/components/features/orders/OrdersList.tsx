@@ -1,9 +1,10 @@
-'use client' 
+'use client'
 
+import Link from 'next/link';
 import React, { use } from 'react'
+import { usePathname, useRouter } from 'next/navigation';
 
 import { DataTable } from '@components/layouts';
-import Link from 'next/link';
 
 type Props = {
    promise: Promise<Pagination<Order>>
@@ -11,6 +12,9 @@ type Props = {
 
 export default function OrdersList({ promise }: Props) {
    const orders = use(promise)
+
+   const router = useRouter()
+   const pathname = usePathname()
 
    const rows = orders.items.map((item) => ({
       id: item.id,
@@ -23,14 +27,16 @@ export default function OrdersList({ promise }: Props) {
       address: item.shippingAddress.address,
       status: item.status
    }))
-
+   
    const rowsForTable = rows.map(row => ({
       ...row,
       orderId: <Link className='underline text-[#3156DB]' href={`/dashboard/orders/${row.id}`}>{row.orderId}</Link>,
       status: <div className={`w-[15px] h-[15px] rounded-full ${statusColors[row.status]}`} />
    }))
 
-   function handleChange() {}
+   function handleChange(page: number) {
+      router.push(pathname + `?page=${page}`)
+   }
 
    return <DataTable columns={columns} rows={rowsForTable} metadata={orders.metadata} onChange={handleChange} />;
 }

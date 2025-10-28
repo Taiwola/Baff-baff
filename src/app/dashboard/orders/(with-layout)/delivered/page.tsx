@@ -1,6 +1,7 @@
 import React from 'react'
-import { OrdersList } from '../../_components'
+
 import { getOrders } from '@actions/orders.action'
+import { OrdersList } from '@components/features/orders'
 
 type Props = {
   searchParams: Promise<{ query: string }>
