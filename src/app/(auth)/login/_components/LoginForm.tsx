@@ -4,11 +4,12 @@ import Image from 'next/image'
 import { Spinner } from '@heroui/react'
 import React, { useActionState, useEffect } from 'react'
 
-import { login } from '@actions/auth.action'
 import { Button, Input } from '@components/ui'
+
+import { useToast } from '@hooks/useToast'
 import { LoginFormState } from '@validations/auth'
 import GoogleIcon from '@assets/svg/google-icon.svg'
-import { useToast } from '@hooks/useToast'
+import { googleLogin, login } from '@actions/auth.action'
 
 const initialState: LoginFormState = {
    values: {
@@ -65,7 +66,7 @@ export default function LoginForm() {
             <small className='text-sm text-[#464646]'>OR</small>
          </div>
 
-         <Button rounded='md' size='md' variant='bordered' className='gap-1'>
+         <Button rounded='md' size='md' variant='bordered' className='gap-1' type='button' onClick={googleLogin}>
             <Image src={GoogleIcon} width={24} height={24} alt='google-icon' />
             <span>Continue with Google</span>
          </Button>

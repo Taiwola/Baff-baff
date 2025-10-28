@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     const response: LoginResponseType = {
       id: user._id.toString() || user.id,
-      fullName: user.firstName + ' ' + user.lastName,
+      name: user.firstName + ' ' + user.lastName,
       email: user.email,
       role: user.role
     }

@@ -92,6 +92,10 @@ export async function login(state: LoginFormState, formData: FormData): Promise<
   redirect('/dashboard')
 }
 
+export async function googleLogin() {
+  await signIn('google', { redirectTo: '/dashboard' })
+}
+
 export async function forgotPassword(state: ForgotPasswordFormState, formData: FormData): Promise<ForgotPasswordFormState> {
   const parsedValues = {
     email: String(formData.get('email') || '')

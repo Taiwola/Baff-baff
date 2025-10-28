@@ -1,6 +1,6 @@
 type LoginResponseType = {
   id: string
-  fullName: string
+  name: string
   email: string
   role: UserRole
 }

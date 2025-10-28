@@ -20,7 +20,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new Error(response.message)
         }
 
-        return { ...response.data, name: response.data.fullName }
+        return response.data
       }
     }),
     GoogleProvider
