@@ -41,10 +41,9 @@ export const baseConfig: NextAuthConfig = {
 
         user.id = response.data.id
         user.role = response.data.role
-        return true
       }
 
-      return false
+      return true
     },
 
     async jwt({ token, user }) {
