@@ -1,42 +1,10 @@
+import { baseConfig } from '@lib/auth-config'
+import NextAuth from 'next-auth'
 import { NextResponse } from 'next/server'
 
+
+const { auth } = NextAuth(baseConfig)
 const protectedRoutes = ['/dashboard', '/profile', '/api/v1/']
-
-import NextAuth from 'next-auth'
-import { SESSION_TOKEN_NAME } from '@lib/constants'
-
-const { auth } = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
-  providers: [],
-  session: { strategy: 'jwt' },
-  cookies: {
-    sessionToken: {
-      name: SESSION_TOKEN_NAME,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
-      }
-    }
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.role = user.role
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.sub || ''
-        session.user.role = token.role as UserRole
-      }
-      return session
-    }
-  }
-  // basePath: '/api/v1/auth'
-})
 
 export default auth((request) => {
   const method = request.method

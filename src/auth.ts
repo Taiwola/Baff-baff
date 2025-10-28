@@ -1,12 +1,14 @@
 import NextAuth from 'next-auth'
 import dbConnect from '@lib/database'
 import { getUserByEmail } from '@services/user'
-import { SESSION_TOKEN_NAME } from '@lib/constants'
+// import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from 'next-auth/providers/credentials'
-import Google from "next-auth/providers/google"
+import { baseConfig } from '@lib/auth-config'
+
+
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
+  ...baseConfig,
   providers: [
     CredentialsProvider({
       credentials: {
@@ -26,43 +28,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         return { id: user.id, email: user.email, role: user.role, name: `${user.firstName} ${user.lastName}` }
       }
-    }),
+    })
     // Google({
     //   redirectProxyUrl: ''
     // })
-  ],
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60 // 30 days
-  },
-  pages: {
-    signIn: '/login'
-  },
-  cookies: {
-    sessionToken: {
-      name: SESSION_TOKEN_NAME,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
-      }
-    }
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.role = user.role
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.sub || ''
-        session.user.role = token.role as UserRole
-      }
-      return session
-    }
-  }
-  //   basePath: '/api/v1/auth'
+  ]
 })
