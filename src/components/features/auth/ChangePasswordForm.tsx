@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useActionState } from 'react'
+import React, { useActionState, useEffect } from 'react'
 import { Button, Input } from '@components/ui'
 import { ChangePasswordFormState } from '@validations/auth'
 import { changePassword } from '@actions/auth.action'
+import { useToast } from '@hooks/useToast'
 
 const initialState: ChangePasswordFormState = {
    values: {
@@ -16,7 +17,14 @@ const initialState: ChangePasswordFormState = {
 }
 
 export default function ChangePasswordForm() {
-   const [{ errors, values }, action, pending] = useActionState(changePassword, initialState)
+   const toast = useToast()
+   const [{ error, errors, values }, action, pending] = useActionState(changePassword, initialState)
+
+   useEffect(() => {
+      if (error) {
+         toast.error({ title: 'Change Password Failed', description: error })
+      }
+   }, [toast, error]);
 
    return (
       <form action={action} className='w-full flex flex-col justify-start items-start gap-5'>

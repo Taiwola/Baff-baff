@@ -1,14 +1,17 @@
 'use client'
 
-import React, { useActionState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import React, { useActionState, useEffect } from 'react'
 
 import { Button, Input } from '@components/ui'
+
+import { useToast } from '@hooks/useToast'
 import { resetPassword } from '@actions/auth.action'
 import { ResetPasswordFormState } from '@validations/auth'
 
 
 export default function ResetPasswordForm() {
+   const toast = useToast()
    const searchParams = useSearchParams()
 
    const initialState: ResetPasswordFormState = {
@@ -21,7 +24,13 @@ export default function ResetPasswordForm() {
       errors: {}
    }
 
-   const [{ errors, values }, action, pending] = useActionState(resetPassword, initialState)
+   const [{ error, errors, values }, action, pending] = useActionState(resetPassword, initialState)
+
+   useEffect(() => {
+      if (error) {
+         toast.error({ title: 'Reset Password Failed', description: error })
+      }
+   }, [toast, error]);
 
    return (
       <form action={action} className='grid grid-cols-1 gap-5'>
