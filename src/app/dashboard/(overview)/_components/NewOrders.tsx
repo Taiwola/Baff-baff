@@ -1,5 +1,5 @@
-import { OrdersList } from '@components/features/orders'
 import React from 'react'
+import { OrdersList } from '@components/features/orders'
 
 type Props = {
   promise: Promise<Pagination<Order>>

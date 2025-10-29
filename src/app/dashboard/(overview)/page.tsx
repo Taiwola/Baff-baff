@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react'
 
-import { Header } from '@components/features/dashboard'
-import { NewOrders, RevenueChart, StatCards } from './_components'
+import { getOrders } from '@actions/orders.action'
 import { getRevenueOverview, getStats } from '@actions/analytics.action'
 
-import { StatCardsSkeleton } from '@components/ui'
-import { getOrders } from '@actions/orders.action'
+import { Header } from '@components/features/dashboard'
+import { NewOrders, RevenueChart, StatCards } from './_components'
+import { RevenueChartSkeleton, StatCardsSkeleton, TableSkeleton } from '@components/ui'
 
 export default async function OverviewPage() {
   const statsPromise = getStats()
@@ -21,11 +21,11 @@ export default async function OverviewPage() {
           <StatCards promise={statsPromise} />
         </Suspense>
 
-        <Suspense fallback={<div>loading ....</div>}>
+        <Suspense fallback={<RevenueChartSkeleton />}>
           <RevenueChart promise={revenueOverviewPromise} />
         </Suspense>
 
-        <Suspense fallback={<div>loading ....</div>}>
+        <Suspense fallback={<TableSkeleton columns={3} rows={5} />}>
           <NewOrders promise={ordersPromise} />
         </Suspense>
       </section>
