@@ -31,7 +31,7 @@ export default function CollaboratorsList({ promise }: Props) {
                   overflow-visible"
          >
             {items.map((collaborator) => (
-               <div key={collaborator.id} className="relative overflow-visible border border-red-900">
+               <div key={collaborator.id} className="relative overflow-visible">
                   <CollaboratorItem collaborator={collaborator} />
                </div>
             ))}
