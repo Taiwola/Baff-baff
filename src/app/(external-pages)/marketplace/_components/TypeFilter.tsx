@@ -28,7 +28,7 @@ export default function TypeFilter({ defaultType }: Props) {
    const path = pathname.split('/').pop()
 
    return (
-      <div className='flex justify-start items-center gap-2 mb-5'>
+      <div className='flex justify-start items-center gap-1 md:gap-2 mb-5 w-full'>
          {productTypes.map((type) => (
             <React.Fragment key={type.key}>
                {path === 'corporates' && type.key === 'short' ? null : (
@@ -38,7 +38,7 @@ export default function TypeFilter({ defaultType }: Props) {
                      className={`rounded-[2.5rem] font-montserrat ${type.key === defaultType ? '' : 'border-none bg-foreground'}`}
                      onClick={() => handleChange(type.key)}
                   >
-                     <span>{type.label}</span>
+                     <span className='text-xs md:text-sm'>{type.label}</span>
                   </Button>
                )}
             </React.Fragment>

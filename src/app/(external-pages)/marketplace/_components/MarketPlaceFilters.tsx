@@ -25,6 +25,7 @@ export default function MarketPlaceFilters({ type, sort }: Props) {
 
          {/* Mobile */}
          <div className='md:hidden'>
+            <TypeFilter defaultType={type} />
             <p className='uppercase text-sm'>Stand out and look goods rocking top quality work shirts.</p>
 
             <div className='flex items-center py-7.5'>

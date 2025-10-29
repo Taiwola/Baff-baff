@@ -82,7 +82,6 @@ function getShirtSize(measurements: ShirtMeasurement | CartMeasurements): Size {
 }
 
 function getTrouserSize(measurements: TrouserMeasurement | CartMeasurements): Size {
-  console.log(measurements);
   return 'l'
 }
 

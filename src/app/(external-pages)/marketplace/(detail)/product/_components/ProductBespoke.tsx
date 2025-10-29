@@ -30,7 +30,7 @@ export default function ProductBespoke({ type, sizes, shirtMeasurement, trouserM
       { key: 'waist', label: 'Waist', value: trouserMeasurement.waist },
       { key: 'lap', label: 'Lap', value: trouserMeasurement.lap },
       { key: 'length', label: 'Length', value: trouserMeasurement.length },
-      { key: 'Knee', label: 'Knee', value: trouserMeasurement.knee },
+      { key: 'knee', label: 'Knee', value: trouserMeasurement.knee },
     ]
   }
 
