@@ -26,14 +26,14 @@ export default function DataTable({ columns, rows, metadata, onChange }: DataTab
    }
 
    return (
-      <div className="w-full overflow-x-auto no-scrollbar">
+      <div className="w-full">
          <Table
             aria-label="Reusable data table"
             removeWrapper
             fullWidth
             bottomContent={paginationContent}
             classNames={{
-               base: "bg-white rounded-[20px] border border-black border-opacity-30 overflow-hidden",
+               base: "bg-white rounded-[20px] border border-black border-opacity-30 mx-auto w-[370px] sm:w-[600px] md:w-full overflow-x-auto no-scrollbar",
                table: "border-collapse w-full",
                thead: "text-sm",
                tr: "border-b border-foreground",

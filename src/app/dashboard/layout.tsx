@@ -23,12 +23,12 @@ export default async function DashboardLayout({ children }: Props) {
          </aside>
 
          {/* Main */}
-         <div className="flex-1 flex flex-col">
+         <div className="flex-1 flex flex-col w-full">
             <header>
                <Topbar name={user.firstName} />
             </header>
 
-            <main className="px-4 sm:px-6 lg:px-7.5 py-4 sm:py-6.5  h-full overflow-y-auto max-w-7xl mx-auto w-full">
+            <main className="dashboard-container py-4 sm:py-6.5  h-full overflow-y-auto w-full">
                {children}
             </main>
          </div>
