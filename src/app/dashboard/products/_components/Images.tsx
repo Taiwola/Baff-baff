@@ -34,23 +34,23 @@ export default function Images({ images, onChange }: Props) {
    const totalSlots = Math.max(5, images.length + 1)
 
    return (
-      <div className="flex flex-wrap gap-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
          {[...Array(totalSlots)].map((_, idx) => {
             const hasImage = !!images[idx]
             return (
                <div
                   key={idx}
-                  className="group relative border border-gray-400 h-[9.375rem] w-[9.375rem] rounded-[0.625rem] flex items-center justify-center cursor-pointer hover:bg-[#2D4596CC]/80 transition-colors overflow-hidden"
+                  className="group relative aspect-square border border-gray-400 rounded-lg flex items-center justify-center cursor-pointer hover:bg-[#2D4596CC]/80 transition-colors overflow-hidden"
                   onClick={() => handleImageClick(idx)}
                >
                   {/* Image Preview */}
                   {hasImage ? (
                      <>
                         <Image
-                           src={images[idx] instanceof File ? URL.createObjectURL(images[idx]) : images[idx] as string}
+                           src={images[idx] instanceof File ? URL.createObjectURL(images[idx]) : (images[idx] as string)}
                            alt={`preview-${idx}`}
                            fill
-                           className="object-cover rounded-[0.625rem]"
+                           className="object-cover rounded-lg"
                            sizes="150px"
                         />
 
@@ -58,7 +58,7 @@ export default function Images({ images, onChange }: Props) {
                         <button
                            type="button"
                            onClick={(e) => {
-                              e.stopPropagation() // prevent triggering file select
+                              e.stopPropagation()
                               handleDelete(idx)
                            }}
                            className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -73,7 +73,7 @@ export default function Images({ images, onChange }: Props) {
                         <small className="text-[8px] font-medium text-black">Choose file</small>
                      </div>
                   ) : (
-                     <PlusIcon className="w-[3.375rem] h-[3.375rem] text-[#292D32]" />
+                     <PlusIcon className="w-12 h-12 text-[#292D32]" />
                   )}
 
                   {/* Hidden file input */}
@@ -81,7 +81,7 @@ export default function Images({ images, onChange }: Props) {
                      name="images"
                      type="file"
                      accept="image/*"
-                     ref={(el) => {(fileInputRefs.current[idx] = el)}}
+                     ref={(el) => { fileInputRefs.current[idx] = el }}
                      className="hidden"
                      onChange={(e) => handleFileChange(idx, e)}
                   />

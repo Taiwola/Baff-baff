@@ -2,9 +2,10 @@ import Form from 'next/form'
 import React, { Suspense } from 'react'
 import { SearchIcon } from 'lucide-react'
 
-import { Button, DashboardProductsSkeleton, Input } from '@components/ui'
 import ProductsList from './_components/ProductsList'
 import { FilterButton, Header } from '@components/features/dashboard'
+import { Button, DashboardProductsSkeleton, Input } from '@components/ui'
+
 import { getProducts } from '@actions/products.action'
 
 type Props = {
@@ -21,7 +22,7 @@ export default async function ProductsPage({ searchParams }: Props) {
       <Header title='Products'>
         <FilterButton />
 
-        <Form action={'/dashboard/products'} replace className='w-[17.5rem]'>
+        <Form action={'/dashboard/products'} replace className='flex-1 md:w-[17.5rem]'>
           <Input
             name='seach'
             placeholder="Search Product"
@@ -31,7 +32,7 @@ export default async function ProductsPage({ searchParams }: Props) {
           />
         </Form>
 
-        <Button as={'link'} href={'/dashboard/products/new'} rounded='sm'>
+        <Button as={'link'} href={'/dashboard/products/new'} rounded='sm' className='w-full md:w-auto'>
           Add Product
         </Button>
 
