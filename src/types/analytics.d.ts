@@ -19,4 +19,6 @@ type RevenueOverview = {
   monthly: RevenueStat[]
   weekly: RevenueStat[]
   daily: RevenueStat[]
+  startDate: Date
+  endDate: Date
 }

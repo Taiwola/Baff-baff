@@ -2,13 +2,15 @@ import React, { Suspense } from 'react'
 
 import { Header } from '@components/features/dashboard'
 import { NewOrders, RevenueChart, StatCards } from './_components'
-import { getStats } from '@actions/analytics.action'
+import { getRevenueOverview, getStats } from '@actions/analytics.action'
+
 import { StatCardsSkeleton } from '@components/ui'
 import { getOrders } from '@actions/orders.action'
 
 export default async function OverviewPage() {
   const statsPromise = getStats()
   const ordersPromise = getOrders({ limit: 3 })
+  const revenueOverviewPromise = getRevenueOverview()
 
   return (
     <div className="w-full h-auto">
@@ -20,7 +22,7 @@ export default async function OverviewPage() {
         </Suspense>
 
         <Suspense fallback={<div>loading ....</div>}>
-          <RevenueChart />
+          <RevenueChart promise={revenueOverviewPromise} />
         </Suspense>
 
         <Suspense fallback={<div>loading ....</div>}>
