@@ -1,24 +1,42 @@
 import dbConnect from '@lib/database'
 import { salesData } from '@services/order'
 import { errorResponse, sendResponse } from '@utils/api-response'
+import { defaultDailyRange, defaultMonthlyRange, defaultWeeklyRange, defaultYearlyRange } from '@utils/date-range'
 import { orderQueryFilter } from '@validations/order'
 import { NextRequest } from 'next/server'
 
 export async function GET(req: NextRequest) {
   await dbConnect()
   const searchParams = req.nextUrl.searchParams
-  const groupings = searchParams.getAll('groupings')
+
   const orderQuery = orderQueryFilter.safeParse({
-    startDate: searchParams.get('startDate'),
-    endDate: searchParams.get('endDate'),
-    groupings: groupings.length > 0 ? groupings : undefined
+    grouping: searchParams.get('grouping')
   })
-  const currentYear = new Date().getFullYear()
-  const startDate = orderQuery.data?.startDate ? new Date(orderQuery.data.startDate) : new Date(currentYear, 0, 1)
-  const endDate = orderQuery.data?.endDate ? new Date(orderQuery.data?.endDate) : new Date(currentYear, 11, 31, 23, 59, 59, 999)
-  const groupingArray: Grouping[] = orderQuery.data?.groupings ? orderQuery.data?.groupings : ['daily']
+
+  const grouping = orderQuery.data?.grouping ?? 'daily';
+  const today = new Date();
+  let range: { start: Date; end: Date };
+ switch (grouping) {
+    case 'daily':
+      range = defaultDailyRange(today);
+      break;
+    case 'weekly':
+      range = defaultWeeklyRange(today);
+      break;
+    case 'monthly':
+      range = defaultMonthlyRange(today);
+      break;
+    case 'yearly':
+      range = defaultYearlyRange(today);
+      break;
+    default:
+      range = defaultDailyRange(today); 
+  }
+
+  const { start: startDate, end: endDate } = range;
+
   try {
-    const data = await salesData(startDate, endDate, groupingArray)
+    const data = await salesData(startDate, endDate, grouping)
 
     return sendResponse('Analytics data fetched successfully', data, 200)
   } catch (error) {
