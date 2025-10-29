@@ -5,8 +5,6 @@ import { Dropdown, Item } from '@components/ui'
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/solid'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
-// type Item = { key: string; value: string }
-
 export default function FilterButton() {
    const router = useRouter()
    const pathname = usePathname()

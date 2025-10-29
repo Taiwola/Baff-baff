@@ -16,13 +16,13 @@ interface Props {
 export default function RegionFormModal({ title, isOpen, children, onOpenChange }: Props) {
    return (
       <Modal
-         placement="auto"
+         placement="top"
          hideCloseButton
          isOpen={isOpen}
          onOpenChange={onOpenChange}
          size="full"
          classNames={{
-            base: "w-[45%] h-auto rounded-xl shadow-lg bg-white my-5",
+            base: "w-[90%] md:w-[45%] h-auto rounded-xl shadow-lg bg-white my-5",
          }}
       >
          <ModalContent>

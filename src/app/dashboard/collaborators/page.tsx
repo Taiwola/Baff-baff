@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Button } from '@components/ui'
 import { CollaboratorsList } from './_components'
-import { FilterButton, Header, Search } from '@components/features/dashboard'
+import { Header, Search } from '@components/features/dashboard'
 import { getCollaborators } from '@actions/collaborators.action'
 
 type Props = {
@@ -16,9 +16,8 @@ export default async function CollaboratorsPage({ searchParams }: Props) {
   return (
     <div className="w-full h-auto">
       <Header title='Collaborators'>
-        <FilterButton />
 
-        <div className='w-[17.5rem]'>
+        <div className='w-full md:w-[17.5rem]'>
           <Search
             label="Search Collaborator"
             action='/dashboard/collaborator'
@@ -30,6 +29,7 @@ export default async function CollaboratorsPage({ searchParams }: Props) {
           as={'link'}
           href={'/dashboard/collaborators/new'}
           rounded='sm'
+          className='w-full md:w-auto'
         >
           Add New
         </Button>

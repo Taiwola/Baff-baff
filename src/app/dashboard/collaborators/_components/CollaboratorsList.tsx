@@ -31,12 +31,11 @@ export default function CollaboratorsList({ promise }: Props) {
                   overflow-visible"
          >
             {items.map((collaborator) => (
-               <div key={collaborator.id} className="relative overflow-visible">
+               <div key={collaborator.id} className="relative overflow-visible border border-red-900">
                   <CollaboratorItem collaborator={collaborator} />
                </div>
             ))}
          </div>
-
 
          {metadata.totalItems > metadata.pageSize ? <Pagination metadata={metadata} onChange={handleChangePage} /> : null}
       </section>
