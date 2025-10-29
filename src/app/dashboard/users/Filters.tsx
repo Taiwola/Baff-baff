@@ -8,12 +8,12 @@ export default function Filters() {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
       {/* Date Picker */}
-      <div className="w-full sm:w-[154px]">
+      <div className="w-full">
         <DatePicker />
       </div>
 
       {/* Search input */}
-      <div className="w-full sm:w-[17.5rem]">
+      <div className="w-full">
         <Input
           name="search"
           placeholder="Search users"
