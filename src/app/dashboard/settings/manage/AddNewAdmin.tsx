@@ -21,7 +21,7 @@ export default function AddNewAdmin() {
    const toast = useToast()
    const { isOpen, onOpenChange, onOpen } = useDisclosure()
    const [{ errors, error, values }, action, pending] = useActionState(inviteAdmin, initialState)
-console.log('errors', errors)
+
    useEffect(() => {
       if (error) {
          toast.error({ title: 'Oops! An Error Occured', description: error })
@@ -39,15 +39,14 @@ console.log('errors', errors)
             Add New Admin
          </Button>
 
-
          <Modal
-            placement="auto"
+            placement="top"
             hideCloseButton
             isOpen={isOpen}
             onOpenChange={onOpenChange}
             size="full"
             classNames={{
-               base: "w-[45%] h-auto rounded-xl shadow-lg bg-white my-5",
+               base: "w-[90%] md:w-[45%] h-auto rounded-xl shadow-lg bg-white my-5",
             }}
          >
             <ModalContent>
