@@ -56,7 +56,7 @@ export async function deleteOrder(id: string): Promise<IOrder | null> {
 export async function salesData(
   startDate: Date,
   endDate: Date,
-  groupings: Grouping[] = ['daily']
+  groupings: Grouping = 'daily'
 ): Promise<SalesDataResult> {
   try {
 
@@ -64,12 +64,12 @@ export async function salesData(
     // Build $facet pipelines dynamically
     const facetStage: Record<string, any[]> = {};
 
-    if (groupings.includes('yearly')) {
+    if (groupings === 'yearly') {
       facetStage.yearly = [
         {
           $group: {
             _id: { year: { $year: '$createdAt' } },
-            totalSales: { $sum: '$total' },
+            revenue: { $sum: '$total' },
           },
         },
         { $sort: { '_id.year': 1 } },
@@ -77,13 +77,13 @@ export async function salesData(
           $project: {
             _id: 0,
             year: '$_id.year',
-            totalSales: 1,
+            revenue: 1,
           },
         },
       ];
     }
 
-    if (groupings.includes('monthly')) {
+    if (groupings === "monthly") {
       facetStage.monthly = [
         {
           $group: {
@@ -91,7 +91,7 @@ export async function salesData(
               year: { $year: '$createdAt' },
               month: { $month: '$createdAt' },
             },
-            totalSales: { $sum: '$total' },
+            revenue: { $sum: '$total' },
           },
         },
         { $sort: { '_id.year': 1, '_id.month': 1 } },
@@ -111,13 +111,13 @@ export async function salesData(
                 },
               },
             },
-            totalSales: 1,
+            revenue: 1,
           },
         },
       ];
     }
 
-    if (groupings.includes('weekly')) {
+ if (groupings === 'weekly') {
       facetStage.weekly = [
         {
           $group: {
@@ -127,7 +127,7 @@ export async function salesData(
               week: { $week: '$createdAt' },
               firstDay: { $min: '$createdAt' },
             },
-            totalSales: { $sum: '$total' },
+            revenue: { $sum: '$total' },
           },
         },
         { $sort: { '_id.year': 1, '_id.month': 1, '_id.week': 1 } },
@@ -155,54 +155,79 @@ export async function salesData(
                 ],
               },
             },
-            totalSales: 1,
+            revenue: 1,
           },
         },
-      ];
-    }
-
-    if (groupings.includes('daily')) {
-      facetStage.daily = [
         {
           $group: {
             _id: {
-              year: { $year: '$createdAt' },
-              month: { $month: '$createdAt' },
-              day: { $dayOfMonth: '$createdAt' },
-              date: { $min: '$createdAt' },
+              year: '$year',
+              month: '$month',
+              weekOfMonth: '$weekOfMonth'
             },
-            totalSales: { $sum: '$total' },
-          },
+            revenue: { $sum: '$revenue' }
+          }
         },
-        { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } },
         {
           $project: {
             _id: 0,
             year: '$_id.year',
-            month: {
-              $dateToString: {
-                format: '%B',
-                date: {
-                  $dateFromParts: {
-                    year: '$_id.year',
-                    month: '$_id.month',
-                    day: 1,
-                  },
-                },
-              },
-            },
-            dayOfWeek: { $dayOfWeek: '$_id.date' }, // Numeric: 1=Sunday, 2=Monday, ..., 7=Saturday
-            dayName: {
-              $arrayElemAt: [
-                days,
-                { $subtract: [{ $dayOfWeek: '$_id.date' }, 1] }
-              ]
-            },
-            totalSales: 1,
-          },
+            month: '$_id.month',
+            weekOfMonth: '$_id.weekOfMonth',
+            revenue: 1
+          }
         },
+        { $sort: { year: 1, month: 1, weekOfMonth: 1 } }
       ];
     }
+
+
+    if (groupings === 'daily') {
+      facetStage.daily = [
+        {
+          $group: {
+            _id: {
+              dateString: {
+                $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "UTC" }
+              },
+              year: { $year: "$createdAt" },
+              month: { $month: "$createdAt" }
+            },
+            revenue: { $sum: "$total" },
+            minDate: { $min: "$createdAt" }
+          }
+        },
+        { $sort: { "_id.dateString": 1 } },
+        {
+          $project: {
+            _id: 0,
+            year: "$_id.year",
+            month: {
+              $dateToString: {
+                format: "%B",
+                date: {
+                  $dateFromParts: {
+                    year: "$_id.year",
+                    month: "$_id.month",
+                    day: 1
+                  }
+                },
+                timezone: "UTC"
+              }
+            },
+            dayOfWeek: { $dayOfWeek: "$minDate" }, // 1 = Sunday
+            name: {
+              $arrayElemAt: [
+                days,
+                { $subtract: [{ $dayOfWeek: "$minDate" }, 1] }
+              ]
+            },
+            revenue: 1
+          }
+        }
+      ];
+    }
+
 
     const combinedSales = await OrderModel.aggregate([
       {
