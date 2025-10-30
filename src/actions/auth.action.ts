@@ -24,6 +24,7 @@ import {
   ResetPasswordFormValues,
   resetPasswordSchema
 } from '@validations/auth'
+import { revalidatePath } from 'next/cache'
 
 export async function register(state: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
   const parsedValues = {
@@ -165,4 +166,5 @@ export async function changePassword(state: ChangePasswordFormState, formData: F
 
 export async function logout() {
   await signOut({ redirectTo: '/login' })
+  revalidatePath('/login')
 }

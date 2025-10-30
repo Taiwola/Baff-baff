@@ -23,7 +23,7 @@ export default function OrdersList({ promise }: Props) {
       fullName: item.shippingAddress.fullName,
       email: item.shippingAddress.email,
       phoneNumber: item.shippingAddress.phoneNumber,
-      deliveryZone: item.shippingAddress.city + ', ' + item.shippingAddress.city,
+      deliveryZone: item.shippingAddress.city + ', ' + item.shippingAddress.state,
       address: item.shippingAddress.address,
       status: item.status
    }))

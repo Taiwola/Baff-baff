@@ -26,6 +26,7 @@ export default function Header() {
   const { reset } = useCart()
   const pathname = usePathname()
  const { data: session, status } = useSession()
+console.log('status', status);
 
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false); // mobile menu

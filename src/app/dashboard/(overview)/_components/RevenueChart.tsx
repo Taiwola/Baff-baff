@@ -74,5 +74,5 @@ export default function RevenueChart({ promise }: Props) {
 }
 
 function formatDate(date: Date) {
-  return new Date(date).toLocaleDateString('default', { day: '2-digit', month: 'short', year: '2-digit' })
+  return new Date(date).toLocaleDateString('default', { day: '2-digit', month: 'short', year: 'numeric' })
 }
