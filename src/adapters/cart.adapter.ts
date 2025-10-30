@@ -48,5 +48,5 @@ export function adaptCart(data: ICart): Cart {
 }
 
 export function adaptCarts({ data, page, pageSize }: AdaptersOptions<ICart[]>): Pagination<Cart> {
-  return paginate({ data: data.map(adaptCart), page, pageSize })
+  return paginate({ data: data.map(adaptCart), total: 10, page, pageSize })
 }

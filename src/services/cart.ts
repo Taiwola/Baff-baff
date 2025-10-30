@@ -12,7 +12,7 @@ export async function createCart(data: CartDto, session?: ClientSession): Promis
   return await CartModel.populate(Carts, { path: 'items.product' })
 }
 
-export async function getAllCarts({ limit, page = 1, ...filter }: FilterQuery<CartFilter>): Promise<ICart[]> {
+export async function getAllCarts({ limit, page = 1, ...filter }: FilterQuery<CartFilter>): Promise<{carts: ICart[], count: number}> {
   const query = CartModel.find(filter).populate('items.product')
 
   if (limit) {
@@ -20,7 +20,12 @@ export async function getAllCarts({ limit, page = 1, ...filter }: FilterQuery<Ca
     query.limit(limit).skip(skip)
   }
 
-  return await query
+  const [carts, count] = await Promise.all([
+    query.exec(),
+    CartModel.countDocuments(filter)
+  ])
+
+  return { carts, count }
 }
 
 export async function getOneCartById(id: string): Promise<ICart | null> {

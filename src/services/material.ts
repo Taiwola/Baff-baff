@@ -17,7 +17,7 @@ export async function getMaterialById(id: string): Promise<IMaterial | null> {
   return MaterialModel.findById(id)
 }
 
-export async function getAllMaterials({ limit, page = 1, ...filter }: FilterQuery<MaterialFilter>): Promise<IMaterial[]> {
+export async function getAllMaterials({ limit, page = 1, ...filter }: FilterQuery<MaterialFilter>): Promise<{materials: IMaterial[], count: number}> {
   const query = MaterialModel.find(filter)
 
   if (limit) {
@@ -25,7 +25,12 @@ export async function getAllMaterials({ limit, page = 1, ...filter }: FilterQuer
     query.limit(limit).skip(skip)
   }
 
-  return await query
+  const [materials, count] = await Promise.all([
+    query.exec(),
+    MaterialModel.countDocuments(filter).exec()
+  ])
+
+  return { materials, count }
 }
 
 export async function updateMaterial(id: string, updateData: UpdateMaterialDto, session?: ClientSession): Promise<IMaterial | null> {

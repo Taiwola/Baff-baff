@@ -6,7 +6,7 @@ import { sendResponse } from '@utils/api-response'
 export async function GET() {
     await dbConnect()
   try {
-    const regions = await getAllRegions({})
+    const {regions} = await getAllRegions({})
     const set = new Set<string>()
 
     for (const region of regions) {

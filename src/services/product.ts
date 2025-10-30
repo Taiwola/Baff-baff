@@ -11,9 +11,14 @@ export async function createProduct(data: CreateProductDto, session?: ClientSess
   return ProductModel.populate(products, { path: 'collaborator' })
 }
 
-export async function getAllProducts({ limit, sort, page = 1, ...filter }: FilterQuery<ProductFilter>): Promise<IProduct[]> {
+export async function getAllProducts({ 
+  limit, 
+  sort, 
+  page = 1, 
+  ...filter 
+}: FilterQuery<ProductFilter>): Promise<{ products: IProduct[]; count: number }> {
   const query = ProductModel.find(filter)
-
+  
   if (sort) {
     query.sort(sort)
   }
@@ -22,7 +27,13 @@ export async function getAllProducts({ limit, sort, page = 1, ...filter }: Filte
     const skip = (page - 1) * limit
     query.limit(limit).skip(skip)
   }
-  return await query.populate('collaborator')
+
+  const [products, count] = await Promise.all([
+    query.populate('collaborator').exec(),
+    ProductModel.countDocuments(filter)
+  ])
+
+  return { products, count }
 }
 
 export async function getOneProductById(id: string): Promise<IProduct | null> {

@@ -12,7 +12,7 @@ export async function createOrder(data: CreateOrderDto, session?: ClientSession)
   return Orders
 }
 
-export async function getAllOrders({ limit, sort, page = 1, ...filter }: FilterQuery<OrderFilter>): Promise<IOrder[]> {
+export async function getAllOrders({ limit, sort, page = 1, ...filter }: FilterQuery<OrderFilter>): Promise<{orders: IOrder[], count: number}> {
   const query = OrderModel.find(filter)
 
   if (sort) {
@@ -24,7 +24,12 @@ export async function getAllOrders({ limit, sort, page = 1, ...filter }: FilterQ
     query.limit(limit).skip(skip)
   }
 
-  return await query
+  const [orders, count] = await Promise.all([
+    query.exec(),
+    OrderModel.countDocuments(filter).exec()
+  ])
+
+  return {orders, count}
 }
 
 export async function getOneOrderById(id: string): Promise<IOrder | null> {

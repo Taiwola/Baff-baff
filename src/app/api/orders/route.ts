@@ -40,14 +40,14 @@ export async function GET(req: NextRequest) {
 
     filters.sort = {createdAt: -1}
 
-    let orders
+    let data
     if (session?.role === 'admin') {
-      orders = await getAllOrders(filters.id ? { id: filters.id } : filters)
+      data = await getAllOrders(filters.id ? { id: filters.id } : filters)
     } else {
-      orders = await getAllOrders(filters)
+      data = await getAllOrders(filters)
     }
 
-    const transform = adaptOrders({ data: orders, page, pageSize })
+    const transform = adaptOrders({ data: data.orders, total: data.count, page, pageSize })
 
     return sendResponse('Orders fetched successfully', transform, 200)
   } catch (error) {

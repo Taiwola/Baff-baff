@@ -11,7 +11,7 @@ export const sendEmail = async (email: string, content: string, title: string, u
 
   if (!verify) return { error: true, errorMessage: '' }
 
-  let mailOptions: any
+  let mailOptions: MailOptions
 
   try {
     mailOptions = {

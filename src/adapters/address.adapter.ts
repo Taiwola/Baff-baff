@@ -18,6 +18,6 @@ export function adaptAddress(data: IAddress): Address {
   }
 }
 
-export function adaptAddresses({ data, page, pageSize }: AdaptersOptions<IAddress[]>): Pagination<Address> {
-  return paginate({ data: data.map(adaptAddress), page, pageSize })
+export function adaptAddresses({ data, total, page, pageSize }: AdaptersOptions<IAddress[]>): Pagination<Address> {
+  return paginate({ data: data.map(adaptAddress), total, page, pageSize })
 }

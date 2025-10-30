@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const regions = await getAllRegions({ state })
+    const {regions} = await getAllRegions({ state })
     const citites: SelectItem[] = regions.map((region) => ({ key: region.city, label: region.city }))
     return sendResponse('Request was successfull', citites)
   } catch (error) {

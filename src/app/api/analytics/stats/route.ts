@@ -8,8 +8,8 @@ export async function GET() {
     
     try {
         const products = await getAllProducts({})
-        const totalProducts = products.length
-        const orders = await getAllOrders({})
+        const totalProducts = products.products.length
+        const {orders} = await getAllOrders({})
         const completedOrders = orders.filter(o => o.status === 'delivered')
         const totalCompletedOrders = completedOrders.length
         const pendingOrders =  orders.filter(i => i.status === 'pending')

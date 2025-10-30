@@ -35,8 +35,8 @@ export async function GET(req: NextRequest) {
   filters.page = page
   filters.limit = pageSize
 
-  const measurement = await getAllMeasurements(filters)
-  const transform = transformMeasurements({ data: measurement, page, pageSize })
+  const {measurements, count} = await getAllMeasurements(filters)
+  const transform = transformMeasurements({ data: measurements, total: count, page, pageSize })
 
   return sendResponse('Request was successful', transform, 200)
 }

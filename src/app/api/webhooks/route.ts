@@ -97,8 +97,8 @@ export async function POST(req: NextRequest) {
             }
 
             // Send admin notification emails
-            const admins = await getAllUsers({ role: 'admin' })
-            const adminEmails = admins.map(admin => admin.email).filter(Boolean) as string[]
+            const {users} = await getAllUsers({ role: 'admin' })
+            const adminEmails = users.map(admin => admin.email).filter(Boolean) as string[]
 
             if (adminEmails.length > 0) {
               const adminContent = generateAdminOrderEmail(order.id)

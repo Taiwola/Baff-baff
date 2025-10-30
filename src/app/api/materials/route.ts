@@ -92,8 +92,8 @@ export async function GET(req: NextRequest) {
   filters.page = page
   filters.limit = pageSize
 
-  const materials = await getAllMaterials(filters)
-  const transforms = adaptMaterials({ data: materials, page, pageSize })
+  const {materials, count} = await getAllMaterials(filters)
+  const transforms = adaptMaterials({ data: materials, total: count, page, pageSize })
 
   return sendResponse('Materials fetched successfully', transforms, 200)
 }

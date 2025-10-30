@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
 
-  const region = await getAllRegions(filters)
-  const transform = adaptRegions({ data: region, page, pageSize })
+  const {regions, count} = await getAllRegions(filters)
+  const transform = adaptRegions({ data: regions, total: count, page, pageSize })
 
   return sendResponse('regions fetched successfully', transform, 200)
 }

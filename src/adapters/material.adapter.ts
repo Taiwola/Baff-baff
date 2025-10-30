@@ -13,6 +13,6 @@ export function adaptMaterial(data: IMaterial): Material {
   }
 }
 
-export function adaptMaterials({ data, page, pageSize }: AdaptersOptions<IMaterial[]>): Pagination<Material> {
-  return paginate({ data: data.map(adaptMaterial), page, pageSize })
+export function adaptMaterials({ data, total , page, pageSize }: AdaptersOptions<IMaterial[]>): Pagination<Material> {
+  return paginate({ data: data.map(adaptMaterial), total, page, pageSize })
 }

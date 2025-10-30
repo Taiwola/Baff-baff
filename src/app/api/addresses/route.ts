@@ -33,9 +33,9 @@ export async function GET(req: NextRequest) {
   filters.page = page
   filters.limit = pageSize
 
-  const address = await getAllAddresss(filters)
+  const {addresses, count} = await getAllAddresss(filters)
 
-  const transform = adaptAddresses({ data: address, page, pageSize })
+  const transform = adaptAddresses({ data: addresses, total: count, page, pageSize })
 
   return sendResponse('Request successfull', transform)
 }

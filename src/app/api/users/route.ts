@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
   const page = queries?.page || 1
   const pageSize = queries?.limit || 10
 
-  const users = await getAllUsers(queries)
-  const transformedUsers = adaptUsers({ data: users, page, pageSize })
+  const {users, count} = await getAllUsers(queries)
+  const transformedUsers = adaptUsers({ data: users, total:count, page, pageSize })
 
   return sendResponse('Users fetched successfully', transformedUsers, 200)
 }

@@ -34,8 +34,8 @@ export function adaptProduct(data: IProduct): Product {
   }
 }
 
-export function adaptProducts({ data, page, pageSize }: AdaptersOptions<IProduct[]>): Pagination<Product> {
-  const pagination = paginate({ data: data.map(adaptProduct), page, pageSize })
+export function adaptProducts({ data, total, page, pageSize }: AdaptersOptions<IProduct[]>): Pagination<Product> {
+  const pagination = paginate({ data: data.map(adaptProduct), total, page, pageSize })
   return pagination
 }
 

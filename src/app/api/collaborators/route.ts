@@ -89,7 +89,7 @@ export async function GET(req: NextRequest) {
     filters.name = { $regex: queries.search, $options: 'i' }
   }
 
-  const collaborators = await getAllCollaborators(filters)
-  const response = adaptCollaborators({ data: collaborators, page, pageSize })
+  const {collaborators, count} = await getAllCollaborators(filters)
+  const response = adaptCollaborators({ data: collaborators, total: count, page, pageSize })
   return sendResponse('Materials fetched successfully', response, 200)
 }

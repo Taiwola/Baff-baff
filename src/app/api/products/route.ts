@@ -107,8 +107,8 @@ export async function GET(req: NextRequest) {
   filters.page = page
   filters.limit = pageSize
 
-  const products = await getAllProducts(filters)
-  const transform = adaptProducts({ data: products, page, pageSize })
+  const {products, count} = await getAllProducts(filters)
+  const transform = adaptProducts({ data: products, total: count, page, pageSize })
   return sendResponse('Product was successfully found', transform)
 }
 
