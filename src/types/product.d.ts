@@ -88,6 +88,7 @@ const statusMap: Record<ProductStatus, string> = {
 type MaketplaceFilter = {
   type?: ProductType
   status?: ProductStatus
+  design?: ProductDesign
   price?: PriceRange
   sort?: ProductSortType
   category?: ProductCategory

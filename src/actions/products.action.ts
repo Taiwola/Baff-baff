@@ -43,6 +43,7 @@ export async function getProducts(options: ProductQuery = {}): Promise<Paginatio
   if (options.status) params.set('status', options.status)
   if (options.type) params.set('type', options.type)
   if (options.price) params.set('price', options.price)
+  if (options.design) params.set('design', options.design)
   if (options.sort) params.set('sort', options.sort)
   if (options.category) params.set('category', options.category)
   if (options.search) params.set('search', options.search)
