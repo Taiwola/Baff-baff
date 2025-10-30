@@ -13,6 +13,7 @@ import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { createProductSchema, productFilterSchema } from '@validations/product'
 import { parseProductForm } from '@utils/formatting'
+import { file } from 'zod'
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
     limit: searchParams.get('limit') || '',
     search: searchParams.get('search') ?? undefined,
     collaboratorId: searchParams.get('collaboratorId') ?? undefined,
-    priceRange: searchParams.get('priceRange') || undefined,
+    priceRange: searchParams.get('price') || undefined,
     sort: searchParams.get('sort') ?? undefined
   })
 
@@ -39,7 +40,10 @@ export async function GET(req: NextRequest) {
   const filters: ProductFilter & { $or?: any[] } = {}
 
   if (queries?.search) {
-    filters.name = { $regex: queries.search, $options: 'i' }
+    filters.$or = [
+      { name: { $regex: queries.search, $options: 'i' } },
+      { description: { $regex: queries.search, $options: 'i' } }
+    ]
   }
 
   if (queries?.category) {
