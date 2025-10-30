@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 
 import { MarketPlaceFilters, Title } from '../_components'
 import { MarketPlaceProducts } from '@components/features/products'
+import { MarketplaceProductsSkeleton } from '@components/ui'
 
 
 type Props = {
@@ -18,7 +19,9 @@ export default async function MarketPlace({ searchParams }: Props) {
         <MarketPlaceFilters type={type} sort={sort} />
       </div>
 
-      <MarketPlaceProducts filter={{ type, sort, status, price }} />
+      <Suspense fallback={<MarketplaceProductsSkeleton />}>
+        <MarketPlaceProducts filter={{ type, sort, status, price }} />
+      </Suspense>
     </div>
   )
 }
