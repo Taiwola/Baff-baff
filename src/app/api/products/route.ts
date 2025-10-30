@@ -13,7 +13,6 @@ import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { createProductSchema, productFilterSchema } from '@validations/product'
 import { parseProductForm } from '@utils/formatting'
-import { file } from 'zod'
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
@@ -86,7 +85,7 @@ export async function GET(req: NextRequest) {
   if (queries?.collaboratorId) filters.collaborator = queries.collaboratorId
 
   // 5. Sorting
-  let sort: any = {}
+  const sort: any = {}
   if (queries?.sort) {
     switch (queries.sort) {
       case 'best-selling':
