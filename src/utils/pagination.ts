@@ -1,16 +1,13 @@
-export function paginate<T>({ data, total, page = 1, pageSize = 10 }: PaginationOptions<T>): Pagination<T> {
-  const safePage = Math.max(1, page)
+export function paginate<T>({ data, total, page, pageSize = 10 }: PaginationOptions<T>): Pagination<T> {
+  const safePage = Math.max(1, page ?? 1)
   const safePageSize = Math.min(Math.max(1, pageSize), 100)
 
-  const offset = (safePage - 1) * safePageSize
-
-  const paginatedItems = data.slice(offset, offset + safePageSize)
   const totalPages = Math.ceil(total / safePageSize)
   const hasPrevPage = safePage > 1
   const hasNextPage = safePage < totalPages
 
   return {
-    items: paginatedItems,
+    items: data,
     metadata: {
       totalItems: total,
       totalPages: totalPages,
