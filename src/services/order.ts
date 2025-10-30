@@ -70,7 +70,7 @@ export async function salesData(startDate: Date, endDate: Date, groupings: Group
         {
           $project: {
             _id: 0,
-            year: '$_id.year',
+            name: '$_id.year',
             revenue: 1
           }
         }
@@ -93,7 +93,7 @@ export async function salesData(startDate: Date, endDate: Date, groupings: Group
           $project: {
             _id: 0,
             year: '$_id.year',
-            month: {
+            name: {
               $dateToString: {
                 format: '%B',
                 date: {
@@ -164,7 +164,7 @@ export async function salesData(startDate: Date, endDate: Date, groupings: Group
             _id: 0,
             year: '$_id.year',
             month: '$_id.month',
-            weekOfMonth: '$_id.weekOfMonth',
+            name: '$_id.weekOfMonth',
             revenue: 1
           }
         },
@@ -229,7 +229,9 @@ export async function salesData(startDate: Date, endDate: Date, groupings: Group
       yearly: [],
       daily: [],
       weekly: [],
-      monthly: []
+      monthly: [],
+      startDate,  
+      endDate 
     }
 
     if (groupings.includes('yearly')) result.yearly = combinedSales[0].yearly ?? []

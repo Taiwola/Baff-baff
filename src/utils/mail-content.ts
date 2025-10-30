@@ -186,3 +186,49 @@ export const generatePaymentFailedEmail = (
     </div>
   `
 }
+
+
+/**
+ * Generates an order email for admin
+ * @param user Object containing the admin's email and optional name
+ * @param orderId The unique order ID or reference related to the failed payment
+ * @returns HTML string for the order email
+ */
+export const generateAdminOrderEmail = (
+  user: { name?: string; email: string },
+  orderId: string
+): string => {
+  const displayName = user.name || "Admin";
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+      <h2 style="color: #333; text-align: center;">New Order Placed</h2>
+      
+      <p style="color: #666; line-height: 1.6;">Hi ${displayName},</p>
+      <p style="color: #666; line-height: 1.6;">
+        A new order has been placed with the order ID <strong>#${orderId}</strong>. Please review and process the order as soon as possible.
+      </p>
+
+      <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <p style="margin: 0; color: #444;"><strong>Action Required:</strong></p>
+        <ul style="color: #666; margin: 10px 0; padding-left: 20px;">
+          <li>Verify order details in the admin dashboard</li>
+          <li>Confirm payment status</li>
+          <li>Prepare shipment if applicable</li>
+          <li>Update order status accordingly</li>
+        </ul>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+
+      <p style="color: #999; font-size: 12px; text-align: center;">
+        This email was sent to ${user.email}. If you have any questions, please contact 
+        <a href="mailto:support@yourcompany.com" style="color: #007bff; text-decoration: none;">support@yourcompany.com</a>.
+      </p>
+
+      <p style="color: #bbb; font-size: 11px; text-align: center; margin-top: 20px;">
+        © ${new Date().getFullYear()} Your Company Name. All rights reserved.<br>
+        This is an automated notification — please do not reply directly to this email.
+      </p>
+    </div>
+  `;
+};
