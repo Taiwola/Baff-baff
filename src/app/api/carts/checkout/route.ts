@@ -13,9 +13,6 @@ import { createOrderSchema } from '@validations/order'
 import { initiatePaystackPayment } from '@payment/payment'
 import { getOneProductById } from '@services/product'
 import { getSize } from '@utils'
-import { sendEmail } from '@lib/mail'
-import { getAllUsers } from '@services/user'
-import { generateAdminOrderEmail } from '@utils/mail-content'
 
 export async function POST(req: NextRequest) {
   await dbConnect()
@@ -136,27 +133,6 @@ export async function POST(req: NextRequest) {
     const paymentResult = await initiatePaystackPayment(paymentData)
 
     const order = await createOrder(orderValidation.data)
-
-    const admins = await getAllUsers({ role: 'admin' })
-    const adminEmails = admins.map(admin => admin.email).filter(Boolean)
-
-    if (adminEmails.length > 0) {
-      const sendPromises = adminEmails.map((adminEmail) => (async () => {
-        try {
-          const content = generateAdminOrderEmail({ email: adminEmail }, order.id)
-          const { error, errorMessage } = await sendEmail(adminEmail, content, 'New Order Placed', 'Baffa Baffa')
-          if (error) {
-            console.error(`Failed to send admin order email to ${adminEmail}: ${errorMessage}`)
-          }
-        } catch (err) {
-          console.error(`Error sending admin order email to ${adminEmail}:`, err)
-        }
-      })())
-
-      // Run all sends concurrently and handle any individual failures without throwing
-      await Promise.allSettled(sendPromises)
-    }
-
 
     return sendResponse('Checkout completed', {
       orderId: order.id,

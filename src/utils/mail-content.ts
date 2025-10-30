@@ -195,10 +195,10 @@ export const generatePaymentFailedEmail = (
  * @returns HTML string for the order email
  */
 export const generateAdminOrderEmail = (
-  user: { name?: string; email: string },
-  orderId: string
+  orderId: string,
+  user?: { name?: string; email?: string }
 ): string => {
-  const displayName = user.name || "Admin";
+  const displayName = user?.name || "Admin";
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
       <h2 style="color: #333; text-align: center;">New Order Placed</h2>
@@ -219,11 +219,6 @@ export const generateAdminOrderEmail = (
       </div>
 
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-
-      <p style="color: #999; font-size: 12px; text-align: center;">
-        This email was sent to ${user.email}. If you have any questions, please contact 
-        <a href="mailto:support@yourcompany.com" style="color: #007bff; text-decoration: none;">support@yourcompany.com</a>.
-      </p>
 
       <p style="color: #bbb; font-size: 11px; text-align: center; margin-top: 20px;">
         © ${new Date().getFullYear()} Your Company Name. All rights reserved.<br>

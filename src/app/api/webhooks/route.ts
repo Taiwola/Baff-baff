@@ -7,8 +7,9 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { deleteCart, getCartById } from '@services/cart'
 import dbConnect from '@lib/database'
 import { getSize } from '@utils'
-import { generateOrderPaymentEmail } from '@utils/mail-content'
-import { sendEmail } from '@lib/mail'
+import { generateAdminOrderEmail, generateOrderPaymentEmail } from '@utils/mail-content'
+import { sendBulkEmail, sendEmail } from '@lib/mail'
+import { getAllUsers } from '@services/user'
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
@@ -16,7 +17,6 @@ export async function POST(req: NextRequest) {
   await dbConnect()
 
   const body: PaystackWebhook<PaystackChargeSuccess> = await req.json()
-  sendResponse('success', 200)
 
   if (body.event === 'charge.success') {
     const data = body.data as PaystackChargeSuccess
@@ -77,14 +77,50 @@ export async function POST(req: NextRequest) {
       if (session) session.endSession()
 
     
-      const content = generateOrderPaymentEmail({name: order.shippingAddress.fullName, email: order.shippingAddress.email}, order.id)
-      const { error, errorMessage } = await sendEmail(order.shippingAddress.email, content, 'Payment confirmation', 'Baffa Baffa')
-      
-      if (error) {
-          console.error('Failed to send invitation email:', errorMessage)
-      }
+        // Send emails after successful transaction (don't block webhook on email failures)
+        setImmediate(async () => {
+          try {
+            // Send customer confirmation email
+            const customerContent = generateOrderPaymentEmail(
+              { name: order.shippingAddress.fullName, email: order.shippingAddress.email },
+              order.id
+            )
+            const { error: customerError, errorMessage: customerErrorMsg } = await sendEmail(
+              order.shippingAddress.email,
+              customerContent,
+              'Payment confirmation',
+              'Baffa Baffa'
+            )
 
-      return sendResponse('Webhook processed successfully')
+            if (customerError) {
+              console.error('Failed to send customer confirmation email:', customerErrorMsg)
+            }
+
+            // Send admin notification emails
+            const admins = await getAllUsers({ role: 'admin' })
+            const adminEmails = admins.map(admin => admin.email).filter(Boolean) as string[]
+
+            if (adminEmails.length > 0) {
+              const adminContent = generateAdminOrderEmail(order.id)
+              const bulkRecipients: BulkRecipient[] = adminEmails.map(email => ({ email }))
+              const { failed } = await sendBulkEmail(
+                bulkRecipients,
+                'New Order Placed',
+                adminContent,
+                'Baffa Baffa',
+                {}
+              )
+
+              if (failed.length > 0) {
+                console.error('Failed to send admin order emails to:', failed)
+              }
+            }
+          } catch (emailError) {
+            console.error('Error sending notification emails:', emailError)
+          }
+        })
+
+    return sendResponse('Webhook processed successfully',null, 200)
     } catch (error) {
       if (session) await session.abortTransaction()
       if (session) session.endSession()
