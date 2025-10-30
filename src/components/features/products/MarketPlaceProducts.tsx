@@ -4,7 +4,7 @@ import { ProductList } from '@components/ui'
 import { getProducts } from '@actions/products.action'
 
 type Props = {
-   filter: MaketplaceFilter
+   filter: MaketplaceFilter & { search?: string }
 }
 
 export default async function MarketPlaceProducts({ filter }: Props) {

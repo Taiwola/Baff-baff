@@ -40,7 +40,7 @@ export default function FilterAccordion() {
             }}
             dividerProps={{ className: "bg-brand-dark h-[0.5px]" }}
          >
-            {sections.filter(i => !(i.id === 'design' && !category)).map((section) => (
+            {sections.filter(i => !(i.id === 'design' && (category !== 'corporates' && category !== 'casuals'))).map((section) => (
                <AccordionItem
                   key={section.id}
                   aria-label={section.title}

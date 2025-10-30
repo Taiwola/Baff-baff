@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 
+import Count from './Count'
 import { SortButton, Title } from '../../_components'
-// import { MarketPlaceProducts } from '@components/features/products'
+import { MarketplaceProductsSkeleton } from '@components/ui'
+import { MarketPlaceProducts } from '@components/features/products'
 
 type Props = {
    params: Promise<{ search: string }>
+   searchParams: Promise<MaketplaceFilter>
 }
 
-export default async function SearchMarketplace({ params }: Props) {
+export default async function SearchMarketplace({ params, searchParams }: Props) {
    const { search } = await params
+   const { status = 'inStock', price, sort } = await searchParams
 
    return (
       <div className='w-full h-full flex flex-col justify-start items-start gap-5'>
@@ -19,12 +23,16 @@ export default async function SearchMarketplace({ params }: Props) {
             </div>
 
             <div className='flex justify-between items-center'>
-               <p className='text-md font-montserrat'>Found 16 matches</p>
+               <Suspense fallback={<div className="inline-block w-40 h-5 rounded bg-gray-200 animate-pulse" />}>
+                  <Count filter={{ sort, status, price, search }} />
+               </Suspense>
                <SortButton />
             </div>
          </div>
 
-         {/* <MarketPlaceProducts /> */}
+         <Suspense fallback={<MarketplaceProductsSkeleton />}>
+            <MarketPlaceProducts filter={{ sort, status, price, search }} />
+         </Suspense>
       </div>
    )
 }

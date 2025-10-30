@@ -18,6 +18,7 @@ export { default as CollaboratorSkeleton } from './Skeletons/CollaboratorSkeleto
 export { default as OrderListSkeleton } from './Skeletons/OrdersSkeleton'
 export { default as StatCardsSkeleton } from './Skeletons/StatCardsSkeleton'
 export { default as RevenueChartSkeleton } from './Skeletons/RevenueChartSkeleton'
+export { default as MarketplaceProductsSkeleton } from './Skeletons/MarketplaceProductsSkeleton'
 
 export { default as ProductList } from './Products/ProductList'
 export { default as ProductGallery } from './Products/ProductGallery'
