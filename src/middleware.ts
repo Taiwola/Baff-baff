@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 
 
 const { auth } = NextAuth(baseConfig)
-const protectedRoutes = ['/dashboard', '/profile', '/api/v1/']
+const protectedRoutes = ['/dashboard', '/profile', '/api/']
 
 export default auth((request) => {
   const method = request.method
