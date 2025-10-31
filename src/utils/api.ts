@@ -19,6 +19,11 @@ async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<
     options.headers = { ...options.headers, 'Content-Type': 'application/json' }
   }
 
+  // Automatically set Content-type header for form data
+  if (body instanceof FormData) {
+    options.headers = {...options.headers, 'Content-Type': 'multipart/form-data'}
+  }
+
   // Perform fetch with error capture
   const [error, response] = await catchError(
     fetch(`${config.baseUrl}${endpoint}`, { ...restOptions, body, headers: { ...options.headers }, credentials: 'include' })
