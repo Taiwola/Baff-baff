@@ -19,10 +19,12 @@ async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<
     options.headers = { ...options.headers, 'Content-Type': 'application/json' }
   }
 
-  // Automatically set Content-type header for form data
-  if (body instanceof FormData) {
-    options.headers = {...options.headers, 'Content-Type': 'multipart/form-data'}
-  }
+ if (body instanceof FormData) {
+ const headersObj = { ...(options.headers ?? {}) } as Record<string, string>;
+  delete headersObj['Content-Type'];
+  delete headersObj['content-type'];
+  options.headers = headersObj;
+}
 
   // Perform fetch with error capture
   const [error, response] = await catchError(
