@@ -19,13 +19,6 @@ async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<
     options.headers = { ...options.headers, 'Content-Type': 'application/json' }
   }
 
- if (body instanceof FormData) {
- const headersObj = { ...(options.headers ?? {}) } as Record<string, string>;
-  delete headersObj['Content-Type'];
-  delete headersObj['content-type'];
-  options.headers = headersObj;
-}
-
   // Perform fetch with error capture
   const [error, response] = await catchError(
     fetch(`${config.baseUrl}${endpoint}`, { ...restOptions, body, headers: { ...options.headers }, credentials: 'include' })
