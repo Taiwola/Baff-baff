@@ -10,7 +10,6 @@ import { getSize } from '@utils'
 import { generateAdminOrderEmail, generateOrderPaymentEmail } from '@utils/mail-content'
 import { sendBulkEmail, sendEmail } from '@lib/mail'
 import { getAllUsers } from '@services/user'
-import { number } from 'zod'
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
