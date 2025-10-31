@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
+import { signOut } from 'next-auth/react'
 import { ChevronDownIcon } from 'lucide-react'
 import { UserIcon } from '@heroicons/react/24/outline'
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/react'
-import { logout } from '@actions/auth.action'
 
 type Props = {
    name: string
@@ -14,7 +14,7 @@ export default function User({ name }: Props) {
    const [open, setOpen] = useState(false)
 
    async function handleLogout() {
-      await logout()
+      signOut({ redirectTo: '/login' })
    }
 
    return (

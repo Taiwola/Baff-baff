@@ -34,7 +34,7 @@ export default function AddNewRegion() {
 
    return (
       <>
-         <Button rounded='sm' onClick={onOpen}>
+         <Button rounded='sm' onClick={onOpen} className='w-full md:w-auto'>
             Add New
          </Button>
 

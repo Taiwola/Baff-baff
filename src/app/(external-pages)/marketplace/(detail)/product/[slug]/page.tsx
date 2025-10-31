@@ -57,10 +57,12 @@ export default async function ProductDetail({ params }: Props) {
         </article>
 
         <article className='w-full md:w-[46%] h-auto min-h-screen'>
-          <BreadCrumbs
-            separator={<ChevronRightIcon className='text-base text-black w-4 h-4' />}
-            items={breadcrumbs}
-          />
+          <div className='hidden md:block'>
+            <BreadCrumbs
+              separator={<ChevronRightIcon className='text-base text-black w-4 h-4' />}
+              items={breadcrumbs}
+            />
+          </div>
 
           <h1 className='font-normal mt-7.5 md:mt-5.5 mb-5 text-[36px] w-full'>{product.name}</h1>
 

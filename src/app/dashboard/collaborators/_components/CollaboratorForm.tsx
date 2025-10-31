@@ -6,6 +6,7 @@ import { SiFacebook, SiInstagram, SiTiktok, SiX } from "react-icons/si";
 
 import { Button, ImageInput, Input } from '@components/ui'
 import { UpdateCollaboratorValues } from '@validations/collaborators';
+import { useRouter } from 'next/navigation';
 
 interface Props {
    type?: 'create' | 'edit'
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function CollaboratorForm({ type = 'create', pending, initialState, errors, action }: Props) {
+   const router = useRouter()
    const fileInputRef = useRef<HTMLInputElement>(null)
    const [image, setImage] = useState(initialState.image);
 
@@ -35,7 +37,7 @@ export default function CollaboratorForm({ type = 'create', pending, initialStat
    return (
       <form className='w-full h-auto' action={action}>
          <div className='w-full flex justify-between items-start'>
-            <Button as={'link'} href={'/dashboard/collaborators'} className='bg-transparent text-brand-dark p-0 hover:p-2 hover:text-white gap-5 font-bold'>
+            <Button as={'button'} onClick={() => router.back()} className='bg-transparent text-brand-dark p-0 hover:p-2 hover:text-white gap-5 font-bold'>
                <ArrowLeftIcon className='w-5 h-5' />
                <span className='font-bold'>{type === 'create' ? 'Add Collaborator' : 'Edit Collaborator'}</span>
             </Button>
@@ -67,7 +69,7 @@ export default function CollaboratorForm({ type = 'create', pending, initialStat
                />
                {errors.image && <span className="text-xs text-red-500">{errors.image}</span>}
 
-               <div className='w-3/5 mt-7.5'>
+               <div className='w-full md:w-3/5 mt-7.5'>
                   <Input
                      label='NAME'
                      name='name'
@@ -81,7 +83,7 @@ export default function CollaboratorForm({ type = 'create', pending, initialStat
                <h6 className='text-sm text-brand-dark/40 mb-2.5'>SOCIALS</h6>
                <hr className='border border-brand-dark/40 mb-5' />
 
-               <div className="grid grid-cols-4 gap-5">
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   <div className="flex flex-col justify-start items-start">
                      <label htmlFor="instagram" className="flex items-center gap-1 text-brand-dark text-sm">
                         <SiInstagram className="w-[14px] h-[14px]" />

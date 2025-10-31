@@ -64,7 +64,7 @@ export const toast = {
          }
       ),
 
-   error: ({ title = 'An Error Occured', description }: ToastContentProps, options?: ToastOptions) =>
+   error: ({ title = 'Oops! An Error Occured', description }: ToastContentProps, options?: ToastOptions) =>
       hotToast.custom(
          <div
             className="

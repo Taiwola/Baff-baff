@@ -12,7 +12,11 @@ export async function createAddress(data: Partial<IAddress>, session?: ClientSes
   return Addresss
 }
 
-export async function getAllAddresss({ limit, page = 1, ...filter }: FilterQuery<AddressFilter>): Promise<IAddress[]> {
+export async function getAllAddresss({ 
+  limit, 
+  page = 1, 
+  ...filter 
+}: FilterQuery<AddressFilter>): Promise<{ addresses: IAddress[]; count: number }> {
   const query = AddressModel.find(filter)
 
   if (limit) {
@@ -20,7 +24,13 @@ export async function getAllAddresss({ limit, page = 1, ...filter }: FilterQuery
     query.limit(limit).skip(skip)
   }
 
-  return await query
+  
+  const [addresses, count] = await Promise.all([
+    query.exec(),
+    AddressModel.countDocuments(filter)
+  ])
+
+  return { addresses, count }
 }
 
 export async function getOneAddressById(id: string): Promise<IAddress | null> {

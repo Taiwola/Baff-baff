@@ -1,5 +1,3 @@
-import { verifySession } from '@lib/dal'
-import { getUser } from '@actions/users.action'
 import { Footer, Header } from '@components/layouts'
 
 type Props = Readonly<{
@@ -7,12 +5,9 @@ type Props = Readonly<{
 }>
 
 export default async function ExternalPagesLayout({ children }: Props) {
-  const session = await verifySession()
-  const user = await getUser(session?.userId || '')
-
   return (
     <>
-      <Header user={user} />
+      <Header />
       {children}
       <Footer />
     </>

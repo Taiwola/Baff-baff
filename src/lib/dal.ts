@@ -1,16 +1,13 @@
 import 'server-only'
 
-import { cookies } from 'next/headers'
-
-import { decrypt } from './session'
+import { auth } from '@auth'
 
 export const verifySession = async () => {
-  const cookie = (await cookies()).get('session')?.value
-  const session = await decrypt(cookie)
-
-  if (!session?.id) {
+  const session = await auth()
+  
+  if (!session || !session.user.id) {
     return null
   }
 
-  return { isAuth: true, userId: session.id, role: session.role }
+  return { isAuth: true, userId: session.user.id, role: session.user.role }
 }

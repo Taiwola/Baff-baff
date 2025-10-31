@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -82,7 +84,6 @@ function getShirtSize(measurements: ShirtMeasurement | CartMeasurements): Size {
 }
 
 function getTrouserSize(measurements: TrouserMeasurement | CartMeasurements): Size {
-  console.log(measurements);
   return 'l'
 }
 

@@ -2,11 +2,12 @@
 
 import Image from 'next/image'
 import { Spinner } from '@heroui/react'
-import React, { useActionState } from 'react'
+import React, { useActionState, useEffect } from 'react'
 
 import { Button, Input } from '@components/ui'
 import TermsAndCondition from './TermsAndCondition'
 
+import { useToast } from '@hooks/useToast'
 import { register } from '@actions/auth.action'
 import GoogleIcon from '@assets/svg/google-icon.svg'
 import { RegisterFormState } from '@validations/auth'
@@ -26,7 +27,14 @@ const initialState: RegisterFormState = {
 }
 
 export default function RegisterForm() {
-  const [{ errors, values }, dispatch, isPending] = useActionState(register, initialState)
+  const toast = useToast()
+  const [{ error, errors, values }, dispatch, isPending] = useActionState(register, initialState)
+
+  useEffect(() => {
+    if (error) {
+      toast.error({ title: 'Registration Failed', description: error })
+    }
+  }, [toast, error]);
 
   return (
     <form action={dispatch} className='grid grid-cols-1 gap-5'>

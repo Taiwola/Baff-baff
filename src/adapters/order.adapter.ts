@@ -30,6 +30,6 @@ export function adaptOrder(data: IOrder): Order {
   }
 }
 
-export function adaptOrders({ data, page, pageSize }: AdaptersOptions<IOrder[]>): Pagination<Order> {
-  return paginate({ data: data.map(adaptOrder), page, pageSize })
+export function adaptOrders({ data, total, page, pageSize }: AdaptersOptions<IOrder[]>): Pagination<Order> {
+  return paginate({ data: data.map(adaptOrder), total, page, pageSize })
 }

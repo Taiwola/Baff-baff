@@ -12,10 +12,13 @@ export async function createRegion(data: CreateRegionDto, session?: ClientSessio
   return Regions
 }
 
-export async function getAllRegions({ ...filter }: FilterQuery<RegionFilter>): Promise<IRegion[]> {
-  const query = RegionModel.find(filter)
+export async function getAllRegions({ ...filter }: FilterQuery<RegionFilter>): Promise<{regions: IRegion[], count: number}> {
+  const [regions, count] = await Promise.all([
+    RegionModel.find(filter).exec(),
+    RegionModel.countDocuments(filter).exec()
+  ])
 
-  return await query
+  return {regions, count}
 }
 
 export async function getOneRegionById(id: string): Promise<IRegion | null> {

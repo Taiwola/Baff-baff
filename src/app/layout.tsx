@@ -5,6 +5,7 @@ import ToastProvider from "@providers/ToastProvider"
 
 import "@styles/globals.css"
 import { CartProvider } from "@contexts/carts.context"
+import { SessionProvider } from "next-auth/react"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -47,13 +48,15 @@ export default async function RootLayout({
         suppressHydrationWarning
         className={`${poppins.variable} ${montserrat.variable} ${roboto.variable} ${lexendDeca.variable} min:h-screen w-full`}
       >
-        <ToastProvider>
-          <HeroUiProvider>
-            <CartProvider>
-              {children}
-            </CartProvider>
-          </HeroUiProvider>
-        </ToastProvider>
+        <SessionProvider>
+          <ToastProvider>
+            <HeroUiProvider>
+              <CartProvider>
+                {children}
+              </CartProvider>
+            </HeroUiProvider>
+          </ToastProvider>
+        </SessionProvider>
       </body>
     </html>
   )

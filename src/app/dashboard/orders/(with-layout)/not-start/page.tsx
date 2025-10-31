@@ -1,10 +1,11 @@
 import React from 'react'
-import { OrdersList } from '../../_components'
+
 import { getOrders } from '@actions/orders.action'
+import { OrdersList } from '@components/features/orders'
 
 type Props = {
-  searchParams: Promise<{ query: string }>
-} 
+   searchParams: Promise<{ query: string }>
+}
 
 export default async function NotStartOrdersPage({ searchParams }: Props) {
    const { query } = await searchParams

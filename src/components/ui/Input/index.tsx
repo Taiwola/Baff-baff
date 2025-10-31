@@ -15,6 +15,7 @@ type BaseProps = {
   disabled?: boolean
   error?: string
   isClearable?: boolean
+  className?: string
 }
 
 type TextOrNumberProps = BaseProps & {
@@ -41,7 +42,8 @@ export default function DynamicInput({
   startContent,
   disabled,
   error,
-  isClearable
+  isClearable,
+  className = ''
 }: Props) {
   const id = React.useId()
   const normalizedValue = value != null ? String(value) : ''
@@ -66,9 +68,9 @@ export default function DynamicInput({
   }
 
 
-  const hasError = !!currentError && !isFocused && !isFilled
+  // const currentError = !!currentError && !isFocused && !isFilled
 
-  const borderClass = hasError
+  const borderClass = currentError
     ? 'border-red-500'
     : isFocused
       ? 'border-brand-dark shadow-[0_0_0_2px_rgba(0,0,0,0.05)]'
@@ -82,9 +84,11 @@ export default function DynamicInput({
         ? 'bg-[#fafafa]'
         : 'bg-transparent'
 
-  const textClass = hasError
+  const textClass = currentError
     ? 'text-red-600 placeholder:text-red-300'
     : 'text-black placeholder:text-brand-dark/40'
+
+  const labelClass = currentError ? 'text-red-600' : isFocused || isFilled ? 'text-brand-dark' : 'text-black'
 
 
   const commonHandlers = {
@@ -109,10 +113,7 @@ export default function DynamicInput({
   const labelContent = label && (
     <label
       htmlFor={id}
-      className={`
-        text-xs font-medium transition-all duration-200 
-        ${isFocused || isFilled ? 'text-brand-dark' : currentError ? 'text-red-600' : 'text-black'}
-      `}
+      className={`text-xs font-medium transition-all duration-200 ${labelClass}`}
     >
       {label}
     </label>
@@ -125,6 +126,8 @@ export default function DynamicInput({
     inputContent = (
       <Select
         id={id}
+        color='primary'
+        placeholder={placeholder}
         name={name}
         aria-label={name}
         isDisabled={disabled}
@@ -136,8 +139,8 @@ export default function DynamicInput({
           trigger: `
           border ${borderClass} ${bgClass} rounded-md py-5 px-2.5 w-full text-sm ${textClass}
           transition-all duration-200 ease-in-out
-          ${hasError ? '' : 'hover:border-brand-dark/70'}
-          data-[open=true]:scale-[1.02]
+          ${currentError ? '' : 'hover:border-brand-dark/70'}
+          data-[open=true]:scale-[1.02] ${className}
         `,
           listbox: `
           border-foreground rounded-md bg-light text-black text-sm py-2 w-full 
@@ -145,7 +148,7 @@ export default function DynamicInput({
         `,
           listboxWrapper: 'w-full',
           selectorIcon: `
-          ${hasError ? 'text-red-500' : isFocused ? 'text-brand-dark' : 'text-brand-dark/70'}
+          ${currentError ? 'text-red-500' : isFocused ? 'text-brand-dark' : 'text-brand-dark/70'}
           absolute right-3 w-5 h-5 pointer-events-none
           transition-transform duration-200 data-[open=true]:rotate-180
         `
@@ -194,7 +197,7 @@ export default function DynamicInput({
           inputWrapper: `
             border ${borderClass} ${bgClass} rounded-md w-full p-0 resize-none
             transition-all duration-200 ease-in-out
-            ${hasError ? '' : 'hover:border-brand-dark/70'}
+            ${currentError ? '' : 'hover:border-brand-dark/70'}
           `,
           input: `outline-none ${textClass} h-full p-2`
         }}
@@ -237,7 +240,7 @@ export default function DynamicInput({
         classNames={{
           inputWrapper: `
             border ${borderClass} ${bgClass} rounded-md w-full transition-all duration-200 ease-in-out
-            ${hasError ? '' : 'hover:border-brand-dark/70'} hover:bg-[#f9f9f9]
+            ${currentError ? '' : 'hover:border-brand-dark/70'} hover:bg-[#f9f9f9]
           `,
           input: `outline-none p-2 ${textClass}`
         }}
@@ -249,7 +252,7 @@ export default function DynamicInput({
     <div className="flex flex-col gap-1 w-full h-auto transition-all duration-300">
       {labelContent}
       {inputContent}
-      {hasError && <span className="text-xs text-red-500">{currentError}</span>}
+      {currentError && <span className="text-xs text-red-500">{currentError}</span>}
     </div>
   )
 }

@@ -26,7 +26,7 @@ type ProductSortType = 'featured' | 'best-selling' | 'a-z' | 'z-a' | 'o-n' | 'n-
 // low = 0 - 10,000; mid = 10,000 - 100,000; high = 100,000 +
 type PriceRange = 'low' | 'mid' | 'high'
 
-type ShirtDesign = 'plain' | 'checkered' | 'patterned' | 'striped' | 'abstract' | 'print'
+type ShirtDesign = 'plain' | 'checkered' | 'patterned' | 'striped' | 'abstract' | 'print' | 'track'
 
 type TrouserDesign = 'plain' | 'patterned' | 'jeans' | 'chinos' | 'corduroy' | 'striped' | 'abstract'
 
@@ -88,6 +88,7 @@ const statusMap: Record<ProductStatus, string> = {
 type MaketplaceFilter = {
   type?: ProductType
   status?: ProductStatus
+  design?: ProductDesign
   price?: PriceRange
   sort?: ProductSortType
   category?: ProductCategory

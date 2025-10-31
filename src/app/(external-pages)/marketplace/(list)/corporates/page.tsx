@@ -8,7 +8,7 @@ type Props = {
 }
 
 export default async function Corporates({ searchParams }: Props) {
-  const { type = 'shirt', status = 'inStock', price, sort } = await searchParams
+   const { type = 'shirt', status = 'inStock', price, sort, design } = await searchParams
 
   return (
     <div className='w-full h-full flex flex-col justify-start items-start gap-5'>
@@ -17,7 +17,7 @@ export default async function Corporates({ searchParams }: Props) {
         <MarketPlaceFilters type={type} sort={sort} />
       </div>
 
-      <MarketPlaceProducts filter={{ type, sort, status, price, category: 'corporates' }} />
+      <MarketPlaceProducts filter={{ type, sort, status, price, category: 'corporates', design }} />
     </div>
   )
 }

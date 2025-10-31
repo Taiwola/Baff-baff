@@ -105,7 +105,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                <h6 className='text-sm text-brand-dark/40 mb-2.5'>PRODUCT DETAILS</h6>
                <hr className='border border-brand-dark/40 mb-5' />
 
-               <div className='grid grid-cols-3 gap-5 w-full'>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
                   <Input
                      label='PRODUCT NAME'
                      name='name'
@@ -165,7 +165,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                <h6 className='text-sm text-brand-dark/40 mb-2.5'>SIZE</h6>
                <hr className='border border-brand-dark/40 mb-5' />
 
-               <div className='grid grid-cols-3 gap-5 mb-5'>
+               <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full mb-5'>
                   <Input
                      name='s[quantity]'
                      label='QUANTITY (SIZE : SMALL)'
@@ -194,7 +194,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                   />
                </div>
 
-               <div className='grid grid-cols-3 gap-5 mb-5'>
+               <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full mb-5'>
                   <Input
                      name='m[quantity]'
                      label='QUANTITY (SIZE : MEDIUM)'
@@ -223,7 +223,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                   />
                </div>
 
-               <div className='grid grid-cols-3 gap-5 mb-5'>
+               <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full mb-5'>
                   <Input
                      name='l[quantity]'
                      label='QUANTITY (SIZE : Large)'
@@ -252,7 +252,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                   />
                </div>
 
-               <div className='grid grid-cols-3 gap-5 mb-5'>
+               <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full mb-5'>
                   <Input
                      name='xl[quantity]'
                      label='QUANTITY (SIZE : Extra Large)'
@@ -281,7 +281,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                   />
                </div>
 
-               <div className='grid grid-cols-3 gap-5 mb-5'>
+               <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full mb-5'>
                   <Input
                      name='xxl[quantity]'
                      label='QUANTITY (SIZE : XX Large)'
@@ -310,7 +310,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                   />
                </div>
 
-               <div className='grid grid-cols-3 gap-5 mb-5'>
+               <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full mb-5'>
                   <Input
                      name='xxxl[quantity]'
                      label='QUANTITY (SIZE : XXX Large)'

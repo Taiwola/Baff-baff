@@ -12,6 +12,6 @@ export function adaptRegion(data: IRegion): Region {
   }
 }
 
-export function adaptRegions({ data, page, pageSize }: AdaptersOptions<IRegion[]>): Pagination<Region> {
-  return paginate({ data: data.map(adaptRegion), page, pageSize })
+export function adaptRegions({ data, total, page, pageSize }: AdaptersOptions<IRegion[]>): Pagination<Region> {
+  return paginate({ data: data.map(adaptRegion), total, page, pageSize })
 }

@@ -18,7 +18,7 @@ export default async function RegionPage({ searchParams }: Props) {
     <div className="w-full h-auto">
       {/* Header */}
       <Header title='Region'>
-        <div className='w-[17.5rem]'>
+        <div className='w-full md:w-[17.5rem]'>
           <Search
             label="Search Region"
             action='/dashboard/region'

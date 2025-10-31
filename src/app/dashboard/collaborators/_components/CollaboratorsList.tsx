@@ -37,7 +37,6 @@ export default function CollaboratorsList({ promise }: Props) {
             ))}
          </div>
 
-
          {metadata.totalItems > metadata.pageSize ? <Pagination metadata={metadata} onChange={handleChangePage} /> : null}
       </section>
    )

@@ -47,7 +47,7 @@ export default function DateSelector({
   };
 
   return (
-    <div className="relative w-full max-w-xs">
+    <div className="relative w-full">
       {/* Input field */}
       <div
         className="flex items-center border border-black/50 rounded-[8px] px-3 py-2 h-10 cursor-pointer focus-within:ring-2 focus-within:ring-brand-dark"
@@ -78,14 +78,14 @@ export default function DateSelector({
       {showCalendar && (
         <div
           ref={calendarRef}
-          className="absolute mt-2 z-50 bg-white rounded-lg shadow-lg p-4 w-72 sm:w-80 overflow-auto no-scrollbar"
+          className="absolute mt-2 z-50 bg-white rounded-lg shadow-lg p-4 w-full overflow-auto no-scrollbar"
         >
           <DayPicker
             mode="single"
             selected={date ?? undefined}
             onSelect={handleSelect}
             showOutsideDays
-            captionLayout="dropdown" // month + year dropdown
+            captionLayout="dropdown" 
             className="text-sm text-brand-dark"
             classNames={{
                chevron: 'text-black'

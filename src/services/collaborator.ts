@@ -9,14 +9,19 @@ export async function createCollaborator(dto: CreateCollaboratorDto): Promise<IC
   return collaborator
 }
 
-export async function getAllCollaborators({ limit, skip, ...filter }: FilterQuery<Collaborator> = {}): Promise<ICollaborator[]> {
-  const collaborators = CollaboratorModel.find(filter)
+export async function getAllCollaborators({ limit, skip, ...filter }: FilterQuery<Collaborator> = {}): Promise<{collaborators:ICollaborator[], count: number}> {
+  const query = CollaboratorModel.find(filter)
 
   if (limit && skip) {
-    collaborators.skip(skip).limit(limit)
+    query.skip(skip).limit(limit)
   }
 
-  return await collaborators
+  const [collaborators, count] = await Promise.all([
+    query.exec(),
+    CollaboratorModel.countDocuments(filter)
+  ])
+
+  return { collaborators, count }
 }
 
 export async function getOneCollaborator(filter: FilterQuery<Collaborator>): Promise<ICollaborator | null> {

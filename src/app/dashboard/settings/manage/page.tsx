@@ -17,6 +17,7 @@ export default async function ManageAdminPage() {
         <Link href={'/dashboard/settings'}>
           <ArrowLeftIcon className='w-6 h-6 text-brand-dark' />
         </Link>
+        
         <BreadCrumbs separator='/' items={breadcrumbsItems} />
       </div>
 

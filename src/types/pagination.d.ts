@@ -14,6 +14,7 @@ type PaginationMetadata = {
 
 type PaginationOptions<T> = {
   data: T[]
+  total: number
   page?: number
   pageSize?: number
 }

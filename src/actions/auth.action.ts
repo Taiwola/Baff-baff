@@ -1,8 +1,11 @@
+'use server'
+
 import { redirect } from 'next/navigation'
 
-import { ApiClient } from '@utils/api'
-import { toast } from '@hooks/useToast'
+import { auth, signIn, signOut } from '@auth'
+import { catchError } from '@utils/result'
 import { formatError } from '@utils/formatting'
+import { ServerApiClient } from '@utils/api-server'
 import {
   ChangePasswordFormErrors,
   ChangePasswordFormState,
@@ -21,6 +24,7 @@ import {
   ResetPasswordFormValues,
   resetPasswordSchema
 } from '@validations/auth'
+import { revalidatePath } from 'next/cache'
 
 export async function register(state: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
   const parsedValues = {
@@ -40,14 +44,12 @@ export async function register(state: RegisterFormState, formData: FormData): Pr
     return { ...state, errors, values: parsedValues }
   }
 
-  const response = await ApiClient.post<void>('/auth/register', result.data)
+  const response = await ServerApiClient.post<void>('/auth/register', result.data)
 
   if (response.code >= 400) {
-    toast.error({ title: 'Registration Failed', description: response.message })
     return { ...state, error: response.message }
   }
 
-  toast.success({ title: 'Registration success', description: response.message })
   redirect('/login')
 }
 
@@ -61,22 +63,35 @@ export async function login(state: LoginFormState, formData: FormData): Promise<
 
   if (!result.success) {
     const errors = formatError<LoginFormState['errors'], LoginFormState['values']>(result.error)
-    return { ...state, errors, values: parsedValues }
+    return { ...state, error: '', errors, values: parsedValues }
   }
 
-  const response = await ApiClient.post<LoginResponseType>('/auth/login', result.data)
+  const [error, response] = await catchError(signIn('credentials', { ...result.data, redirect: false }))
 
-  if (response.code >= 400) {
-    toast.error({ title: 'Login Failed', description: response.message })
-    return { ...state, error: response.message }
+  if (error) {
+    switch (error.name) {
+      case 'CallbackRouteError':
+      case 'CredentialsSignin':
+        return { ...state, error: 'Invalid Credentials' }
+
+      default:
+        return { ...state, error: error.name }
+    }
   }
 
-  toast.success({ title: 'Login success', description: response.message })
+  if (!response) {
+    return { ...state, error: 'Internal Server Error' }
+  }
 
-  const { role } = response.data
+  if (response.status >= 400) {
+    return { ...state, error: response.error || 'Please check your credentials.' }
+  }
 
-  if (role === 'admin') redirect('/dashboard')
-  redirect('/')
+  redirect('/dashboard')
+}
+
+export async function googleLogin() {
+  await signIn('google', { redirectTo: '/dashboard' })
 }
 
 export async function forgotPassword(state: ForgotPasswordFormState, formData: FormData): Promise<ForgotPasswordFormState> {
@@ -91,16 +106,13 @@ export async function forgotPassword(state: ForgotPasswordFormState, formData: F
     return { ...state, errors, values: parsedValues }
   }
 
-  const response = await ApiClient.post<void>('/auth/forgot-password', result.data)
+  const response = await ServerApiClient.post<void>('/auth/forgot-password', result.data)
 
   if (response.code >= 400) {
-    toast.error({ title: 'Forgot Password Failed', description: response.message })
     return { ...state, error: response.message }
   }
 
-  toast.success({ title: 'Email Sent', description: response.message })
-
-  return { values: { email: '' }, errors: {}, error: '' }
+  return { values: { email: '' }, errors: {}, error: '', success: true }
 }
 
 export async function resetPassword(state: ResetPasswordFormState, formData: FormData): Promise<ResetPasswordFormState> {
@@ -117,14 +129,11 @@ export async function resetPassword(state: ResetPasswordFormState, formData: For
     return { ...state, errors, values: parsedValues }
   }
 
-  const response = await ApiClient.patch<void>('/auth/reset-password', result.data)
+  const response = await ServerApiClient.patch<void>('/auth/reset-password', result.data)
 
   if (response.code >= 400) {
-    toast.error({ title: 'Reset Password Failed', description: response.message })
     return { ...state, error: response.message }
   }
-
-  toast.success({ title: 'Success', description: response.message })
 
   redirect('/login')
 }
@@ -143,24 +152,19 @@ export async function changePassword(state: ChangePasswordFormState, formData: F
     return { ...state, errors, values: parsedValues }
   }
 
-  const response = await ApiClient.post<void>('/auth/change-password', result.data)
+  const response = await ServerApiClient.post<void>('/auth/change-password', result.data)
 
   if (response.code >= 400) {
-    toast.error({ title: 'Change Password Failed', description: response.message })
     return { ...state, error: response.message }
   }
 
-  toast.success({ title: 'Success', description: response.message })
+  const session = await auth()
 
-  redirect('/dashboard/settings')
+  if (session?.user.role === 'admin') redirect('/dashboard/settings')
+  else redirect('/profile')
 }
 
 export async function logout() {
-  const response = await ApiClient.delete<LoginResponseType>('/auth/logout')
-  if (response.code >= 400) {
-    toast.error({ title: 'Logout Failed', description: response.message })
-    return { error: response.message }
-  }
-
-  redirect('/login')
+  await signOut({ redirectTo: '/login' })
+  revalidatePath('/login')
 }

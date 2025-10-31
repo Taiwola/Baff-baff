@@ -1,6 +1,8 @@
-import React from 'react'
+import useSWR from 'swr';
+import React, { useState } from 'react'
 
 import { Button, Input } from '@components/ui';
+import { getLocalGovts, getStates } from '@actions/nga.action';
 
 type InitialState = Pick<Region, 'state' | 'city' | 'price'>
 
@@ -11,24 +13,29 @@ type Props = {
    action: (payload: FormData) => void
 }
 
-
 export default function RegionForm({ errors, initialState, action, pending }: Props) {
+   const [selectedState, setSelectedState] = useState<string | undefined>(initialState.state);
+
+   const { data: states = [] } = useSWR<NGA[]>(`/nga/states`, getStates);
+   const { data: cities = [] } = useSWR<NGA[]>(selectedState ?? null, getLocalGovts);
+
    return (
       <form action={action} className="flex flex-col gap-6 w-full">
          <Input
             name="state"
             label="State"
             type='select'
-            options={[{ label: 'Lagos', key: 'Lagos' }]}
+            options={states}
             error={errors.state}
             value={initialState.state}
+            onChange={(val) => setSelectedState(val)}
          />
 
          <Input
             name="city"
             label="City"
             type="select"
-            options={[{ label: 'Ikeja', key: 'Ikeja' }, { key: 'Oshodi', label: 'Oshodi' }]}
+            options={cities}
             error={errors.city}
             value={initialState.city}
          />

@@ -22,7 +22,7 @@ export default function FormModal({ title, isOpen, children, onOpenChange }: Pro
          onOpenChange={onOpenChange}
          size="full"
          classNames={{
-            base: "w-[45%] h-auto rounded-xl shadow-lg bg-white my-5",
+            base: "w-[90%] md:w-[45%] h-auto rounded-xl shadow-lg bg-white my-5",
          }}
       >
          <ModalContent>

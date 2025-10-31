@@ -1,8 +1,10 @@
 'use server'
 
 import { ServerApiClient } from '@utils/api-server'
+import { formatError } from '@utils/formatting'
 import { emptyMetaData } from '@utils/pagination'
-import { OrderQuery } from '@validations/order'
+import { OrderQuery, UpdateOrderDto, UpdateOrderFormErrors, UpdateOrderFormState, updateOrderSchema } from '@validations/order'
+import { redirect, RedirectType } from 'next/navigation'
 
 export async function getOrders(query: OrderQuery = {}): Promise<Pagination<Order>> {
   const params = new URLSearchParams()
@@ -33,4 +35,25 @@ export async function getOrder(id: string) {
   }
 
   return response.data
+}
+
+export async function updateOrder(id: string, state: UpdateOrderFormState, formData: FormData): Promise<UpdateOrderFormState> {
+  const parsed = {
+    status: String(formData.get('status') || '') as OrderStatus
+  }
+
+  const result = updateOrderSchema.safeParse(parsed)
+
+  if (!result.success) {
+    const errors = formatError<UpdateOrderFormErrors, UpdateOrderDto>(result.error)
+    return { ...state, errors, values: parsed, error: '' }
+  }
+
+  const response = await ServerApiClient.patch<Order>(`/orders/${id}`, result.data)
+
+  if (response.code >= 400) {
+    return { ...state, error: response.message, values: parsed }
+  }
+
+  redirect(`/dashboard/orders/${id}`, RedirectType.replace)
 }

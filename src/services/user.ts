@@ -12,7 +12,12 @@ export async function getUserByEmail(email: string): Promise<IUser | null> {
   return user
 }
 
-export async function createUser(data: RegisterDto): Promise<IUser> {
+export async function getOneUser(filter: FilterQuery<IUser>): Promise<IUser | null> {
+  const user = await UserModel.findOne(filter)
+  return user
+}
+
+export async function createUser(data: Omit<RegisterDto, 'confirmPassword'> & { googleProviderId?: string }): Promise<IUser> {
   const newUser = new UserModel({
     ...data
   })
@@ -33,7 +38,7 @@ export async function getUserById(id: string): Promise<IUser | null> {
   return await UserModel.findById(id)
 }
 
-export async function getAllUsers({ limit, page = 1, ...filter }: FilterQuery<UserFilter> = {}): Promise<IUser[]> {
+export async function getAllUsers({ limit, page = 1, ...filter }: FilterQuery<UserFilter> = {}): Promise<{users: IUser[], count: number}> {
   const query = UserModel.find(filter)
 
   if (limit) {
@@ -41,7 +46,12 @@ export async function getAllUsers({ limit, page = 1, ...filter }: FilterQuery<Us
     query.limit(limit).skip(skip)
   }
 
-  return await query
+  const [users, count] = await Promise.all([
+    query.exec(),
+    UserModel.countDocuments(filter).exec()
+  ])
+
+  return {users, count}
 }
 
 export async function deleteUser(id: string): Promise<{ deletedCount?: number }> {

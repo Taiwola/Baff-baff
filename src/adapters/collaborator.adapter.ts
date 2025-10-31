@@ -15,6 +15,6 @@ export function adaptCollaborator(data: ICollaborator): Collaborator {
   }
 }
 
-export function adaptCollaborators({ data, page, pageSize }: AdaptersOptions<ICollaborator[]>): Pagination<Collaborator> {
-  return paginate({ data: data.map(adaptCollaborator), page, pageSize })
+export function adaptCollaborators({ data, total, page, pageSize }: AdaptersOptions<ICollaborator[]>): Pagination<Collaborator> {
+  return paginate({ data: data.map(adaptCollaborator), total, page, pageSize })
 }

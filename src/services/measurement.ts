@@ -11,7 +11,7 @@ export async function createMeasurement(data: CreateMeasurementDto, session?: Cl
   return Measurements
 }
 
-export async function getAllMeasurements({ limit, page = 1, ...filter }: FilterQuery<MeasurementFilter>): Promise<IMeasurement[]> {
+export async function getAllMeasurements({ limit, page = 1, ...filter }: FilterQuery<MeasurementFilter>): Promise<{measurements: IMeasurement[], count: number}> {
   const query = MeasurementModel.find(filter)
 
   if (limit) {
@@ -19,7 +19,12 @@ export async function getAllMeasurements({ limit, page = 1, ...filter }: FilterQ
     query.limit(limit).skip(skip)
   }
 
-  return await query
+  const [measurements, count] = await Promise.all([
+    query.exec(),
+    MeasurementModel.countDocuments(filter).exec()
+  ])
+
+  return {measurements, count}
 }
 
 export async function getOneMeasurementById(id: string): Promise<IMeasurement | null> {
