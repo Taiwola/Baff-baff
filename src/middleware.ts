@@ -12,22 +12,22 @@ export default auth((request) => {
   const isProtectedRoute = protectedRoutes.includes(path)
   const session = request.auth
 
-  if (path === '/api/v1/products' && method === 'GET') {
+  if (path === '/api/products' && method === 'GET') {
     return NextResponse.next()
   }
-  if (path === '/api/v1/measurements/user' && method === 'GET') {
-    return NextResponse.next()
-  }
-
-  if (path === '/api/v1/forget-password' && method === 'POST') {
+  if (path === '/api/measurements/user' && method === 'GET') {
     return NextResponse.next()
   }
 
-  if (path === '/api/v1/reset-password' && method === 'PATCH') {
+  if (path === '/api/forget-password' && method === 'POST') {
     return NextResponse.next()
   }
 
-  if (path === '/api/v1/webhooks' && method === 'POST') {
+  if (path === '/api/reset-password' && method === 'PATCH') {
+    return NextResponse.next()
+  }
+
+  if (path === '/api/webhooks' && method === 'POST') {
     return NextResponse.next()
   }
 
