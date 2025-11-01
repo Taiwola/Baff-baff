@@ -59,7 +59,8 @@ export async function POST(req: NextRequest) {
           item.product.id,
           {
             yard: updatedYard,
-            status: updatedYard <= 0 ? statusMap.outOfStock : prod.status
+            status: updatedYard <= 0 ? statusMap.outOfStock : prod.status,
+            numberOfSales: (prod.numberOfSales || 0) + requestedQuantity
           },
           session
         )

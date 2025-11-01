@@ -13,7 +13,6 @@ import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { createProductSchema, productFilterSchema } from '@validations/product'
 import { parseProductForm } from '@utils/formatting'
-import { file } from 'zod'
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
@@ -21,7 +20,7 @@ export async function GET(req: NextRequest) {
   await dbConnect()
   const { searchParams } = new URL(req.url)
 
-  // may like, featured
+
   const parsed = productFilterSchema.safeParse({
     category: searchParams.get('category') || '',
     type: searchParams.get('type') || '',
@@ -35,36 +34,25 @@ export async function GET(req: NextRequest) {
     sort: searchParams.get('sort') ?? undefined
   })
 
+
   const queries = parsed.data
 
-  const filters: ProductFilter & { $or?: any[] } = {}
+  const filters: ProductFilter& { $or?: any[] } = {}
+  const orConditions: any[] = []
+
 
   if (queries?.search) {
-    filters.$or = [
+    orConditions.push(
       { name: { $regex: queries.search, $options: 'i' } },
       { description: { $regex: queries.search, $options: 'i' } }
-    ]
+    )
   }
 
-  if (queries?.category) {
-    filters.category = queries.category
-  }
-
-  if (queries?.type) {
-    filters.type = queries.type
-  }
-
-  if (queries?.design) {
-    filters.design = queries.design
-  }
-
-  if (queries?.status) {
-    filters.status = queries.status
-  }
 
   if (queries?.priceRange) {
     const sizeKeys: Size[] = ['s', 'm', 'l', 'xl', 'xxl', 'xxxl']
-    let priceRangeQuery: { $gte?: number; $lte?: number; $gt?: number }
+    let priceRangeQuery: any
+
     switch (queries.priceRange) {
       case 'low':
         priceRangeQuery = { $gte: 0, $lte: 15000 }
@@ -75,45 +63,62 @@ export async function GET(req: NextRequest) {
       case 'high':
         priceRangeQuery = { $gt: 20000 }
         break
+      default:
+        priceRangeQuery = {}
     }
-    filters.$or = [
-      ...sizeKeys.map((size) => ({
-        [`${size}.price`]: priceRangeQuery
-      })),
-      ...sizeKeys.map((size) => ({
-        [`${size}.discountPrice`]: priceRangeQuery
-      }))
-    ]
+
+    sizeKeys.forEach(size => {
+      orConditions.push({ [`${size}.price`]: priceRangeQuery })
+      orConditions.push({ [`${size}.discountPrice`]: priceRangeQuery })
+    })
   }
 
+
+  if (orConditions.length > 0) {
+    filters.$or = orConditions
+  }
+
+  if (queries?.category) filters.category = queries.category
+  if (queries?.type) filters.type = queries.type
+  if (queries?.design) filters.design = queries.design
+  if (queries?.status) filters.status = queries.status
+  if (queries?.collaboratorId) filters.collaborator = queries.collaboratorId
+
+  // 5. Sorting
+  const sort: any = {}
   if (queries?.sort) {
-    filters.sort = {}
-    if (queries.sort === 'best-selling') {
-      filters.sort.numberOfSales = -1
-    } else if (queries.sort === 'n-o') {
-      filters.sort.createdAt = 1
-    } else if (queries.sort === 'o-n') {
-      filters.sort.createdAt = -1
-    } else if (queries.sort === 'a-z') {
-      filters.sort.name = 1
-    } else if (queries.sort === 'z-a') {
-      filters.sort.name = -1
+    switch (queries.sort) {
+      case 'best-selling':
+        sort.numberOfSales = -1
+        break
+      case 'n-o':
+        sort.createdAt = 1
+        break
+      case 'o-n':
+        sort.createdAt = -1
+        break
+      case 'a-z':
+        sort.name = 1
+        break
+      case 'z-a':
+        sort.name = -1
+        break
     }
   }
 
-  if (queries?.collaboratorId) {
-    filters.collaborator = queries.collaboratorId
-  }
+  const page = Number(queries?.page) || 1
+  const limit = Number(queries?.limit) || 10
 
-  const page = queries?.page || 1
-  const pageSize = queries?.limit || 10
 
-  filters.page = page
-  filters.limit = pageSize
+  const { products, count } = await getAllProducts({
+    ...filters,
+    sort,
+    page,
+    limit
+  })
 
-  const {products, count} = await getAllProducts(filters)
-  const transform = adaptProducts({ data: products, total: count, page, pageSize })
-  return sendResponse('Product was successfully found', transform)
+  const transform = adaptProducts({ data: products, total: count, page, pageSize:limit })
+  return sendResponse('Products fetched successfully', transform)
 }
 
 export async function POST(req: NextRequest) {
