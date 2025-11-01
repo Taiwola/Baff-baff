@@ -75,7 +75,7 @@ export async function login(state: LoginFormState, formData: FormData): Promise<
         return { ...state, error: 'Invalid Credentials' }
 
       default:
-        return { ...state, error: error.name }
+        return { ...state, error: 'Invalid Credentials' }
     }
   }
 
