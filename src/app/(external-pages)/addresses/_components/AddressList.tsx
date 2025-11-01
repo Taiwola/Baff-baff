@@ -45,7 +45,7 @@ export default function AddressList({ promise }: Props) {
     content = (
       <section className='mx-auto w-full md:max-w-[65%] flex flex-col gap-8 justify-center items-start font-montserrat'>
         {addresses.items.map((address) => (
-          <div key={address.id} className='w-full h-[11.3125rem] py-7.5 px-5 rounded-[1.25rem] border border-foreground'>
+          <div key={address.id} className='w-full h-45.25 py-7.5 px-5 rounded-[1.25rem] border border-foreground'>
             <div className='flex justify-between items-start mb-3.5'>
               {address.active ? <p className='text-sm text-brand-dark opacity-60'>Preferred delivery address</p> : <div />}
 

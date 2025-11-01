@@ -6,7 +6,7 @@ import { Button } from '@components/ui'
 
 export default function Catalog() {
    return (
-      <section className="relative w-full h-96 md:h-[56.25rem] md:py-12">
+      <section className="relative w-full h-96 md:h-225 md:py-12">
          <Image
             src="/images/catalog.jpg"
             alt="Shop catalog background"

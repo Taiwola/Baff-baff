@@ -11,7 +11,7 @@ export default function FeaturedImages() {
     <div className="relative w-full mx-auto overflow-hidden md:overflow-x-scroll no-scrollbar">
       <div className="flex transition-transform duration-500 ease-in-out">
         {slides.map((slide) => (
-          <div key={slide.id} className="w-full flex-shrink-0 flex justify-center">
+          <div key={slide.id} className="w-full shrink-0 flex justify-center">
             {slide.component}
           </div>
         ))}

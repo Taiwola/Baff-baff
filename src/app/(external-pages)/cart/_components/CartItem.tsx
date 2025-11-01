@@ -20,7 +20,7 @@ export default function CartItem({ item, remove, setQuantity }: Props) {
       <div className="flex flex-row items-start justify-between gap-4 sm:gap-6 md:gap-8 py-4 md:py-6 border-b border-gray-100"
       >
          {/* Product Image */}
-         <div className="relative w-[120px] h-[120px] sm:w-[160px] sm:h-[160px] md:w-[200px] md:h-[200px] flex-shrink-0 overflow-hidden rounded-lg">
+         <div className="relative w-[120px] h-[120px] sm:w-40 sm:h-40 md:w-[200px] md:h-[200px] shrink-0 overflow-hidden rounded-lg">
             <motion.div
                whileHover={{ scale: 1.05 }}
                transition={{ duration: 0.25, ease: 'easeOut' }}

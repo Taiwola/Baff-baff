@@ -38,14 +38,14 @@ export default function CartList() {
       </div>
 
       <div className="flex flex-col items-end gap-2.5 mt-6">
-        <div className="flex items-center justify-between w-full md:w-[19rem]">
+        <div className="flex items-center justify-between w-full md:w-76">
           <span className="text-[18px] text-black">Subtotal</span>
           <span className="text-[18px] font-bold text-brand-dark">
             ₦{cart.items.reduce((prev, curr) => (prev += curr.price * curr.quantity), 0).toFixed(2)}
           </span>
         </div>
 
-        <p className="text-sm text-black w-full md:w-[19rem] text-center">
+        <p className="text-sm text-black w-full md:w-76 text-center">
           Taxes and shipping calculated at checkout
         </p>
 
