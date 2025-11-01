@@ -19,7 +19,7 @@ export default async function Casuals({ searchParams }: Props) {
       </div>
 
       <Suspense fallback={<MarketplaceProductsSkeleton />}>
-        <MarketPlaceProducts filter={{ type, sort, status, price, category: 'casuals' }} />
+        <MarketPlaceProducts filter={{ type, sort, status, price, category: 'casuals', design }} />
       </Suspense>
     </div>
   )

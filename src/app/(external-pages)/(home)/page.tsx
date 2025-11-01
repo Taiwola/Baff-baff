@@ -1,12 +1,18 @@
 import { FeaturedProducts } from '@components/features/products'
 import { HomeHero, Explore, Story, Catalog, PaymentInfo, FeaturedImages, Discount } from './_components'
+import { Suspense } from 'react'
+import FeaturedProductsSkeleton from '@components/ui/Skeletons/FeaturedProductsSkeleton'
 
 export default function Home() {
   return (
     <main className='app-container h-full w-full mt-6 md:mt-12'>
       <HomeHero />
       <Explore />
-      <FeaturedProducts />
+
+      <Suspense fallback={<FeaturedProductsSkeleton />}>
+        <FeaturedProducts />
+      </Suspense>
+
       <Story />
       <Catalog />
       <PaymentInfo />

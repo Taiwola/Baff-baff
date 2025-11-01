@@ -20,7 +20,7 @@ export default async function MarketPlace({ searchParams }: Props) {
       </div>
 
       <Suspense fallback={<MarketplaceProductsSkeleton />}>
-        <MarketPlaceProducts filter={{ type, sort, status, price }} />
+        <MarketPlaceProducts filter={{ type, sort, status, price, design }} />
       </Suspense>
     </div>
   )
