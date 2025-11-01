@@ -21,12 +21,12 @@ const initialState: LoginFormState = {
 }
 
 export default function LoginForm() {
-   const toast = useToast()
+   const { error: toast } = useToast()
    const [{ errors, values, error }, action, pending] = useActionState(login, initialState)
 
    useEffect(() => {
       if (error) {
-         toast.error({ description: error })
+         toast({ description: error })
       }
    }, [toast, error]);
 
@@ -48,7 +48,7 @@ export default function LoginForm() {
             error={errors.password}
          />
 
-         <div className='w-full flex justify-end items-center mt-[-10px]'>
+         <div className='w-full flex justify-end items-center -mt-2.5'>
             <Button
                as={'link'}
                href={'/forgot-password'}
