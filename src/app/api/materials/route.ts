@@ -35,7 +35,8 @@ export async function POST(req: NextRequest) {
       field: detail.path.join('.'),
       message: detail.message
     }))
-
+    console.log('material error': validationErrors);
+    
     return errorResponse('Validation failed', validationErrors, 422)
   }
 
