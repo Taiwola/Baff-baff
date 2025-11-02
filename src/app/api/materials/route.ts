@@ -13,9 +13,6 @@ import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
 import { CreateMaterialDto, createMaterialSchema, materialQueryFilter } from '@validations/material'
 
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-
 export async function POST(req: NextRequest) {
     await dbConnect()
   const auth = await verifySession()
