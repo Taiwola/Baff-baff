@@ -1,5 +1,5 @@
 'use server'
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { redirect, RedirectType } from 'next/navigation'
 
 import { formatError } from '@utils/formatting'
@@ -32,11 +32,7 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
     return { ...state, errors, values: parsedValues }
   }
 
- const response:any = await fetch(`https://baff-baff.vercel.app/api/materials`, {
-      method: 'POST',
-      body: formData,
-      credentials: 'include',
-    });
+  const response = await ServerApiClient.post<Material>('/materials', formData)
 
   if (response.code >= 400) {
     return { ...state, error: response.message, values: parsedValues }

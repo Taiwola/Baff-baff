@@ -21,8 +21,6 @@ export async function POST(req: NextRequest) {
     return errorResponse('Forbidden', null, 403)
   }
 
-  console.log('Runtime:', process.version ? 'Node.js' : 'Edge');
-
   let formData: FormData;
   try {
     formData = await req.formData();
