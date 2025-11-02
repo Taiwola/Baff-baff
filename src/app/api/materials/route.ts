@@ -14,6 +14,7 @@ import { CreateMaterialDto, createMaterialSchema, materialQueryFilter } from '@v
 
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
     await dbConnect()
@@ -23,11 +24,15 @@ export async function POST(req: NextRequest) {
     return errorResponse('Forbidden', null, 403)
   }
 
-  console.log("Request", req)
-
   console.log('Runtime:', process.version ? 'Node.js' : 'Edge');
 
-  const formData = await req.formData()
+  let formData: FormData;
+  try {
+    formData = await req.formData();
+  } catch (error: any) {
+    console.error('FormData parse failed:', error);
+    return errorResponse('Invalid multipart body', { error: error.message }, 400);
+  }
 
   const body: CreateMaterialDto = {
     name: String(formData.get('name')) || '',
