@@ -32,7 +32,7 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
     return { ...state, errors, values: parsedValues }
   }
 
- const response:any = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/materials`, {
+ const response:any = await fetch(`https://baff-baff.vercel.app/api/materials`, {
       method: 'POST',
       body: formData,
       credentials: 'include',
