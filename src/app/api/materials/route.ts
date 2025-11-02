@@ -12,6 +12,9 @@ import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
 import { CreateMaterialDto, createMaterialSchema, materialQueryFilter } from '@validations/material'
 
+
+export const runtime = 'nodejs';
+
 export async function POST(req: NextRequest) {
     await dbConnect()
   const auth = await verifySession()
@@ -21,6 +24,8 @@ export async function POST(req: NextRequest) {
   }
 
   console.log("Request", req)
+
+  console.log('Runtime:', process.version ? 'Node.js' : 'Edge');
 
   const formData = await req.formData()
 
