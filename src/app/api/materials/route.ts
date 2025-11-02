@@ -20,6 +20,8 @@ export async function POST(req: NextRequest) {
     return errorResponse('Forbidden', null, 403)
   }
 
+  console.log("Request", req)
+
   const formData = await req.formData()
 
   const body: CreateMaterialDto = {
