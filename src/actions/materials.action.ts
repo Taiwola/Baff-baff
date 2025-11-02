@@ -1,5 +1,5 @@
 'use server'
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { redirect, RedirectType } from 'next/navigation'
 
 import { formatError } from '@utils/formatting'
@@ -32,7 +32,11 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
     return { ...state, errors, values: parsedValues }
   }
 
-  const response = await ServerApiClient.post<Material>('/materials', formData)
+ const response:any = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/materials`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+    });
 
   if (response.code >= 400) {
     return { ...state, error: response.message, values: parsedValues }
