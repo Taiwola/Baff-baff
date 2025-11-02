@@ -17,8 +17,6 @@ async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<
   // Automatically set Content-Type header for JSON string bodies
   if (typeof body === 'string') {
     options.headers = { ...options.headers, 'Content-Type': 'application/json' }
-  } else if(body instanceof FormData) {
-    options.headers = { ...options.headers, 'Content-Type': 'application/x-www-form-urlencoded' }
   }
 
   // Perform fetch with error capture

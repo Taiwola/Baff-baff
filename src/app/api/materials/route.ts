@@ -29,14 +29,13 @@ export async function POST(req: NextRequest) {
   }
 
   const result = createMaterialSchema.safeParse(body)
-console.log('result >>>', result);
 
   if (!result.success) {
     const validationErrors = result.error.issues.map((detail) => ({
       field: detail.path.join('.'),
       message: detail.message
     }))
-    console.log('material error': validationErrors);
+    console.log('material error', validationErrors);
     
     return errorResponse('Validation failed', validationErrors, 422)
   }
