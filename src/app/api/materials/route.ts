@@ -12,7 +12,6 @@ import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
 import { CreateMaterialDto, createMaterialSchema, materialQueryFilter } from '@validations/material'
 import {IncomingForm} from "formidable"
-import { Readable } from "stream"
 import { convertToNodeRequest } from '@utils/request-to-node-request'
 
 
