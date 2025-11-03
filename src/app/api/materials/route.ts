@@ -11,28 +11,64 @@ import { createMaterial, getAllMaterials } from '@services/material'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
 import { CreateMaterialDto, createMaterialSchema, materialQueryFilter } from '@validations/material'
+import {IncomingForm} from "formidable"
+import { Readable } from "stream"
+import { convertToNodeRequest } from '@utils/request-to-node-request'
 
+
+
+
+
+
+import { readFile } from 'fs/promises'
 
 export async function POST(req: NextRequest) {
-    await dbConnect()
+  console.log("here")
+  await dbConnect()
   const auth = await verifySession()
 
   if (auth?.role !== 'admin') {
     return errorResponse('Forbidden', null, 403)
   }
 
-  let formData: FormData;
+  const form = new IncomingForm({
+    keepExtensions: true,
+    maxFileSize: 10 * 1024 * 1024,
+    multiples: false,
+  });
+
+  let fields: any, files: any;
+  const nodeReq = await convertToNodeRequest(req)
+  
   try {
-    formData = await req.formData();
-  } catch (error: any) {
-    console.error('FormData parse failed:', error);
-    return errorResponse('Invalid multipart body', { error: error.message }, 400);
+    [fields, files] = await new Promise<[any, any]>((resolve, reject) => {
+      form.parse(nodeReq, (err, fields, files) => {
+        if (err) reject(err);
+        else resolve([fields, files]);
+      });
+    });
+  } catch (err: any) {
+    console.error('Form parse error:', err);
+    return errorResponse('Invalid form data', { error: err.message }, 400);
+  }
+
+
+  const imageFile = files.image?.[0] || files.image
+  
+  let fileToUpload: File | undefined
+
+  if (imageFile) {
+    const buffer = await readFile(imageFile.filepath)
+    const blob = new Blob([buffer], { type: imageFile.mimetype || 'image/jpeg' })
+    fileToUpload = new File([blob], imageFile.originalFilename || 'image.jpg', {
+      type: imageFile.mimetype || 'image/jpeg'
+    })
   }
 
   const body: CreateMaterialDto = {
-    name: String(formData.get('name')) || '',
-    stock: Number(formData.get('stock')),
-    image: formData.get('image') as File | undefined
+    name: String(fields.name?.[0] || fields.name) || '',
+    stock: Number(fields.stock?.[0] || fields.stock) || 0,
+    image: fileToUpload
   }
 
   const result = createMaterialSchema.safeParse(body)
