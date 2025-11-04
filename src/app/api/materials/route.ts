@@ -21,11 +21,6 @@ export async function POST(req: NextRequest) {
 
  const body = await req.json()
 
-  // const body: CreateMaterialDto = {
-  //   name: String(fields.name?.[0] || fields.name) || '',
-  //   stock: Number(fields.stock?.[0] || fields.stock) || 0,
-  //   image: fileToUpload
-  // }
 
   const result = createMaterialSchema.safeParse(body)
 
@@ -38,30 +33,7 @@ export async function POST(req: NextRequest) {
     
     return errorResponse('Validation failed', validationErrors, 422)
   }
-
-  // const image = result.data.image
-
-  // if (image && image instanceof File) {
-  //   const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
-
-  //   if (!validation.isValid) {
-  //     return errorResponse('File validation failed', { errors: validation.errors }, 400)
-  //   }
-
-  //   try {
-  //     const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.MATERIALS)
-
-  //     if (!uploadResult.success) {
-  //       return errorResponse('Image upload failed', { error: uploadResult.error }, 500)
-  //     }
-
-  //     body.image = uploadResult.data?.url ?? ''
-  //   } catch (error) {
-  //     console.error('Cloudinary upload error:', error)
-  //     return errorResponse('Image upload failed', null, 500)
-  //   }
-  // }
-
+  
   const material = await createMaterial(body)
   const transform = adaptMaterial(material)
 

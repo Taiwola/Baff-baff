@@ -1,6 +1,9 @@
 'use server'
 
+import { uploadToCloudinary } from '@lib/cloudinary'
+import { CLOUDINARY_FOLDERS } from '@lib/folder'
 import { ServerApiClient } from '@utils/api-server'
+import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { formatError, parseProductForm } from '@utils/formatting'
 import { emptyMetaData } from '@utils/pagination'
 import {
@@ -26,7 +29,40 @@ export async function createProduct(state: CreateProductFormState, formData: For
     return { ...state, errors, error: '', values: { ...parsedValues, images: [] } }
   }
 
-  const response = await ServerApiClient.post<Product>('/products', formData)
+  const images = result.data.images
+  const imagesArr: string[] = []
+
+  for (const image of images) {
+     if (image instanceof File) {
+            if (image.size <= 0) continue
+            const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
+    
+            if (!validation.isValid) {
+              return { ...state, error: 'Image is not valid', values: parsedValues }
+            }
+    
+            try {
+              const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.PRODUCTS)
+    
+              if (!uploadResult.success) {
+                return { ...state, error: 'Image upload failed', values: parsedValues }
+              }
+    
+              if (uploadResult.data?.url) {
+                imagesArr.push(uploadResult.data.url)
+              }
+            } catch (error) {
+              console.error('Cloudinary upload error:', error)
+             return { ...state, error: 'Image upload failed', values: parsedValues }
+            }
+          } else {
+            imagesArr.push(image)
+          }
+  }
+
+  result.data.images = imagesArr
+
+  const response = await ServerApiClient.post<Product>('/products', result.data)
 
   if (response.code >= 400) {
     return { ...state, error: response.message, values: { ...parsedValues, images: [] } }
