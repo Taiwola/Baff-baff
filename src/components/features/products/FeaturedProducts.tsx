@@ -12,7 +12,7 @@ export default async function FeaturedProducts() {
             featured products
          </h4>
 
-         <ProductList products={products.items} />
+         <ProductList products={products.items} variant='default' />
       </section>
    )
 }

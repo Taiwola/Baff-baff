@@ -1,6 +1,6 @@
 import React from 'react'
 import ProductItem from './ProductItem'
-import { PackageSearch } from 'lucide-react'
+import EmptyProductList from './EmptyProductList'
 
 type Props = {
   products: Product[]
@@ -17,15 +17,7 @@ export default function ProductList({ products, variant = 'default' }: Props) {
 
   if (products.length === 0) {
     return (
-      <div className="w-full flex flex-col items-center justify-center py-20 text-center text-gray-500">
-        <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4">
-          <PackageSearch size={36} className="text-gray-400" />
-        </div>
-        <h3 className="text-lg font-semibold text-gray-700">No products found</h3>
-        <p className="text-sm text-gray-500 mt-1 mb-4">
-          Try adjusting your filters or check back later.
-        </p>
-      </div>
+     <EmptyProductList variant={variant} />
     )
   }
 
