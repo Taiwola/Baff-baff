@@ -12,7 +12,6 @@ import { getMaterialById, updateMaterial } from '@services/material'
 import { adaptProducts, adaptProduct } from '@adapters/product.adapter'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { createProductSchema, productFilterSchema } from '@validations/product'
-import { parseProductForm } from '@utils/formatting'
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
@@ -85,17 +84,19 @@ export async function GET(req: NextRequest) {
   if (queries?.collaboratorId) filters.collaborator = queries.collaboratorId
 
   // 5. Sorting
-  const sort: any = {}
+  const sort: any = {
+    createdAt: -1
+  }
   if (queries?.sort) {
     switch (queries.sort) {
       case 'best-selling':
         sort.numberOfSales = -1
         break
       case 'n-o':
-        sort.createdAt = 1
+        sort.createdAt = -1
         break
       case 'o-n':
-        sort.createdAt = -1
+        sort.createdAt = 1
         break
       case 'a-z':
         sort.name = 1
@@ -108,7 +109,6 @@ export async function GET(req: NextRequest) {
 
   const page = Number(queries?.page) || 1
   const limit = Number(queries?.limit) || 10
-
 
   const { products, count } = await getAllProducts({
     ...filters,
@@ -132,10 +132,8 @@ export async function POST(req: NextRequest) {
     return errorResponse('Forbidden', null, 403)
   }
   try {
-    const formData = await req.formData()
-
-    const parsedValues = parseProductForm(formData)
-    const parsed = createProductSchema.safeParse(parsedValues)
+    const body = await req.json()
+    const parsed = createProductSchema.safeParse(body)
 
     if (!parsed.success) {
       const validationErrors = parsed.error.issues.map((detail) => ({
