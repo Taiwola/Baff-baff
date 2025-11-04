@@ -208,3 +208,12 @@ export async function POST(req: NextRequest) {
     return errorResponse('Product creation failed', null, 500)
   }
 }
+
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+}
