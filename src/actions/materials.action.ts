@@ -17,6 +17,9 @@ import {
   UpdateMaterialValues
 } from '@validations/material'
 import { emptyMetaData } from '@utils/pagination'
+import { uploadToCloudinary } from '@lib/cloudinary'
+import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
+import { CLOUDINARY_FOLDERS } from '@lib/folder'
 
 export async function createMaterial(state: CreateMaterialFormState, formData: FormData): Promise<CreateMaterialFormState> {
   const parsedValues: CreateMaterialDto = {
@@ -31,8 +34,32 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
     const errors = formatError<CreateMaterialErrors, CreateMaterialValues>(result.error)
     return { ...state, errors, values: parsedValues }
   }
+  
+  const image = result.data.image
 
-  const response = await ServerApiClient.post<Material>('/materials', formData)
+  if (image && image instanceof File) {
+    const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
+
+    if (!validation.isValid) {
+     return { ...state, error: 'Image is not valid', values: parsedValues }
+    }
+
+    try {
+      const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.MATERIALS)
+
+      if (!uploadResult.success) {
+        return { ...state, error: uploadResult.error, values: parsedValues }
+      }
+
+      result.data.image = uploadResult.data?.url ?? ''
+    } catch (error) {
+      return  { ...state, error: "Failed to upload image", values: parsedValues }
+    }
+  }
+  
+  
+
+  const response = await ServerApiClient.post<Material>('/materials', result.data)
 
   if (response.code >= 400) {
     return { ...state, error: response.message, values: parsedValues }

@@ -4,25 +4,14 @@ import { NextRequest } from 'next/server'
 
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
-import { CLOUDINARY_FOLDERS } from '@lib/folder'
-import { uploadToCloudinary } from '@lib/cloudinary'
 import { errorResponse, sendResponse } from '@utils/api-response'
 import { createMaterial, getAllMaterials } from '@services/material'
-import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { adaptMaterial, adaptMaterials } from '@adapters/material.adapter'
-import { CreateMaterialDto, createMaterialSchema, materialQueryFilter } from '@validations/material'
-import {IncomingForm} from "formidable"
-import { convertToNodeRequest } from '@utils/request-to-node-request'
+import { createMaterialSchema, materialQueryFilter } from '@validations/material'
 
 
-
-
-
-
-import { readFile } from 'fs/promises'
 
 export async function POST(req: NextRequest) {
-  console.log("here")
   await dbConnect()
   const auth = await verifySession()
 
@@ -30,45 +19,13 @@ export async function POST(req: NextRequest) {
     return errorResponse('Forbidden', null, 403)
   }
 
-  const form = new IncomingForm({
-    keepExtensions: true,
-    maxFileSize: 10 * 1024 * 1024,
-    multiples: false,
-  });
+ const body = await req.json()
 
-  let fields: any, files: any;
-  const nodeReq = await convertToNodeRequest(req)
-  
-  try {
-    [fields, files] = await new Promise<[any, any]>((resolve, reject) => {
-      form.parse(nodeReq, (err, fields, files) => {
-        if (err) reject(err);
-        else resolve([fields, files]);
-      });
-    });
-  } catch (err: any) {
-    console.error('Form parse error:', err);
-    return errorResponse('Invalid form data', { error: err.message }, 400);
-  }
-
-
-  const imageFile = files.image?.[0] || files.image
-  
-  let fileToUpload: File | undefined
-
-  if (imageFile) {
-    const buffer = await readFile(imageFile.filepath)
-    const blob = new Blob([buffer], { type: imageFile.mimetype || 'image/jpeg' })
-    fileToUpload = new File([blob], imageFile.originalFilename || 'image.jpg', {
-      type: imageFile.mimetype || 'image/jpeg'
-    })
-  }
-
-  const body: CreateMaterialDto = {
-    name: String(fields.name?.[0] || fields.name) || '',
-    stock: Number(fields.stock?.[0] || fields.stock) || 0,
-    image: fileToUpload
-  }
+  // const body: CreateMaterialDto = {
+  //   name: String(fields.name?.[0] || fields.name) || '',
+  //   stock: Number(fields.stock?.[0] || fields.stock) || 0,
+  //   image: fileToUpload
+  // }
 
   const result = createMaterialSchema.safeParse(body)
 
@@ -82,28 +39,28 @@ export async function POST(req: NextRequest) {
     return errorResponse('Validation failed', validationErrors, 422)
   }
 
-  const image = result.data.image
+  // const image = result.data.image
 
-  if (image && image instanceof File) {
-    const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
+  // if (image && image instanceof File) {
+  //   const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
 
-    if (!validation.isValid) {
-      return errorResponse('File validation failed', { errors: validation.errors }, 400)
-    }
+  //   if (!validation.isValid) {
+  //     return errorResponse('File validation failed', { errors: validation.errors }, 400)
+  //   }
 
-    try {
-      const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.MATERIALS)
+  //   try {
+  //     const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.MATERIALS)
 
-      if (!uploadResult.success) {
-        return errorResponse('Image upload failed', { error: uploadResult.error }, 500)
-      }
+  //     if (!uploadResult.success) {
+  //       return errorResponse('Image upload failed', { error: uploadResult.error }, 500)
+  //     }
 
-      body.image = uploadResult.data?.url ?? ''
-    } catch (error) {
-      console.error('Cloudinary upload error:', error)
-      return errorResponse('Image upload failed', null, 500)
-    }
-  }
+  //     body.image = uploadResult.data?.url ?? ''
+  //   } catch (error) {
+  //     console.error('Cloudinary upload error:', error)
+  //     return errorResponse('Image upload failed', null, 500)
+  //   }
+  // }
 
   const material = await createMaterial(body)
   const transform = adaptMaterial(material)
