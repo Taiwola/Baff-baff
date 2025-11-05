@@ -37,7 +37,7 @@ export default function SaveProductModal({ isOpen, collaboratorId, type, pending
             {(onClose) => (
                <>
                   <ModalHeader className="flex justify-between items-center px-4 py-3">
-                     <h3 className="text-lg font-semibold">{pending ? 'Saving...' : 'Save Product'}</h3>
+                     <h3 className="text-lg font-semibold">Save Product</h3>
 
                      <Button
                         className="p-1 rounded-full hover:bg-gray-100 bg-transparent"
@@ -104,7 +104,7 @@ export default function SaveProductModal({ isOpen, collaboratorId, type, pending
                         rounded="sm"
                         className="py-2.5 px-12.5 flex-1"
                      >
-                        Save
+                        {pending ? 'Saving...' : 'Save'}
                      </Button>
 
                   </ModalFooter>
