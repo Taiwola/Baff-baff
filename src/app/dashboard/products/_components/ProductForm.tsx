@@ -68,7 +68,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                {type === 'edit' ? (
                   <Button
                      type='button'
-                     variant='bordered'
+                     variant='danger'
                      rounded='sm'
                      className='max-w-32.25 text-sm'
                   >
