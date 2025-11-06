@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
+import { MayLikeProducts } from '@components/features/products'
 import { ProductCustomization, Description } from '../_components'
-import { BreadCrumbItemType, BreadCrumbs, ProductGallery } from '@components/ui'
+import { BreadCrumbItemType, BreadCrumbs, MayLikeProductsSkeleton, ProductGallery } from '@components/ui'
 
 import { capitalizeFirstLetter } from '@utils'
 import { getProductBySlug } from '@actions/products.action'
@@ -52,7 +53,7 @@ export default async function ProductDetail({ params }: Props) {
           />
         </div>
 
-        <article className='w-full md:w-[51%] h-[23.1875rem] md:h-[34.375rem]'>
+        <article className='w-full md:w-[51%] h-92.75 md:h-137.5'>
           <ProductGallery images={product.images} />
         </article>
 
@@ -82,11 +83,9 @@ export default async function ProductDetail({ params }: Props) {
         </article>
       </section>
 
-      <section className='w-full'>
-        <h6 className='text-[18px] mb-7.5'>YOU MAY ALSO LIKE</h6>
-
-        {/* <ProductList products={products.slice(0, 3)} variant='maylike' /> */}
-      </section>
+      <Suspense fallback={<MayLikeProductsSkeleton />}>
+        <MayLikeProducts />
+      </Suspense>
     </main>
   )
 }

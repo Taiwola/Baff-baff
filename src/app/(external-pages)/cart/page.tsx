@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Suspense } from 'react'
+
 import { CartList } from './_components'
-import { ProductList } from '@components/ui'
-import { products } from '@models/product.model'
+import { AlsoBoughtProductsSkeleton } from '@components/ui'
+import { AlsoBoughtProducts } from '@components/features/products'
 
 export default function Cart() {
    return (
@@ -12,10 +13,9 @@ export default function Cart() {
             <CartList />
          </section>
 
-         <section className='w-full mt-12'>
-            <h6 className='text-[1.125rem] mb-7.5 uppercase font-montserrat font-bold'>YOU also bought</h6>
-            <ProductList products={products.slice(0, 3)} variant='maylike' />
-         </section>
+         <Suspense fallback={<AlsoBoughtProductsSkeleton />}>
+            <AlsoBoughtProducts />
+         </Suspense>
       </main>
    )
 }

@@ -1,9 +1,11 @@
 'use server'
 
+import { tag } from '@tags/orders.tag'
 import { ServerApiClient } from '@utils/api-server'
 import { formatError } from '@utils/formatting'
 import { emptyMetaData } from '@utils/pagination'
 import { OrderQuery, UpdateOrderDto, UpdateOrderFormErrors, UpdateOrderFormState, updateOrderSchema } from '@validations/order'
+import { revalidateTag } from 'next/cache'
 import { redirect, RedirectType } from 'next/navigation'
 
 export async function getOrders(query: OrderQuery = {}): Promise<Pagination<Order>> {
@@ -16,7 +18,7 @@ export async function getOrders(query: OrderQuery = {}): Promise<Pagination<Orde
 
   const queryString = params.toString()
   const url = `/orders${queryString ? `?${queryString}` : ''}`
-  const response = await ServerApiClient.get<Pagination<Order>>(url)
+  const response = await ServerApiClient.get<Pagination<Order>>(url, { next: { tags: [tag.default] } })
 
   if (response.code >= 400) {
     console.log('Orders error: ', response)
@@ -27,7 +29,7 @@ export async function getOrders(query: OrderQuery = {}): Promise<Pagination<Orde
 }
 
 export async function getOrder(id: string) {
-  const response = await ServerApiClient.get<Order>(`/orders/${id}`)
+  const response = await ServerApiClient.get<Order>(`/orders/${id}`, { next: { tags: [tag.createTag(id)] } })
 
   if (response.code >= 400) {
     console.log('order error: ', response)
@@ -55,5 +57,7 @@ export async function updateOrder(id: string, state: UpdateOrderFormState, formD
     return { ...state, error: response.message, values: parsed }
   }
 
+  revalidateTag(tag.default)
+  revalidateTag(tag.createTag(id))
   redirect(`/dashboard/orders/${id}`, RedirectType.replace)
 }

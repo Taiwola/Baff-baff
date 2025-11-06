@@ -28,7 +28,7 @@ export async function createProduct(state: CreateProductFormState, formData: For
     const errors = formatError<CreateProductErrors, CreateProductFormValues>(result.error)
     return { ...state, errors, error: '', values: { ...parsedValues, images: [] } }
   }
-  
+
   const images: string[] = []
 
   for (const image of result.data.images) {
@@ -93,6 +93,10 @@ export async function getProducts(options: ProductQuery = {}): Promise<Paginatio
   return response.data
 }
 
+export async function getMayLikeProducts(): Promise<Product[]> {
+  return []
+}
+
 export async function getProduct(id: string) {
   const response = await ServerApiClient.get<Product>(`/products/${id}`)
 
@@ -125,33 +129,32 @@ export async function updateProduct(product: Product, state: UpdateProductFormSt
     return { ...state, errors, error: '', values: { ...parsedValues, images: parsedValues.images.filter((image) => typeof image === 'string') } }
   }
 
-
   const images: string[] = []
 
   for (const image of result.data.images) {
-     if (image instanceof File) {
-            if (image.size <= 0) continue
-            const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
-    
-            if (!validation.isValid) {
-              return { ...state, error: 'Image is not valid', values: parsedValues }
-            }
-    
-              const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.PRODUCTS)
-    
-              if (!uploadResult.success) {
-                return { ...state, error: 'Image upload failed', values: parsedValues }
-              }
-    
-              if (uploadResult.data?.url) {
-                images.push(uploadResult.data.url)
-              }
-          } else {
-            images.push(image)
-          }
-    }
+    if (image instanceof File) {
+      if (image.size <= 0) continue
+      const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
 
-    result.data.images = images
+      if (!validation.isValid) {
+        return { ...state, error: 'Image is not valid', values: parsedValues }
+      }
+
+      const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.PRODUCTS)
+
+      if (!uploadResult.success) {
+        return { ...state, error: 'Image upload failed', values: parsedValues }
+      }
+
+      if (uploadResult.data?.url) {
+        images.push(uploadResult.data.url)
+      }
+    } else {
+      images.push(image)
+    }
+  }
+
+  result.data.images = images
 
   const response = await ServerApiClient.patch<Product>(`/products/${product.id}`, result.data)
 
