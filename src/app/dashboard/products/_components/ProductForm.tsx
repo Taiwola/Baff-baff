@@ -68,9 +68,9 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                {type === 'edit' ? (
                   <Button
                      type='button'
-                     variant='bordered'
+                     variant='danger'
                      rounded='sm'
-                     className='m-w-[8.0625rem] text-sm'
+                     className='max-w-32.25 text-sm'
                   >
                      Delete
                   </Button>
@@ -80,7 +80,7 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                   onClick={onOpen}
                   type='button'
                   rounded='sm'
-                  className='w-[8.0625rem] text-sm'
+                  className='w-32.25 text-sm'
                >
                   {'Save Product'}
                </Button>

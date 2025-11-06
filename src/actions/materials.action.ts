@@ -34,30 +34,24 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
     const errors = formatError<CreateMaterialErrors, CreateMaterialValues>(result.error)
     return { ...state, errors, values: parsedValues }
   }
-  
+
   const image = result.data.image
 
   if (image && image instanceof File) {
     const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
 
     if (!validation.isValid) {
-     return { ...state, error: 'Image is not valid', values: parsedValues }
+      return { ...state, error: 'Image is not valid', values: parsedValues }
     }
 
-    try {
-      const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.MATERIALS)
+    const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.MATERIALS)
 
-      if (!uploadResult.success) {
-        return { ...state, error: uploadResult.error, values: parsedValues }
-      }
-
-      result.data.image = uploadResult.data?.url ?? ''
-    } catch (error) {
-      return  { ...state, error: "Failed to upload image", values: parsedValues }
+    if (!uploadResult.success) {
+      return { ...state, error: uploadResult.error, values: parsedValues }
     }
+
+    result.data.image = uploadResult.data?.url ?? ''
   }
-  
-  
 
   const response = await ServerApiClient.post<Material>('/materials', result.data)
 
@@ -68,7 +62,7 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
   redirect('/dashboard/materials', RedirectType.replace)
 }
 
-export async function getMaterials(options: PaginationParams = { }): Promise<Pagination<Material>> {
+export async function getMaterials(options: PaginationParams = {}): Promise<Pagination<Material>> {
   const response = await ServerApiClient.get<Pagination<Material>>(`/materials?page=${options.page ?? 1}&limit=${10}`)
 
   if (response.code >= 400) {

@@ -22,7 +22,7 @@ export default async function ProductsPage({ searchParams }: Props) {
       <Header title='Products'>
         <FilterButton />
 
-        <Form action={'/dashboard/products'} replace className='flex-1 md:w-[17.5rem]'>
+        <Form action={'/dashboard/products'} replace className='flex-1 md:w-70'>
           <Input
             name='seach'
             placeholder="Search Product"

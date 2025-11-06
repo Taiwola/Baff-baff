@@ -5,6 +5,7 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
+        danger: 'bg-red-600 text-white border border-red-600 hover:bg-transparent hover:text-red-600 outline-none focus:outline-none flex',
         filled: 'bg-brand-dark text-white hover:bg-brand-dark/80 cursor-pointer flex outline-none focus:outline:none focus:border:none',
         bordered: 'border border-brand-dark text-brand-dark bg-transparent hover:bg-gray-50 cursor-pointer flex outline-none focus:outline-none',
         text: 'cursor-pointer transition-transform duration-300 ease-in-out text-brand-dark hover:scale-110'
