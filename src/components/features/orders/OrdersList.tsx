@@ -54,9 +54,9 @@ const columns = [
 ];
 
 const statusColors: Record<OrderStatus, string> = {
-   cancelled: "bg-gray-400",
-   pending: "bg-orange-500",
-   paid: "bg-green-500",
-   delivered: "bg-green-500",
+  cancelled: "bg-red-500",     // Red for error/cancellation
+  pending: "bg-yellow-500",    // Yellow for waiting/processing
+  paid: "bg-blue-500",         // Blue for confirmed/payment done
+  delivered: "bg-green-600",   // Green for success/completion
 }
 

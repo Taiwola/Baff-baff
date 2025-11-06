@@ -45,7 +45,7 @@ export default async function ProductDetail({ params }: Props) {
 
   return (
     <main className='app-container py-5 md:py-12'>
-      <section className='flex flex-col md:flex-row justify-between items-start'>
+      <section className='flex flex-col md:flex-row justify-between items-start mb-2'>
         <div className='flex md:hidden justify-start items-center gap-0.5 mb-6 w-full'>
           <BreadCrumbs
             separator={<ChevronRightIcon className='text-base text-black w-4 h-4' />}

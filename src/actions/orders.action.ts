@@ -15,6 +15,7 @@ export async function getOrders(query: OrderQuery = {}): Promise<Pagination<Orde
   if (query.limit) params.set('limit', query.limit.toString())
   if (query.search) params.set('search', query.search)
   if (query.status) params.set('status', query.status)
+  if (query.userId) params.set('userId', query.userId)
 
   const queryString = params.toString()
   const url = `/orders${queryString ? `?${queryString}` : ''}`

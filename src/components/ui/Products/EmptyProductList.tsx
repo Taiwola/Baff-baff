@@ -23,10 +23,9 @@ const emptyStateContent = {
     description: "We're still learning your preferences. Browse our catalog to help us find products you'll love."
   },
   alsoBought: {
-    title: 'No related purchases yet',
-    description: "Once customers start buying similar items, we'll show you what others also bought with this product."
+    title: 'No purchase history found',
+    description: "Your previously bought items will appear here once you\'ve made a purchase."
   }
-
 }
 
 export default function EmptyProductList({ variant = 'default' }: Props) {

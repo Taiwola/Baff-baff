@@ -7,7 +7,7 @@ import { verifySession } from '@lib/dal'
 import { orderQueryFilter } from '@validations/order'
 
 export async function GET(req: NextRequest) {
-    await dbConnect()
+  await dbConnect()
   try {
     const session = await verifySession()
 
@@ -17,7 +17,8 @@ export async function GET(req: NextRequest) {
       page: Number(searchParams.get('page')) ?? undefined,
       limit: Number(searchParams.get('limit')) ?? undefined,
       search: String(searchParams.get('search') || ''),
-      status: String(searchParams.get('status') || '')
+      status: String(searchParams.get('status') || ''),
+      userId: String(searchParams.get('userId') || '')
     })
 
     const queries = parsed.data
@@ -35,10 +36,14 @@ export async function GET(req: NextRequest) {
       filters.status = queries.status
     }
 
+    if (queries?.userId) {
+      filters.userId = queries.userId
+    }
+
     filters.page = page
     filters.limit = pageSize
 
-    filters.sort = {createdAt: -1}
+    filters.sort = { createdAt: -1 }
 
     let data
     if (session?.role === 'admin') {
