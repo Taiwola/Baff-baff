@@ -20,6 +20,8 @@ import { emptyMetaData } from '@utils/pagination'
 import { uploadToCloudinary } from '@lib/cloudinary'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { CLOUDINARY_FOLDERS } from '@lib/folder'
+import { revalidateTag } from 'next/cache'
+import { tag } from '@tags/materials.tag'
 
 export async function createMaterial(state: CreateMaterialFormState, formData: FormData): Promise<CreateMaterialFormState> {
   const parsedValues: CreateMaterialDto = {
@@ -59,11 +61,14 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
   redirect('/dashboard/materials', RedirectType.replace)
 }
 
 export async function getMaterials(options: PaginationParams = {}): Promise<Pagination<Material>> {
-  const response = await ServerApiClient.get<Pagination<Material>>(`/materials?page=${options.page ?? 1}&limit=${10}`)
+  const response = await ServerApiClient.get<Pagination<Material>>(`/materials?page=${options.page ?? 1}&limit=${10}`, {
+    next: { tags: [tag.default] }
+  })
 
   if (response.code >= 400) {
     console.log('materials error: ', response)
@@ -74,7 +79,7 @@ export async function getMaterials(options: PaginationParams = {}): Promise<Pagi
 }
 
 export async function getMaterial(id: string): Promise<Material | null> {
-  const response = await ServerApiClient.get<Material>(`/materials/${id}`)
+  const response = await ServerApiClient.get<Material>(`/materials/${id}`, { next: { tags: [tag.createTag(id)] } })
 
   if (response.code >= 400) {
     console.log('material error: ', response)
@@ -103,6 +108,8 @@ export async function updateMaterial(id: string, state: UpdateMaterialFormState,
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
+  revalidateTag(tag.createTag(id))
   redirect('/dashboard/materials', RedirectType.replace)
 }
 
@@ -113,5 +120,6 @@ export async function deleteMaterial(id: string) {
     return { error: response.message }
   }
 
+  revalidateTag(tag.default)
   redirect('/dashboard/materials', RedirectType.replace)
 }

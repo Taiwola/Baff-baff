@@ -2,6 +2,7 @@
 
 import { uploadToCloudinary } from '@lib/cloudinary'
 import { CLOUDINARY_FOLDERS } from '@lib/folder'
+import { tag } from '@tags/products.tag'
 import { ServerApiClient } from '@utils/api-server'
 import { validateFile, VALIDATION_PRESETS } from '@utils/file-validation'
 import { formatError, parseProductForm } from '@utils/formatting'
@@ -18,6 +19,7 @@ import {
   UpdateProductFormValues,
   updateProductSchema
 } from '@validations/product/update-product.validation'
+import { revalidateTag } from 'next/cache'
 import { redirect, RedirectType } from 'next/navigation'
 
 export async function createProduct(state: CreateProductFormState, formData: FormData): Promise<CreateProductFormState> {
@@ -63,6 +65,7 @@ export async function createProduct(state: CreateProductFormState, formData: For
     return { ...state, error: response.message, values: { ...parsedValues, images: [] } }
   }
 
+  revalidateTag(tag.default)
   redirect('/dashboard/products', RedirectType.replace)
 }
 
@@ -83,7 +86,8 @@ export async function getProducts(options: ProductQuery = {}): Promise<Paginatio
   const queryString = params.toString()
   const url = `/products${queryString ? `?${queryString}` : ''}`
 
-  const response = await ServerApiClient.get<Pagination<Product>>(url)
+  // revalidate every hour for customers and revalidate by tag for admins
+  const response = await ServerApiClient.get<Pagination<Product>>(url, { next: { revalidate: 3600, tags: [tag.default] } })
 
   if (response.code >= 400) {
     console.log('products error: ', response)
@@ -98,7 +102,7 @@ export async function getMayLikeProducts(): Promise<Product[]> {
 }
 
 export async function getProduct(id: string) {
-  const response = await ServerApiClient.get<Product>(`/products/${id}`)
+  const response = await ServerApiClient.get<Product>(`/products/${id}`, { next: { revalidate: 3600, tags: [tag.createTag(id)] } })
 
   if (response.code >= 400) {
     console.log('product error: ', response)
@@ -109,7 +113,7 @@ export async function getProduct(id: string) {
 }
 
 export async function getProductBySlug(slug: string) {
-  const response = await ServerApiClient.get<Product>(`/products/slugs/${slug}`)
+  const response = await ServerApiClient.get<Product>(`/products/slugs/${slug}`, { next: { revalidate: 3600, tags: [tag.createTag(slug)] } })
 
   if (response.code >= 400) {
     console.log('product error: ', response)
@@ -166,6 +170,9 @@ export async function updateProduct(product: Product, state: UpdateProductFormSt
     }
   }
 
+  revalidateTag(tag.default)
+  revalidateTag(tag.createTag(product.id))
+  revalidateTag(tag.createTag(product.slug))
   redirect('/dashboard/products', RedirectType.replace)
 }
 
@@ -176,6 +183,7 @@ export async function deleteProduct(id: string) {
     return { error: response.message }
   }
 
+  revalidateTag(tag.default)
   redirect('/dashboard/products', RedirectType.replace)
 }
 
@@ -186,5 +194,7 @@ export async function updateProductStatus(id: string, status: ProductStatus) {
     return { error: response.message }
   }
 
+  revalidateTag(tag.default)
+  revalidateTag(tag.createTag(id))
   redirect('/dashboard/products', RedirectType.replace)
 }

@@ -18,6 +18,8 @@ import {
   UpdateMeasurementFormValues,
   updateMeasurementSchema
 } from '@validations/measurement/update-measurement.validation'
+import { revalidateTag } from 'next/cache'
+import { tag } from '@tags/measurements.tag'
 
 export async function createMeasurement(state: CreateMeasurementFormState, formData: FormData): Promise<CreateMeasurementFormState> {
   const parsedValues: CreateMeasurementDto = {
@@ -46,6 +48,7 @@ export async function createMeasurement(state: CreateMeasurementFormState, formD
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
   redirect('/measurements', RedirectType.replace)
 }
 
@@ -56,7 +59,7 @@ export async function getMeasurements(options: PaginationParams = {}): Promise<P
 
   const queryString = params.toString()
   const url = `/measurements${queryString ? `?${queryString}` : ''}`
-  const response = await ServerApiClient.get<Pagination<Measurement>>(url)
+  const response = await ServerApiClient.get<Pagination<Measurement>>(url, { next: { tags: [tag.default] } })
 
   if (response.code >= 400) {
     console.log('measurements error: ', response)
@@ -67,7 +70,7 @@ export async function getMeasurements(options: PaginationParams = {}): Promise<P
 }
 
 export async function getMeasurement(id: string) {
-  const response = await ServerApiClient.get<Measurement>(`/measurements/${id}`)
+  const response = await ServerApiClient.get<Measurement>(`/measurements/${id}`, { next: { tags: [tag.createTag(id)] } })
 
   if (response.code >= 400) {
     console.log('measurement error: ', response)
@@ -78,7 +81,7 @@ export async function getMeasurement(id: string) {
 }
 
 export async function getUserMeasurement(): Promise<Measurement> {
-  const response = await ServerApiClient.get<Measurement>(`/measurements/user`)
+  const response = await ServerApiClient.get<Measurement>(`/measurements/user`, { next: { tags: [tag.createTag('user')] } })
 
   if (response.code >= 400) {
     return {
@@ -133,6 +136,8 @@ export async function updateMeasurement(id: string, state: UpdateMeasurementForm
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
+  revalidateTag(tag.createTag(id))
   redirect('/measurements', RedirectType.replace)
 }
 
@@ -164,6 +169,8 @@ export async function updateUserMeasurement(state: UpdateMeasurementFormState, f
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
+  revalidateTag(tag.createTag('user'))
   redirect('/measurements', RedirectType.replace)
 }
 
@@ -174,5 +181,6 @@ export async function deleteMeasurement(id: string) {
     return { error: response.message }
   }
 
+  revalidateTag(tag.default)
   redirect('/measurements', RedirectType.replace)
 }

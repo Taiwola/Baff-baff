@@ -1,8 +1,11 @@
 'use server'
 
+import { revalidateTag } from 'next/cache'
 import { redirect, RedirectType } from 'next/navigation'
 
+import { tag } from '@tags/collaborators.tag'
 import { formatError } from '@utils/formatting'
+import { emptyMetaData } from '@utils/pagination'
 import { ServerApiClient } from '@utils/api-server'
 import {
   CreateCollaboratorDto,
@@ -17,7 +20,6 @@ import {
   updateCollaboratorSchema,
   UpdateCollaboratorValues
 } from '@validations/collaborators'
-import { emptyMetaData } from '@utils/pagination'
 
 export async function createCollaborator(state: CreateCollaboratorFormState, formData: FormData): Promise<CreateCollaboratorFormState> {
   const parsedValues: CreateCollaboratorDto = parseCollaboratorFormData(formData)
@@ -35,6 +37,7 @@ export async function createCollaborator(state: CreateCollaboratorFormState, for
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
   redirect('/dashboard/collaborators', RedirectType.replace)
 }
 
@@ -47,7 +50,7 @@ export async function getCollaborators(options: CollaboratorFilter = {}): Promis
 
   const queryString = params.toString()
   const url = `/collaborators${queryString ? `?${queryString}` : ''}`
-  const response = await ServerApiClient.get<Pagination<Collaborator>>(url)
+  const response = await ServerApiClient.get<Pagination<Collaborator>>(url, { next: { tags: [tag.default] } })
 
   if (response.code >= 400) {
     console.log('collaborators error: ', response)
@@ -58,7 +61,7 @@ export async function getCollaborators(options: CollaboratorFilter = {}): Promis
 }
 
 export async function getCollaborator(id: string): Promise<Collaborator | null> {
-  const response = await ServerApiClient.get<Collaborator>(`/collaborators/${id}`)
+  const response = await ServerApiClient.get<Collaborator>(`/collaborators/${id}`, { next: { tags: [tag.createTag(id)] } })
 
   if (response.code >= 400) {
     console.log('collaborator error: ', response)
@@ -83,6 +86,8 @@ export async function updateCollaborator(id: string, state: UpdateCollaboratorFo
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
+  revalidateTag(tag.createTag(id))
   redirect('/dashboard/collaborators', RedirectType.replace)
 }
 
@@ -93,5 +98,6 @@ export async function deleteCollaborator(id: string) {
     return { error: response.message }
   }
 
+  revalidateTag(tag.default)
   redirect('/dashboard/collaborators', RedirectType.replace)
 }

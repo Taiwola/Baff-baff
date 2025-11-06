@@ -1,5 +1,6 @@
 'use server'
 
+import { tag } from '@tags/regions.tag'
 import { ServerApiClient } from '@utils/api-server'
 import { formatError } from '@utils/formatting'
 import { emptyMetaData } from '@utils/pagination'
@@ -17,6 +18,7 @@ import {
   UpdateRegionFormValues,
   UpdateRegionSchema
 } from '@validations/region/update-region.validation'
+import { revalidateTag } from 'next/cache'
 import { redirect, RedirectType } from 'next/navigation'
 
 export async function createRegion(state: CreateRegionFormState, formData: FormData): Promise<CreateRegionFormState> {
@@ -39,6 +41,7 @@ export async function createRegion(state: CreateRegionFormState, formData: FormD
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
   redirect('/dashboard/regions', RedirectType.replace)
 }
 
@@ -49,7 +52,7 @@ export async function getRegions(options: PaginationParams = {}): Promise<Pagina
 
   const queryString = params.toString()
   const url = `/regions${queryString ? `?${queryString}` : ''}`
-  const response = await ServerApiClient.get<Pagination<Region>>(url)
+  const response = await ServerApiClient.get<Pagination<Region>>(url, { next: { tags: [tag.default] } })
 
   if (response.code >= 400) {
     console.log('regions error: ', response)
@@ -60,7 +63,7 @@ export async function getRegions(options: PaginationParams = {}): Promise<Pagina
 }
 
 export async function getRegion(id: string) {
-  const response = await ServerApiClient.get<Region>(`/regions/${id}`)
+  const response = await ServerApiClient.get<Region>(`/regions/${id}`, { next: { tags: [tag.createTag(id)] } })
 
   if (response.code >= 400) {
     console.log('region error: ', response)
@@ -71,7 +74,7 @@ export async function getRegion(id: string) {
 }
 
 export async function getRegionSC(state: string, city: string) {
-  const response = await ServerApiClient.get<Region>(`/regions/states/${state}/cities/${city}`)
+  const response = await ServerApiClient.get<Region>(`/regions/states/${state}/cities/${city}`, { next: { tags: [tag.createTag(state + city)] } })
 
   if (response.code >= 400) {
     console.log('region error: ', response)
@@ -101,6 +104,9 @@ export async function updateRegion(id: string, state: UpdateRegionFormState, for
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
+  revalidateTag(tag.createTag(id))
+  revalidateTag(tag.createTag(response.data.state + response.data.city))
   redirect('/dashboard/regions', RedirectType.replace)
 }
 
@@ -111,5 +117,6 @@ export async function deleteRegion(id: string) {
     return { error: response.message }
   }
 
+  revalidateTag(tag.default)  
   redirect('/dashboard/regions', RedirectType.replace)
 }

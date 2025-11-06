@@ -1,7 +1,9 @@
 'use server'
 
+import { revalidateTag } from 'next/cache'
 import { redirect, RedirectType } from 'next/navigation'
 
+import { tag } from '@tags/addresses.tag'
 import { formatError } from '@utils/formatting'
 import { emptyMetaData } from '@utils/pagination'
 import { ServerApiClient } from '@utils/api-server'
@@ -43,6 +45,7 @@ export async function createAddress(state: CreateAddressFormState, formData: For
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
   redirect('/addresses', RedirectType.replace)
 }
 
@@ -71,11 +74,12 @@ export async function changeAddress(state: CreateAddressFormState, formData: For
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.default)
   redirect('/checkout/shipping', RedirectType.replace)
 }
 
 export async function getAddresses(): Promise<Pagination<Address>> {
-  const response = await ServerApiClient.get<Pagination<Address>>(`/addresses`)
+  const response = await ServerApiClient.get<Pagination<Address>>(`/addresses`, { next: { tags: [tag.default] } })
 
   if (response.code >= 400) {
     console.log('addresses error: ', response)
@@ -86,7 +90,7 @@ export async function getAddresses(): Promise<Pagination<Address>> {
 }
 
 export async function getAddress(id: string) {
-  const response = await ServerApiClient.get<Address>(`/addresses/${id}`)
+  const response = await ServerApiClient.get<Address>(`/addresses/${id}`, { next: { tags: [tag.createTag(id)] } })
 
   if (response.code >= 400) {
     console.log('address error: ', response)
@@ -97,7 +101,7 @@ export async function getAddress(id: string) {
 }
 
 export async function getActveAddress() {
-  const response = await ServerApiClient.get<Address>(`/addresses/active`)
+  const response = await ServerApiClient.get<Address>(`/addresses/active`, { next: { tags: [tag.createTag('active')] } })
 
   if (response.code >= 400) {
     console.log('address error: ', response)
@@ -132,6 +136,13 @@ export async function updateAddress(id: string, state: UpdateAddressFormState, f
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.createTag(id))
+  revalidateTag(tag.default)
+
+  if (response.data.active !== state.values.active) {
+    revalidateTag(tag.createTag('active'))
+  }
+
   redirect('/addresses', RedirectType.replace)
 }
 
@@ -142,5 +153,8 @@ export async function deleteAddress(id: string) {
     return { error: response.message }
   }
 
+  revalidateTag(tag.createTag(id))
+  revalidateTag(tag.createTag('active'))
+  revalidateTag(tag.default)
   redirect('/addresses', RedirectType.replace)
 }

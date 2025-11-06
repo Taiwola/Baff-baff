@@ -10,6 +10,7 @@ export enum API_Tags {
   ORDERS = "orders",
   REGIONS = "regions",
   USERS = "users",
+  ANALYTICS = "analytics",
 }
 
 export function getTag(name: API_Tags, listId?: string) {
