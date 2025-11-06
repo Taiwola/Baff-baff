@@ -117,6 +117,7 @@ export async function getProductBySlug(slug: string) {
 
 export async function updateProduct(product: Product, state: UpdateProductFormState, formData: FormData): Promise<UpdateProductFormState> {
   const parsedValues = parseProductForm(formData)
+
   const result = updateProductSchema.safeParse(parsedValues)
 
   if (!result.success) {
@@ -124,7 +125,35 @@ export async function updateProduct(product: Product, state: UpdateProductFormSt
     return { ...state, errors, error: '', values: { ...parsedValues, images: parsedValues.images.filter((image) => typeof image === 'string') } }
   }
 
-  const response = await ServerApiClient.patch<Product>(`/products/${product.id}`, formData)
+
+  const images: string[] = []
+
+  for (const image of result.data.images) {
+     if (image instanceof File) {
+            if (image.size <= 0) continue
+            const validation = validateFile(image, VALIDATION_PRESETS.IMAGE)
+    
+            if (!validation.isValid) {
+              return { ...state, error: 'Image is not valid', values: parsedValues }
+            }
+    
+              const uploadResult = await uploadToCloudinary(image, CLOUDINARY_FOLDERS.PRODUCTS)
+    
+              if (!uploadResult.success) {
+                return { ...state, error: 'Image upload failed', values: parsedValues }
+              }
+    
+              if (uploadResult.data?.url) {
+                images.push(uploadResult.data.url)
+              }
+          } else {
+            images.push(image)
+          }
+    }
+
+    result.data.images = images
+
+  const response = await ServerApiClient.patch<Product>(`/products/${product.id}`, result.data)
 
   if (response.code >= 400) {
     return {

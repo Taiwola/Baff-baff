@@ -48,10 +48,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!product) return errorResponse('Product not found', null, 404)
 
   try {
-    const formData = await req.formData()
+    const body = await req.json()
 
-    const parsedValues = parseProductForm(formData)
-    const parsed = updateProductSchema.safeParse(parsedValues)
+    const parsed = updateProductSchema.safeParse(body)
 
     if (!parsed.success) {
       const validationErrors = parsed.error.issues.map((detail) => ({
