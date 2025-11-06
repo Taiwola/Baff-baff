@@ -33,9 +33,6 @@ export async function getAllProducts({
     ProductModel.countDocuments(filter)
   ])
 
-  const explain = await ProductModel.find(filter).sort(sort).explain('executionStats')
-console.log(explain)
-
   return { products, count }
 }
 
