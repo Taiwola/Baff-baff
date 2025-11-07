@@ -13,6 +13,8 @@ import {
 } from '@validations/users/update-user.validation'
 import { formatError } from '@utils/formatting'
 import { InviteAdminDto, InviteAdminFormErrors, InviteAdminFormState, InviteAdminFormValues, inviteAdminSchema } from '@validations/users'
+import { tag } from '@tags/users.tag'
+import { revalidateTag } from 'next/cache'
 
 export async function getUsers(options: UserFilter = {}): Promise<Pagination<User>> {
   const params = new URLSearchParams()
@@ -24,7 +26,7 @@ export async function getUsers(options: UserFilter = {}): Promise<Pagination<Use
   const queryString = params.toString()
   const url = `/users${queryString ? `?${queryString}` : ''}`
 
-  const response = await ServerApiClient.get<Pagination<User>>(url)
+  const response = await ServerApiClient.get<Pagination<User>>(url, { next: { tags: [tag.default] } })
 
   if (response.code >= 400) {
     console.log('users error: ', response)
@@ -35,7 +37,7 @@ export async function getUsers(options: UserFilter = {}): Promise<Pagination<Use
 }
 
 export async function getUser(id: string): Promise<User | null> {
-  const response = await ServerApiClient.get<User>(`/users/${id}`)
+  const response = await ServerApiClient.get<User>(`/users/${id}`, { next: { tags: [tag.createTag(id)] } })
 
   if (response.code >= 400) {
     console.log('user error: ', response)
@@ -66,6 +68,8 @@ export async function updateUser(id: string, state: UpdateUserFormState, formDat
     return { ...state, error: response.message, values: parsedValues }
   }
 
+  revalidateTag(tag.createTag(id))
+
   if (response.data.role === 'admin') {
     redirect('/dashboard/settings/profile', RedirectType.replace)
   } else redirect('/profile', RedirectType.replace)
@@ -78,6 +82,7 @@ export async function updateRole(user: User, role: UserRole): Promise<User> {
     throw new Error(response.message)
   }
 
+  revalidateTag(tag.createTag(user.id))
   return response.data
 }
 
@@ -92,12 +97,13 @@ export async function inviteAdmin(state: InviteAdminFormState, formData: FormDat
     const errors = formatError<InviteAdminFormErrors, InviteAdminFormValues>(result.error)
     return { ...state, errors, error: '', values: parsedValues }
   }
-  
+
   const response = await ServerApiClient.post<void>('/users/admins/invite', result.data)
 
   if (response.code >= 400) {
     return { ...state, error: response.message, values: parsedValues }
   }
-  
+
+  revalidateTag(tag.default)
   redirect('/dashboard/settings/manage', RedirectType.replace)
 }

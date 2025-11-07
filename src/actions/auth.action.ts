@@ -24,7 +24,8 @@ import {
   ResetPasswordFormValues,
   resetPasswordSchema
 } from '@validations/auth'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { tag } from '@tags/users.tag'
 
 export async function register(state: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
   const parsedValues = {
@@ -50,6 +51,7 @@ export async function register(state: RegisterFormState, formData: FormData): Pr
     return { ...state, error: response.message }
   }
 
+  revalidateTag(tag.default)
   redirect('/login')
 }
 
