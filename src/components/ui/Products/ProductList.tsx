@@ -4,20 +4,21 @@ import EmptyProductList from './EmptyProductList'
 
 type Props = {
   products: Product[]
-  variant?: 'default' | 'marketplace' | 'maylike'
+  variant?: 'default' | 'marketplace' | 'maylike' | 'alsoBought'
 }
 
 const variants = {
   default: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5',
   marketplace: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4',
   maylike: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
+  alsoBought: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
 }
 
 export default function ProductList({ products, variant = 'default' }: Props) {
 
   if (products.length === 0) {
     return (
-     <EmptyProductList variant={variant} />
+      <EmptyProductList variant={variant} />
     )
   }
 

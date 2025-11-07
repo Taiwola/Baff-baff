@@ -1,3 +1,4 @@
+import { auth } from '@auth'
 import React, { Suspense } from 'react'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
@@ -7,7 +8,8 @@ import OrderList from './_components/OrderList'
 import { BreadCrumbItemType, BreadCrumbs, OrderListSkeleton } from '@components/ui'
 
 export default async function Orders() {
-   const promise = getOrders({ status: 'paid' })
+   const session = await auth()
+   const promise = getOrders({ status: 'paid', userId: session?.user.id })
 
    return (
       <main className='app-container py-5 md:py-12 font-montserrat'>

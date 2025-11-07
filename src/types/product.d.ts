@@ -92,5 +92,4 @@ type MaketplaceFilter = {
   price?: PriceRange
   sort?: ProductSortType
   category?: ProductCategory
-  design?: ProductDesign
 }

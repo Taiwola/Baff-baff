@@ -1,7 +1,7 @@
 import z from 'zod'
 
 // Define valid groupings
-export const SalesGroupingSchema = z.enum(['yearly', 'monthly', 'weekly', 'daily']);
+export const SalesGroupingSchema = z.enum(['yearly', 'monthly', 'weekly', 'daily'])
 
 export const orderQueryFilter = z.object({
   search: z.string().optional(),
@@ -9,6 +9,7 @@ export const orderQueryFilter = z.object({
   page: z.number().optional(),
   limit: z.number().optional(), // max 100 for sanity
   grouping: SalesGroupingSchema.optional(),
+  userId: z.string().optional()
 })
 
 export type OrderQuery = z.infer<typeof orderQueryFilter>

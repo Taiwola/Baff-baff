@@ -1,7 +1,8 @@
+import { Suspense } from 'react'
+
+import { FeaturedProductsSkeleton } from '@components/ui'
 import { FeaturedProducts } from '@components/features/products'
 import { HomeHero, Explore, Story, Catalog, PaymentInfo, FeaturedImages, Discount } from './_components'
-import { Suspense } from 'react'
-import FeaturedProductsSkeleton from '@components/ui/Skeletons/FeaturedProductsSkeleton'
 
 export default function Home() {
   return (

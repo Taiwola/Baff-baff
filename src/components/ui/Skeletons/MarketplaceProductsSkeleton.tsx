@@ -3,10 +3,14 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
-export default function MarketplaceProductsSkeleton() {
+type Props = {
+   length?: number
+}
+
+export default function MarketplaceProductsSkeleton({ length = 4 }: Props) {
    return (
       <section className={`w-full grid gap-5 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'`}>
-         {Array.from({ length: 4 }).map((_, i) => (
+         {Array.from({ length }).map((_, i) => (
             <ProductSkeleton key={i} />
          ))}
       </section>

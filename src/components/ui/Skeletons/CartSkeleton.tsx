@@ -16,7 +16,7 @@ export default function CartSkeleton() {
                   {/* Product details */}
                   <div className="flex flex-col flex-1 gap-5">
                      <Skeleton className="h-6 w-2/3" /> {/* Product name */}
-                     <Skeleton className="h-[44px] w-[50px]" /> {/* Size */}
+                     <Skeleton className="h-11 w-[50px]" /> {/* Size */}
                      <Skeleton className="h-5 w-1/4" /> {/* Price */}
                   </div>
 
@@ -37,12 +37,12 @@ export default function CartSkeleton() {
 
          {/* Cart summary */}
          <div className="flex flex-col items-end gap-2.5 mt-6">
-            <div className="flex items-center justify-between w-full md:w-[19rem]">
+            <div className="flex items-center justify-between w-full md:w-76">
                <Skeleton className="h-5 w-[100px]" />
-               <Skeleton className="h-5 w-[80px]" />
+               <Skeleton className="h-5 w-20" />
             </div>
 
-            <Skeleton className="h-4 w-full md:w-[19rem]" />
+            <Skeleton className="h-4 w-full md:w-76" />
 
             <Skeleton className="h-10 w-full md:w-[300px] rounded-md" />
          </div>

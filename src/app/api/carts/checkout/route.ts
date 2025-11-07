@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
       amount: orderValidation.data.total,
       email: orderValidation.data.shippingAddress.email,
       reference: orderValidation.data.reference,
-      callback_url: process.env.PAYSTACK_CALLBACK_URL as string,
+      callback_url: process.env.PAYSTACK_CALLBACK_URL,
       metadata: { cartId }
     }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useActionState, useEffect, useRef } from 'react'
+import React, { useActionState, useEffect, useRef, useState } from 'react'
 
 import { Input } from '@components/ui'
 
@@ -21,11 +21,18 @@ type Props = {
 export default function UpdateStatus({ id }: Props) {
    const toast = useToast()
    const ref = useRef<HTMLFormElement | null>(null)
-   const [{ error }, action] = useActionState(updateOrder.bind(null, id), initialState)
+   const [{ values, error }, action] = useActionState(updateOrder.bind(null, id), initialState)
 
-   function handleChange() {
-      ref.current?.requestSubmit()
+   const [status, setStatus] = useState(values.status)
+
+   function handleChange(val: string) {
+      setStatus(val as OrderStatus)
    }
+
+   useEffect(() => {
+      ref.current?.requestSubmit()
+   }, [status])
+
 
    useEffect(() => {
       if (error) {
@@ -34,17 +41,18 @@ export default function UpdateStatus({ id }: Props) {
    }, [toast, error]);
 
    return (
-      <form ref={ref} action={action} className='w-[6rem] sm:w-[7.5rem] h-[2.5rem] sm:h-[2.6875rem]'>
+      <form ref={ref} action={action} className='w-24 sm:w-30 h-10 sm:h-10.75'>
          <Input
-            placeholder={'Paid'}
+            value={status}
             name='status'
             type='select'
             options={[
+               { key: 'paid', label: 'Paid' },
                { key: 'delivered', label: 'Delivered' },
-               { key: 'cancelled', label: 'Cancelled' }
+               { key: 'cancelled', label: 'Cancelled' },
             ]}
             onChange={handleChange}
-            className='bg-green-500'
+            className='bg-blue-500'
          />
       </form>
    )

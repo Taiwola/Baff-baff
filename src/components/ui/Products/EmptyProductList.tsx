@@ -2,7 +2,7 @@ import { PackageSearch } from 'lucide-react'
 
 
 type Props = {
-  variant?: 'default' | 'marketplace' | 'maylike'
+  variant?: 'default' | 'marketplace' | 'maylike' | 'alsoBought'
 }
 
 const emptyStateContent = {
@@ -17,11 +17,19 @@ const emptyStateContent = {
   maylike: {
     title: 'No recommendations yet',
     description: 'We\'re still learning your preferences. Browse our catalog to help us suggest products you\'ll love.'
+  },
+  mayLike: {
+    title: 'No recommendations yet',
+    description: "We're still learning your preferences. Browse our catalog to help us find products you'll love."
+  },
+  alsoBought: {
+    title: 'No purchase history found',
+    description: "Your previously bought items will appear here once you\'ve made a purchase."
   }
 }
 
 export default function EmptyProductList({ variant = 'default' }: Props) {
-    const content = emptyStateContent[variant]
+  const content = emptyStateContent[variant]
 
   return (
     <div className="w-full flex flex-col items-center justify-center py-20 text-center text-gray-500">
@@ -30,7 +38,7 @@ export default function EmptyProductList({ variant = 'default' }: Props) {
       </div>
       <h3 className="text-lg font-semibold text-gray-700">{content.title}</h3>
       <p className="text-sm text-gray-500 mt-1 mb-4">
-       {content.description}
+        {content.description}
       </p>
     </div>
   )

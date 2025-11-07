@@ -1,3 +1,5 @@
 export { default as ProductDetail } from './ProductDetail'
 export { default as FeaturedProducts } from './FeaturedProducts'
 export { default as MarketPlaceProducts } from './MarketPlaceProducts'
+export { default as MayLikeProducts } from './MayLikeProducts'
+export { default as AlsoBoughtProducts } from './AlsoBoughtProducts'

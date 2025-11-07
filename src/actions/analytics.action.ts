@@ -4,7 +4,7 @@ import { ServerApiClient } from '@utils/api-server'
 import { defaultDailyRange } from '@utils/date-range'
 
 export async function getRevenueOverview(): Promise<RevenueOverview> {
-  const response = await ServerApiClient.get<RevenueOverview>('/analytics', { cache: 'force-cache' })
+  const response = await ServerApiClient.get<RevenueOverview>('/analytics', { next: { revalidate: 3600 * 24 } }) // revalidate every 24 hours
 
   if (response.code >= 400) {
     console.log('Get Revenue error', response.message)
@@ -16,7 +16,7 @@ export async function getRevenueOverview(): Promise<RevenueOverview> {
 }
 
 export async function getStats(): Promise<OverviewStats> {
-  const response = await ServerApiClient.get<OverviewStats>('/analytics/stats')
+  const response = await ServerApiClient.get<OverviewStats>('/analytics/stats', { cache: 'no-store' })
 
   if (response.code >= 400) {
     console.log('analytics stats error: ', response)

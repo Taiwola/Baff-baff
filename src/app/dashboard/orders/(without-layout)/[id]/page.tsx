@@ -38,7 +38,7 @@ export default async function OrderDetailPage({ params }: Props) {
             {order.status === 'paid' ? (
               <UpdateStatus id={order.id} />
             ) : (
-              <div className={`w-[6rem] sm:w-[7.5rem] h-[2.5rem] sm:h-[2.6875rem] rounded-[1.875rem] capitalize ${statusColors[order.status]} flex justify-center items-center text-white text-sm sm:text-base`}>
+              <div className={`w-24 sm:w-30 h-10 sm:h-10.75 rounded-[1.875rem] capitalize ${statusColors[order.status]} flex justify-center items-center text-white text-sm sm:text-base`}>
                 {order.status}
               </div>
             )}
@@ -110,8 +110,8 @@ export default async function OrderDetailPage({ params }: Props) {
 }
 
 const statusColors: Record<OrderStatus, string> = {
-  cancelled: "bg-gray-400",
-  pending: "bg-orange-500",
-  paid: "bg-green-500",
-  delivered: "bg-green-500",
+  cancelled: "bg-red-500",     // Red for error/cancellation
+  pending: "bg-yellow-500",    // Yellow for waiting/processing
+  paid: "bg-blue-500",         // Blue for confirmed/payment done
+  delivered: "bg-green-600",   // Green for success/completion
 }

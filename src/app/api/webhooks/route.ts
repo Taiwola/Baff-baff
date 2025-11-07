@@ -10,6 +10,8 @@ import { getSize } from '@utils'
 import { generateAdminOrderEmail, generateOrderPaymentEmail } from '@utils/mail-content'
 import { sendBulkEmail, sendEmail } from '@lib/mail'
 import { getAllUsers } from '@services/user'
+import { revalidateTag } from 'next/cache'
+import { tag } from '@tags/orders.tag'
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
@@ -77,51 +79,42 @@ export async function POST(req: NextRequest) {
       if (session) await session.commitTransaction()
       if (session) session.endSession()
 
-    
-        // Send emails after successful transaction (don't block webhook on email failures)
-        setImmediate(async () => {
-          try {
-            // Send customer confirmation email
-            const customerContent = generateOrderPaymentEmail(
-              { name: order.shippingAddress.fullName, email: order.shippingAddress.email },
-              order.id
-            )
-            const { error: customerError, errorMessage: customerErrorMsg } = await sendEmail(
-              order.shippingAddress.email,
-              customerContent,
-              'Payment confirmation',
-              'Baffa Baffa'
-            )
+      // Send emails after successful transaction (don't block webhook on email failures)
+      setImmediate(async () => {
+        try {
+          // Send customer confirmation email
+          const customerContent = generateOrderPaymentEmail({ name: order.shippingAddress.fullName, email: order.shippingAddress.email }, order.id)
+          const { error: customerError, errorMessage: customerErrorMsg } = await sendEmail(
+            order.shippingAddress.email,
+            customerContent,
+            'Payment confirmation',
+            'Baffa Baffa'
+          )
 
-            if (customerError) {
-              console.error('Failed to send customer confirmation email:', customerErrorMsg)
-            }
-
-            // Send admin notification emails
-            const {users} = await getAllUsers({ role: 'admin' })
-            const adminEmails = users.map(admin => admin.email).filter(Boolean) as string[]
-
-            if (adminEmails.length > 0) {
-              const adminContent = generateAdminOrderEmail(order.id)
-              const bulkRecipients: BulkRecipient[] = adminEmails.map(email => ({ email }))
-              const { failed } = await sendBulkEmail(
-                bulkRecipients,
-                'New Order Placed',
-                adminContent,
-                'Baffa Baffa',
-                {}
-              )
-
-              if (failed.length > 0) {
-                console.error('Failed to send admin order emails to:', failed)
-              }
-            }
-          } catch (emailError) {
-            console.error('Error sending notification emails:', emailError)
+          if (customerError) {
+            console.error('Failed to send customer confirmation email:', customerErrorMsg)
           }
-        })
 
-    return sendResponse('Webhook processed successfully',null, 200)
+          // Send admin notification emails
+          const { users } = await getAllUsers({ role: 'admin' })
+          const adminEmails = users.map((admin) => admin.email).filter(Boolean) as string[]
+
+          if (adminEmails.length > 0) {
+            const adminContent = generateAdminOrderEmail(order.id)
+            const bulkRecipients: BulkRecipient[] = adminEmails.map((email) => ({ email }))
+            const { failed } = await sendBulkEmail(bulkRecipients, 'New Order Placed', adminContent, 'Baffa Baffa', {})
+
+            if (failed.length > 0) {
+              console.error('Failed to send admin order emails to:', failed)
+            }
+          }
+        } catch (emailError) {
+          console.error('Error sending notification emails:', emailError)
+        }
+      })
+      revalidateTag(tag.default)
+      revalidateTag(tag.createTag(order.id))
+      return sendResponse('Webhook processed successfully', null, 200)
     } catch (error) {
       if (session) await session.abortTransaction()
       if (session) session.endSession()

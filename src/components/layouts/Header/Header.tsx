@@ -63,7 +63,7 @@ export default function Header() {
   }
 
   useEffect(() => {
-    if (status === 'loading' || !session) {
+    if (status === 'loading') {
       update();
     }
   }, [session, status, update]);
@@ -139,7 +139,7 @@ export default function Header() {
 
                 <DropdownMenu
                   aria-label="User Account Actions"
-                  className="h-auto w-[12.75rem] rounded-[20px] border border-grey bg-background font-lexend p-0 gap-0 overflow-hidden m-0"
+                  className="h-auto w-51 rounded-[20px] border border-grey bg-background font-lexend p-0 gap-0 overflow-hidden m-0"
                 >
 
 
@@ -241,7 +241,7 @@ export default function Header() {
           <ModalBody>
             <form
               onSubmit={handleSearchSubmit}
-              className="flex items-center justify-between w-full px-5 h-[3.125rem] md:h-[4.625rem]"
+              className="flex items-center justify-between w-full px-5 h-12.5 md:h-18.5"
             >
               <MagnifyingGlassIcon className="h-8.5 w-8.5 text-foreground" />
               <input
