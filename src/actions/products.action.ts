@@ -98,11 +98,29 @@ export async function getProducts(options: ProductQuery = {}): Promise<Paginatio
 }
 
 export async function getMayLikeProducts(): Promise<Product[]> {
-  return []
+  const response = await ServerApiClient.get<Product[]>(`/products/may-like`, { next: { revalidate: 3600 * 24 } })
+
+  if (response.code >= 400) {
+    console.log('maylike product error: ', response)
+    return []
+  }
+
+  return response.data
+}
+
+export async function getAlsoBoughtProducts(): Promise<Product[]> {
+  const response = await ServerApiClient.get<Product[]>(`/products/also-bought`, { next: { revalidate: 3600 * 24 } })
+
+  if (response.code >= 400) {
+    console.log('also bought product error: ', response)
+    return []
+  }
+
+  return response.data
 }
 
 export async function getProduct(id: string) {
-  const response = await ServerApiClient.get<Product>(`/products/${id}`, { next: { revalidate: 3600, tags: [tag.createTag(id)] } })
+  const response = await ServerApiClient.get<Product>(`/products/${id}`, { next: { tags: [tag.createTag(id)] } })
 
   if (response.code >= 400) {
     console.log('product error: ', response)
@@ -113,7 +131,7 @@ export async function getProduct(id: string) {
 }
 
 export async function getProductBySlug(slug: string) {
-  const response = await ServerApiClient.get<Product>(`/products/slugs/${slug}`, { next: { revalidate: 3600, tags: [tag.createTag(slug)] } })
+  const response = await ServerApiClient.get<Product>(`/products/slugs/${slug}`, { next: { tags: [tag.createTag(slug)] } })
 
   if (response.code >= 400) {
     console.log('product error: ', response)
