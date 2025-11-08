@@ -15,7 +15,7 @@ export default function ChangePasswordPage() {
         <BreadCrumbs separator='/' items={breadcrumbsItems} />
       </div>
 
-      <div className='w-3/5 mx-auto flex flex-col items-center justify-start mt-15'>
+      <div className='w-full md:w-3/5 mx-auto flex flex-col items-center justify-start mt-15'>
         <h1 className='text-lg font-medium text-black mb-5'>Set Password</h1>
         <ChangePasswordForm />
       </div>
