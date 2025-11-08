@@ -11,9 +11,9 @@ import { NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   await dbConnect()
 
-  const session = await verifySession()
+      const session = await verifySession()
       const cookieStore = await cookies();
-    const guestCartId = cookieStore.get("guestCartId")?.value;
+      const guestCartId = cookieStore.get("guestCartId")?.value;
 
      let recommendedProducts: IProduct[] = [];
 
