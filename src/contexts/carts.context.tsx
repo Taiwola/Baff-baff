@@ -62,18 +62,14 @@ export const CartProvider = ({ children }: Props) => {
     // update local cart state immediately for better UX
     setCart((prev) => ({ ...prev, items: newCartItems }));
 
-    try {
-      // if there is a cart id (user is logged in), sync with server
-      if (cart.id) {
-        const { product, ...dto } = item
-        const payload: UpdateCartDto = { action: 'add', item: { ...dto, productId: product.id } }
-        const updatedCart = await updateCart(cart.id, payload)
-        if (updatedCart) setCart(updatedCart)
-      } else {
-        await syncWithServer({ ...cart, items: newCartItems });
-      }
-    } catch (error) {
-      console.error('Failed to sync with server:', error);
+    // if there is a cart id (user is logged in), sync with server
+    if (cart.id) {
+      const { product, ...dto } = item
+      const payload: UpdateCartDto = { action: 'add', item: { ...dto, productId: product.id } }
+      const updatedCart = await updateCart(cart.id, payload)
+      if (updatedCart) setCart(updatedCart)
+    } else {
+      await syncWithServer({ ...cart, items: newCartItems });
     }
   }
 

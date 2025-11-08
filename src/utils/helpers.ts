@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -67,23 +65,25 @@ export function getSize(measurements: TrouserMeasurement | ShirtMeasurement | Ca
 }
 
 function getShirtSize(measurements: ShirtMeasurement | CartMeasurements): Size {
-  if (Number(measurements.chest) >= 0 && Number(measurements.chest) <= 40) {
+  if (Number(measurements.chest) <= 40) {
     return 's'
-  } else if (Number(measurements.chest) > 40 && Number(measurements.chest) <= 45) {
+  } else if (Number(measurements.chest) <= 45) {
     return 'm'
-  } else if (Number(measurements.chest) > 45 && Number(measurements.chest) <= 50) {
+  } else if (Number(measurements.chest) <= 50) {
     return 'l'
-  } else if (Number(measurements.chest) > 50 && Number(measurements.chest) <= 55) {
+  } else if (Number(measurements.chest) <= 55) {
     return 'xl'
-  } else if (Number(measurements.chest) > 55 && Number(measurements.chest) <= 60) {
+  } else if (Number(measurements.chest) <= 60) {
     return 'xxl'
   }
 
   else return 'xxxl'
-
 }
 
 function getTrouserSize(measurements: TrouserMeasurement | CartMeasurements): Size {
+  if(Number(measurements.waist) <= 38) {
+
+  }
   return 'l'
 }
 
