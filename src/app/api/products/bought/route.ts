@@ -12,15 +12,21 @@ export async function GET() {
     if (!session?.userId) {
         const {products} = await getAllProducts({})
 
-        const top4productSold = products.sort((a,b) => b.numberOfSales - a.numberOfSales).slice(0, 4)
+        let top = [];
 
-        return sendResponse("Request successful", top4productSold, 200)
+        for (const p of products) {
+            top.push(p);
+            top.sort((a, b) => b.numberOfSales - a.numberOfSales);
+            if (top.length > 4) top.pop();
+        }
+
+        return sendResponse("Request successful", top, 200)
     } else {
-        const {orders} = await getAllOrders({userId: session.userId})
+        const {orders} = await getAllOrders({})
 
         const {categories, productIds, productTypes} = extractProductAttributesFromOrders(orders)
 
-        const recommendedProduct = await getRecommendedProducts(categories, productIds, productTypes)
+        const recommendedProduct = await getRecommendedProducts(categories, productTypes, productIds)
          return sendResponse("Request successful", recommendedProduct, 200)
     }
 

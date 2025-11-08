@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
     if (session?.userId) {
       const {carts} = await getAllCarts({userId: session.userId})
       const items = carts.flatMap((cart) => cart.items)
+      console.log(items)
       const {categories, productTypes, productIds} = await extractProductAttributesFromCart(items)
 
       recommendedProducts = await getRecommendedProducts(categories, productTypes, productIds)

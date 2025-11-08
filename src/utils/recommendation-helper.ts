@@ -1,9 +1,13 @@
+import 'server-only'
+
+import { IOrder } from "@models/order.model";
 import { IProduct } from "@models/product.model";
 import { getAllProducts } from "@services/product";
 
 /**
  * Extracts unique categories and product types from cart items
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function extractProductAttributesFromCart(items: any[]): Promise<{
   categories: Set<string>;
   productTypes: Set<string>;
@@ -26,7 +30,7 @@ export async function extractProductAttributesFromCart(items: any[]): Promise<{
 /**
  * Extracts unique categories and product types from order items
  */
-export function extractProductAttributesFromOrders(orders: any[]): {
+export function extractProductAttributesFromOrders(orders: IOrder[]): {
   categories: Set<string>;
   productTypes: Set<string>;
   productIds: Set<string>;
