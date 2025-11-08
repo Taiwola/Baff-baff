@@ -61,6 +61,7 @@ type ProductFilter = {
   type?: ProductType
   design?: ProductDesign
   status?: ProductStatus
+  numberOfSales?: number
   limit?: number
   sort?: ProductSort
   collaborator?: string
