@@ -1,16 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion } from 'framer-motion'
 import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react"
 import { usePathname, useRouter } from "next/navigation";
 import { UserIcon, ShoppingBagIcon, MagnifyingGlassIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Modal, ModalContent, ModalBody, useDisclosure, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User } from "@heroui/react";
 
-import LargeLogoSvg from "@assets/svg/largeLogoSvg";
-import SmallLogoSvg from "@assets/svg/smallLogoSvg";
 import { Button } from "@components/ui";
 import { useCart } from "@contexts/carts.context";
 
@@ -25,10 +24,9 @@ export default function Header() {
   const { reset } = useCart()
   const pathname = usePathname()
   const { data: session, status, update } = useSession()
-  // console.log('status', status);
 
   const [query, setQuery] = useState("");
-  const [isOpen, setIsOpen] = useState(false); // mobile menu
+  const [isOpen, setIsOpen] = useState(false);
 
   const { isOpen: searchOpen, onOpen, onClose } = useDisclosure();
 
@@ -70,8 +68,8 @@ export default function Header() {
 
   return (
     <>
-      <header className="pt-4 pb-0 md:pb-4 w-full sticky backdrop-blur-sm top-0 z-40 border-b border-foreground bg-white">
-        <nav className="flex items-center justify-between pb-8 md:pb-0 app-container">
+      <header className="w-full sticky backdrop-blur-sm top-0 z-40 border-b border-foreground bg-white">
+        <nav className="flex items-center py-4 justify-between app-container">
           {/* Left side */}
           <div className="flex items-center gap-7 flex-1">
             {/* Mobile menu button */}
@@ -105,21 +103,31 @@ export default function Header() {
           </div>
 
           {/* Logo */}
-          <div className="flex-1 flex justify-center">
-            <motion.div
-              whileHover={{ scale: 1.08 }}      // Slightly enlarge on hover
-              whileTap={{ scale: 0.92 }}         // Slightly shrink when pressed
-              transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-            >
-              <Link href="/" className="text-xl font-bold block">
-                <LargeLogoSvg className="w-full h-auto hidden md:block" />
-                <SmallLogoSvg className="w-full h-auto md:hidden" />
-              </Link>
-            </motion.div>
+          <div className="flex-1 flex justify-center items-center">
+            <div className="w-7.5 h-13.75 flex justify-center items-center">
+              <motion.div
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                className="w-full h-full"
+              >
+                <Link href="/" className="block w-full h-full">
+                  <Image
+                    src="/images/baffabaffa-logo.png"
+                    width={30}
+                    height={50}
+                    alt="logo"
+                    className="object-cover w-full h-full"
+                    priority
+                  />
+                </Link>
+              </motion.div>
+            </div>
           </div>
 
+
           {/* Right side */}
-          <div className="flex items-center justify-end gap-12 flex-1">
+          <div className="flex items-center justify-end gap-5 md:gap-12 flex-1">
             {/* Desktop search */}
             <button
               className="hidden md:inline focus:outline:none"
@@ -184,7 +192,7 @@ export default function Header() {
               </Dropdown>
 
             ) : (
-              <Button size="sm" as={'link'} href={'/login'}>Login</Button>
+              <Button size="sm" as={'link'} href={'/login'} variant="bordered" rounded="md">Log In</Button>
             )}
 
             <Link href="/cart">
@@ -217,7 +225,6 @@ export default function Header() {
         )}
       </header>
 
-      {/* Search Modal */}
       {/* Search Modal */}
       <Modal
         isOpen={searchOpen}

@@ -10,7 +10,6 @@ export async function getCart(): Promise<Cart | null> {
   const response = await ApiClient.get<Cart>('/carts')
 
   if (response.code >= 400) {
-    console.log('Errror Fetching user cart: ', response.message)
     return null
   }
 
@@ -21,7 +20,6 @@ export async function updateCart(id: string, payload: UpdateCartDto) {
   const response = await ApiClient.patch<Cart>(`/carts/${id}`, payload)
 
   if (response.code >= 400) {
-    console.log('Errror adding cart item: ', response.message)
     return null
   }
 
@@ -32,7 +30,6 @@ export async function syncCart(data: CartDto) {
   const response = await ApiClient.post<Cart>('/carts', data)
 
   if (response.code >= 400) {
-    console.log('Errror adding cart item: ', response.message)
     return null
   }
 

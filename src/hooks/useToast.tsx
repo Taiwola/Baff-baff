@@ -29,16 +29,7 @@ export const toast = {
    success: ({ title, description }: ToastContentProps, options?: ToastOptions) =>
       hotToast.custom(
          <div
-            className="
-          font-lexend
-          flex items-center gap-4
-          bg-white text-brand-purple
-          border border-brand-purple
-          px-5 py-3
-          rounded-xl shadow-lg
-          w-full max-w-xl mx-auto
-          relative overflow-hidden
-        "
+            className="font-lexend flex items-center gap-1 md:gap-4 bg-white text-brand-purple border border-brand-purple px-2 md:px-5 py-1 md:py-3 rounded-xl shadow-lg w-full max-w-xl mx-auto relative overflow-hidden"
             style={{ zIndex: 9999 }}
          >
             {/* Purple accent stripe */}
@@ -52,9 +43,9 @@ export const toast = {
             />
 
             {/* Text content */}
-            <div className="flex flex-col ml-2">
-               <span className="text-lg font-semibold">{title}</span>
-               {description && <span className="text-sm font-medium text-gray-600">{description}</span>}
+            <div className="flex flex-col md:ml-2">
+               <span className="text-sm md:text-lg font-semibold">{title}</span>
+               {description && <span className="text:xs md:text-sm font-medium text-gray-600">{description}</span>}
             </div>
          </div>,
          {
@@ -67,16 +58,7 @@ export const toast = {
    error: ({ title = 'Oops! An Error Occured', description }: ToastContentProps, options?: ToastOptions) =>
       hotToast.custom(
          <div
-            className="
-          font-lexend
-          flex items-center gap-4
-          bg-white text-red-600
-          border border-red-600
-          px-5 py-3
-          rounded-xl shadow-lg
-          w-full max-w-xl mx-auto
-          relative overflow-hidden
-        "
+            className="font-lexend flex items-center gap-2 md:gap-4 bg-white text-red-600 border border-red-600 px-2 md:px-5 py-1 md:py-3 rounded-xl shadow-lg w-full max-w-xl mx-auto relative overflow-hidden"
             style={{ zIndex: 9999 }}
          >
             {/* Purple accent stripe */}
@@ -90,9 +72,9 @@ export const toast = {
             />
 
             {/* Text content */}
-            <div className="flex flex-col ml-2">
-               <span className="text-lg font-semibold">{title}</span>
-               {description && <span className="text-sm font-medium text-gray-600">{description}</span>}
+            <div className="flex flex-col md:ml-2">
+               <span className="text-sm md:text-lg font-semibold">{title}</span>
+               {description && <span className="text-xs md:text-sm font-medium text-gray-600">{description}</span>}
             </div>
          </div>,
          {

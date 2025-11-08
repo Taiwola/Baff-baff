@@ -62,7 +62,7 @@ export default function ProductBespoke({ type, sizes, shirtMeasurement, trouserM
                 type="number"
                 value={field.value}
                 onChange={(e) => handleChange(field.key, e.target.value)}
-                className="w-[70px] h-[40px] pr-6 pl-2 text-sm text-black focus:outline-none border border-black rounded-none"
+                className="w-[70px] h-10 pr-6 pl-2 text-sm text-black focus:outline-none border border-black rounded-none"
               />
               <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">
                 in
