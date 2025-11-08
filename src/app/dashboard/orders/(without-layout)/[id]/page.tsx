@@ -48,11 +48,11 @@ export default async function OrderDetailPage({ params }: Props) {
         <hr className='mt-5' />
 
         {/* Product Info */}
-        <div className='w-full p-2 sm:p-5 lg:px-0'>
-          <h6 className='text-sm text-brand-dark/50 font-semibold mb-3'>PRODUCT INFO</h6>
+        <div className="w-full p-2 sm:p-5 lg:px-0">
+          <h6 className="text-sm text-brand-dark/50 font-semibold mb-3">PRODUCT INFO</h6>
           <hr />
 
-          {/* Table Header */}
+          {/* Table Header - only visible on sm+ */}
           <div className="hidden sm:grid grid-cols-[100px_2fr_1fr_1fr_1fr_1fr] gap-4 py-3 font-medium text-sm text-brand-dark">
             <span>Image</span>
             <span>Product Name</span>
@@ -63,33 +63,49 @@ export default async function OrderDetailPage({ params }: Props) {
           </div>
 
           {/* Product Rows */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {order.items.map((item) => (
               <div
                 key={item.product.id + item.fitting + item.size}
-                className="flex flex-col sm:grid sm:grid-cols-[100px_2fr_1fr_1fr_1fr_1fr] gap-2 sm:gap-4 py-3 items-center border-b border-gray-200 text-sm text-brand-dark font-medium"
+                className="flex flex-col sm:grid sm:grid-cols-[100px_2fr_1fr_1fr_1fr_1fr] gap-3 sm:gap-4 py-4 border-b border-gray-200 text-sm text-brand-dark font-medium"
               >
-                <div className="w-[70px] h-[70px] relative">
+                <div className="w-full h-44 sm:w-[100px] sm:h-[70px] relative shrink-0">
                   <Image
                     src={item.product.images[0]}
                     alt={item.product.name}
                     fill
                     className="object-cover rounded"
+                    priority={false}
                   />
                 </div>
 
-                <span>{item.product.name}</span>
-                <span>{item.product.category}</span>
-                <span>{item.quantity}</span>
-                <span className='uppercase'>{item.size}</span>
-                <span>{item.price}</span>
+                {/* Mobile-only details (stacked under the image) */}
+                <div className="flex flex-col sm:hidden mt-2 text-sm text-brand-dark">
+                  <p className="font-semibold">{item.product.name}</p>
+                  <p className="text-xs text-gray-500">{item.product.category}</p>
+
+                  <div className="flex justify-between items-center mt-2 text-xs space-x-2">
+                    <span>Qty: {item.quantity}</span>
+                    <span className="uppercase">Size: {item.size}</span>
+                    <span>₦{item.price}</span>
+                  </div>
+                </div>
+
+                {/* Desktop columns: hidden on mobile, shown on sm+ and align with header */}
+                <div className="hidden sm:grid sm:grid-cols-[2fr_1fr_1fr_1fr_1fr] sm:col-span-5 sm:items-center">
+                  <span className="">{item.product.name}</span>
+                  <span className="">{item.product.category}</span>
+                  <span className="">{item.quantity}</span>
+                  <span className="uppercase">{item.size}</span>
+                  <span>₦{item.price}</span>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Summary */}
-        <div className="w-full px-2 sm:px-5 mt-6 flex flex-col gap-2 max-w-xs ml-auto">
+        <div className="w-full px-2 sm:px-5 mt-6 flex flex-col gap-2 md:max-w-xs md:ml-auto">
           <div className="flex justify-between text-sm text-gray-600">
             <span>SUBTOTAL</span>
             <span>{formatCurrency(order.total)}</span>
