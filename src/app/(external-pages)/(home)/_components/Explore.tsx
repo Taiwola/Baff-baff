@@ -12,14 +12,14 @@ export default function Explore() {
          {/* explore card */}
          <div className="flex flex-col md:flex-row gap-6 justify-center">
             <ExploreCard
-               image="/images/corporate.jpg"
-               text="CORPORATE SHIRTS"
+               image="/images/corporate.png"
+               text="CORPORATES"
                href='/marketplace/corporates'
             />
 
-            <ExploreCard
-               image="/images/casual.jpg"
-               text="CASUAL SHIRTS"
+              <ExploreCard
+               image="/images/casual.png"
+               text="CASUALS"
                href='/marketplace/casuals'
             />
          </div>
