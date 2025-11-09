@@ -38,7 +38,7 @@ export default function Header({ session }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const { isOpen: searchOpen, onOpen, onClose } = useDisclosure();
-  
+
   const isAuth = session?.isAuth
   const isAdmin = session?.role === 'admin'
 
@@ -67,12 +67,6 @@ export default function Header({ session }: Props) {
 
     else router.push(item.href)
   }
-
-  // useEffect(() => {
-  //   if (status === 'loading') {
-  //     update();
-  //   }
-  // }, [session, status, update]);
 
   return (
     <>
