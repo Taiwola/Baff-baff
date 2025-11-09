@@ -111,14 +111,14 @@ export default function Header() {
                 transition={{ type: 'spring', stiffness: 300, damping: 15 }}
                 className="w-full h-full"
               >
-                <Link href="/" className="block w-full h-full">
+                <Link href="/" className="block w-full h-full relative">
                   <Image
                     src="/images/baffabaffa-logo.png"
-                    width={30}
-                    height={50}
+                    fill
                     alt="logo"
                     className="object-cover w-full h-full"
                     priority
+                    sizes="30px"
                   />
                 </Link>
               </motion.div>
@@ -149,8 +149,6 @@ export default function Header() {
                   aria-label="User Account Actions"
                   className="h-auto w-51 rounded-[20px] border border-grey bg-background font-lexend p-0 gap-0 overflow-hidden m-0"
                 >
-
-
                   {userAccountItems.map((item, idx) => (
                     <>
                       {item.key === 'profile' ? (
@@ -192,9 +190,16 @@ export default function Header() {
               </Dropdown>
 
             ) : (
-              <Button size="sm" as={'link'} href={'/login'} variant="bordered" rounded="md">Log In</Button>
+              <Button
+                size="sm"
+                as={'link'}
+                href={'/login'}
+                variant="bordered"
+                rounded="md"
+              >
+                Log In
+              </Button>
             )}
-
             <Link href="/cart">
               <ShoppingBagIcon className="icon-button" />
             </Link>

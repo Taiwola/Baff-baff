@@ -98,7 +98,7 @@ export async function getProducts(options: ProductQuery = {}): Promise<Paginatio
 }
 
 export async function getMayLikeProducts(): Promise<Product[]> {
-  const response = await ServerApiClient.get<Product[]>(`/products/may-like`, { next: { revalidate: 3600 * 24 } })
+  const response = await ServerApiClient.get<Product[]>(`/products/maylike`, { next: { revalidate: 3600 * 24 } })
 
   if (response.code >= 400) {
     console.log('maylike product error: ', response)
@@ -109,7 +109,7 @@ export async function getMayLikeProducts(): Promise<Product[]> {
 }
 
 export async function getAlsoBoughtProducts(): Promise<Product[]> {
-  const response = await ServerApiClient.get<Product[]>(`/products/also-bought`, { next: { revalidate: 3600 * 24 } })
+  const response = await ServerApiClient.get<Product[]>(`/products/bought`, { next: { revalidate: 3600 * 24 } })
 
   if (response.code >= 400) {
     console.log('also bought product error: ', response)

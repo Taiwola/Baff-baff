@@ -24,7 +24,7 @@ export default function CartItem({ item, remove, setQuantity }: Props) {
             <motion.div
                whileHover={{ scale: 1.05 }}
                transition={{ duration: 0.25, ease: 'easeOut' }}
-               className="w-full h-full"
+               className="w-full h-full relative"
             >
                <Image
                   src={item.product.images[0]}
