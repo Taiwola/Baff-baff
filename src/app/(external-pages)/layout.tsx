@@ -1,3 +1,4 @@
+import { verifySession } from '@lib/dal'
 import { Footer, Header } from '@components/layouts'
 
 type Props = Readonly<{
@@ -5,9 +6,11 @@ type Props = Readonly<{
 }>
 
 export default async function ExternalPagesLayout({ children }: Props) {
+  const session = await verifySession()
+
   return (
     <>
-      <Header />
+      <Header session={session} />
       {children}
       <Footer />
     </>
