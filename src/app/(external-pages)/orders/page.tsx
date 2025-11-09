@@ -6,6 +6,12 @@ import { getOrders } from '@actions/orders.action'
 
 import OrderList from './_components/OrderList'
 import { BreadCrumbItemType, BreadCrumbs, OrderListSkeleton } from '@components/ui'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Order History',
+  description: 'Review your past orders and track their status.',
+}
 
 export default async function Orders() {
    const session = await auth()

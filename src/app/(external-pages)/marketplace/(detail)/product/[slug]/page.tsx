@@ -9,9 +9,31 @@ import { BreadCrumbItemType, BreadCrumbs, MayLikeProductsSkeleton, ProductGaller
 import { capitalizeFirstLetter } from '@utils'
 import { getProductBySlug } from '@actions/products.action'
 import { getUserMeasurement } from '@actions/measurements.action'
+import { Metadata, ResolvingMetadata } from 'next'
 
 type Props = {
   params: Promise<{ slug: string }>
+}
+
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug
+  const product = await getProductBySlug(slug)
+
+  if (!product) {
+    return {
+      title: "Product Not Found",
+      description: "The requested product does not exist.",
+    }
+  }
+ 
+  return {
+    title: "Marketplace - " + product?.name,
+    description: product?.description,
+  }
 }
 
 export default async function ProductDetail({ params }: Props) {

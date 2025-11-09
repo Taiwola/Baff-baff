@@ -5,6 +5,12 @@ import { MeasurementLayout } from './_components'
 import { BreadCrumbItemType, BreadCrumbs, MeasurementsSkeleton } from '@components/ui'
 
 import { getUserMeasurement } from '@actions/measurements.action'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Measurements',
+   description: 'View and manage your body measurements for personalized fitting.',
+}
 
 export default function Measurements() {
    const promise = getUserMeasurement()

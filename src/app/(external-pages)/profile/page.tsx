@@ -4,6 +4,12 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import ProfileSection from './ProfileSection'
 import { BreadCrumbItemType, BreadCrumbs } from '@components/ui'
 import ProfileSectionSkeleton from './ProfileSectionSkeleton'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Profile Details',
+   description: 'View and update your personal profile information.',
+}
 
 export default async function Profile() {
 

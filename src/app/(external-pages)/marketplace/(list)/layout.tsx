@@ -1,9 +1,15 @@
 import React from 'react'
 import { FilterAccordion } from '@components/features/marketplace'
+import { Metadata } from 'next'
 
 type Props = Readonly<{
   children: React.ReactNode
 }>
+
+export const metadata: Metadata = {
+  title: 'Marketplace',
+  description: 'Explore our diverse marketplace with a wide range of products to suit your needs.',
+}
 
 export default function MarketPlaceLayout({ children }: Props) {
 

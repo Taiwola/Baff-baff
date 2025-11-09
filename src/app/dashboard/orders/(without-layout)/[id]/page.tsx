@@ -9,9 +9,15 @@ import { getOrder } from '@actions/orders.action'
 
 import UpdateStatus from './UpdateStatus'
 import { Header } from '@components/features/dashboard'
+import { Metadata } from 'next'
 
 type Props = {
   params: Promise<{ id: string }>
+}
+
+export const metadata: Metadata = {
+  title: 'Orders',
+  description: 'View and manage order details effectively.',
 }
 
 export default async function OrderDetailPage({ params }: Props) {

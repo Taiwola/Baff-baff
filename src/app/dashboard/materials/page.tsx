@@ -7,9 +7,16 @@ import { TableSkeleton } from '@components/ui'
 import { FilterButton, Header } from '@components/features/dashboard'
 
 import { getMaterials } from '@actions/materials.action'
+import { Metadata } from 'next'
 
 type Props = {
   searchParams: Promise<{ page?: string }>;
+}
+
+
+export const metadata: Metadata = {
+  title: 'Materials',
+  description: 'Manage and explore your materials effectively.',
 }
 
 export default async function MaterialsPage({ searchParams }: Props) {

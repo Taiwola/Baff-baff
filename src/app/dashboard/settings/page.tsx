@@ -1,5 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Settings',
+  description: 'Manage your account settings and preferences.',
+}
 
 export default function SettingsPage() {
 

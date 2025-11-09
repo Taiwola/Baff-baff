@@ -7,9 +7,15 @@ import { FilterButton, Header } from '@components/features/dashboard'
 import { Button, DashboardProductsSkeleton, Input } from '@components/ui'
 
 import { getProducts } from '@actions/products.action'
+import { Metadata } from 'next'
 
 type Props = {
   searchParams: Promise<ProductQuery>;
+}
+
+export const metadata: Metadata = {
+  title: 'Products',
+  description: 'Manage and explore your products effectively.',
 }
 
 export default async function ProductsPage({ searchParams }: Props) {

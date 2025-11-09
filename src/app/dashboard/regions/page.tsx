@@ -5,9 +5,15 @@ import { RegionsList, AddNewRegion } from './_components'
 import { Header, Search } from '@components/features/dashboard'
 
 import { getRegions } from '@actions/regions.action'
+import { Metadata } from 'next'
 
 type Props = {
   searchParams: Promise<{ page?: string }>;
+}
+
+export const metadata: Metadata = {
+  title: 'Region',
+  description: 'Manage and explore your regions effectively.',
 }
 
 export default async function RegionPage({ searchParams }: Props) {

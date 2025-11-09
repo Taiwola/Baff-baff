@@ -3,6 +3,12 @@ import React, { Suspense } from 'react'
 import { CartList } from './_components'
 import { AlsoBoughtProductsSkeleton } from '@components/ui'
 import { AlsoBoughtProducts } from '@components/features/products'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Cart',
+   description: 'Review the items in your shopping bag and proceed to checkout.',
+}
 
 export default function Cart() {
    return (

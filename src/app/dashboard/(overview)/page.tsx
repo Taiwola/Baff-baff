@@ -6,6 +6,12 @@ import { getRevenueOverview, getStats } from '@actions/analytics.action'
 import { Header } from '@components/features/dashboard'
 import { NewOrders, RevenueChart, StatCards } from './_components'
 import { RevenueChartSkeleton, StatCardsSkeleton, TableSkeleton } from '@components/ui'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Overview',
+  description: 'Get a quick overview of your dashboard with key statistics and recent activities.',
+}
 
 export default async function OverviewPage() {
   const statsPromise = getStats()
