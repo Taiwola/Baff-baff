@@ -12,7 +12,7 @@ export async function GET() {
     if (!session?.userId) {
         const {products} = await getAllProducts({})
 
-        let top = [];
+        const top = [];
 
         for (const p of products) {
             top.push(p);
