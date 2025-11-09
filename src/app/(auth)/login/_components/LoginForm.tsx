@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import { Spinner } from '@heroui/react'
 import React, { useActionState, useEffect } from 'react'
 
 import { Button, Input } from '@components/ui'
@@ -59,7 +58,7 @@ export default function LoginForm() {
          </div>
 
          <Button rounded='md' size='md' className='bg-black mt-5'>
-            {pending ? <Spinner size="sm" color="default" className='animate-spin' /> : 'Login'}
+            {pending ? 'Loading...' : 'Login'}
          </Button>
 
          <div className='flex justify-center items-center mt-5'>
