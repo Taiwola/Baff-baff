@@ -67,7 +67,11 @@ export default function LoginForm() {
          </div>
 
          <Button rounded='md' size='md' variant='bordered' className='gap-1' type='button' onClick={googleLogin}>
-            <Image src={GoogleIcon} width={24} height={24} alt='google-icon' />
+            <Image
+               src={GoogleIcon}
+               alt='google-icon'
+               style={{ width: 'auto', height: 'auto' }}
+            />
             <span>Continue with Google</span>
          </Button>
 
