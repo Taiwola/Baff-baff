@@ -1,5 +1,12 @@
 import React from 'react'
 import { RegisterForm } from './_components'
+import { Metadata } from 'next'
+
+
+export const metadata: Metadata = {
+  title: 'Sign Up',
+   description: 'Create an account to access exclusive features and services.',
+}
 
 export default function RegisterPage() {
 

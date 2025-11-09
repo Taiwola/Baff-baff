@@ -5,6 +5,12 @@ import { AddressList } from './_components'
 import { AddressesSkeleton, BreadCrumbItemType, BreadCrumbs } from '@components/ui'
 
 import { getAddresses } from '@actions/addresses.action'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Address Book',
+  description: 'Manage your saved addresses for seamless checkout experience.',
+}
 
 export default function Addresses() {
   const addresses = getAddresses()

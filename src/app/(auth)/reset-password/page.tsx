@@ -1,5 +1,11 @@
 import React from 'react'
 import ResetPasswordForm from './ResetPasswordForm'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Reset Password',
+   description: 'Reset your account password securely.',
+}
 
 export default function page() {
 

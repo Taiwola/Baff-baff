@@ -1,11 +1,17 @@
 import React from 'react'
 
 import { CheckoutBreadcrumbs } from '../_components'
+import { Metadata } from 'next'
 
 type Props = Readonly<{
    address: React.ReactNode
    details: React.ReactNode
 }>
+
+export const metadata: Metadata = {
+  title: 'Checkout - Shipping',
+   description: 'Provide your shipping information to complete your order.',
+}
 
 export default function ShippingLayout({ address, details }: Props) {
    return (

@@ -1,5 +1,12 @@
 import React from 'react'
 import { LoginForm } from './_components'
+import { Metadata } from 'next'
+
+
+export const metadata: Metadata = {
+  title: 'Login',
+   description: 'Login to your account to access exclusive features and services.',
+}
 
 export default function LoginPage() {
    return (

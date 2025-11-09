@@ -4,9 +4,15 @@ import { Button } from '@components/ui'
 import { CollaboratorsList } from './_components'
 import { Header, Search } from '@components/features/dashboard'
 import { getCollaborators } from '@actions/collaborators.action'
+import { Metadata } from 'next'
 
 type Props = {
   searchParams: Promise<CollaboratorFilter>;
+}
+
+export const metadata: Metadata = {
+  title: 'Collaborators',
+  description: 'Manage your collaborators and team members effectively.',
 }
 
 export default async function CollaboratorsPage({ searchParams }: Props) {

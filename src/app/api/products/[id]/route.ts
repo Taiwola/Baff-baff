@@ -6,7 +6,6 @@ import { uploadToCloudinary } from '@lib/cloudinary'
 
 import dbConnect from '@lib/database'
 import { verifySession } from '@lib/dal'
-import { parseProductForm } from '@utils/formatting'
 import { adaptProduct } from '@adapters/product.adapter'
 import { updateProductSchema } from '@validations/product'
 import { errorResponse, sendResponse } from '@utils/api-response'

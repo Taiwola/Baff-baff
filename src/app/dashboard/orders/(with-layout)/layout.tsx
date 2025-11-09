@@ -2,10 +2,16 @@ import React from 'react'
 
 import { Navigations } from '../_components'
 import { FilterButton, Header, Search } from '@components/features/dashboard'
+import { Metadata } from 'next'
 
 type Props = Readonly<{
    children: React.ReactNode
 }>
+
+export const metadata: Metadata = {
+  title: 'Orders',
+  description: 'View and manage order details effectively.',
+}
 
 export default function OrdersLayout({ children }: Props) { 
    return (

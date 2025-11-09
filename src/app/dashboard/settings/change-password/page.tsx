@@ -4,6 +4,12 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 
 import { ChangePasswordForm } from '@components/features/auth'
 import { BreadCrumbItemType, BreadCrumbs } from '@components/ui'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Settings - Change Password',
+  description: 'Manage your account settings and preferences.',
+}
 
 export default function ChangePasswordPage() {
   return (

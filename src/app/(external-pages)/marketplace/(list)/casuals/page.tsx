@@ -3,9 +3,15 @@ import React, { Suspense } from 'react'
 import { MarketPlaceFilters, Title } from '../../_components'
 import { MarketPlaceProducts } from '@components/features/products'
 import { MarketplaceProductsSkeleton } from '@components/ui'
+import { Metadata } from 'next'
 
 type Props = {
   searchParams: Promise<MaketplaceFilter>
+}
+
+export const metadata: Metadata = {
+  title: 'Marketplace - Casuals',
+  description: 'Explore our diverse marketplace with a wide range of products to suit your needs.',
 }
 
 export default async function Casuals({ searchParams }: Props) {

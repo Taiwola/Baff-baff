@@ -20,7 +20,7 @@ type OrderFilter = {
   page?: number
   limit?: number
   userId?: string
-  id?: { $regex: string; $options: string }
+  id?: string
   status?: OrderStatus
   sort?: Record<string, number>
 }
