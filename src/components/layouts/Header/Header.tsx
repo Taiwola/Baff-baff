@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { motion } from 'framer-motion'
 import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { signOut, useSession } from "next-auth/react"
+import { signOut } from "next-auth/react"
 import { usePathname, useRouter } from "next/navigation";
 import { UserIcon, ShoppingBagIcon, MagnifyingGlassIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Modal, ModalContent, ModalBody, useDisclosure, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User } from "@heroui/react";
@@ -19,20 +19,28 @@ type UserAccount = {
   href: string
 }
 
-export default function Header() {
+type Props = {
+  session: {
+    isAuth: boolean;
+    userId: string;
+    role: UserRole;
+    name: string;
+    email: string;
+  } | null
+}
+
+export default function Header({ session }: Props) {
   const router = useRouter();
   const { reset } = useCart()
   const pathname = usePathname()
-  const { data: session, status, update } = useSession()
 
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const { isOpen: searchOpen, onOpen, onClose } = useDisclosure();
 
-  const user = session?.user
-  const isAuth = status === 'authenticated'
-  const isAdmin = session?.user?.role === 'admin'
+  const isAuth = session?.isAuth
+  const isAdmin = session?.role === 'admin'
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,12 +67,6 @@ export default function Header() {
 
     else router.push(item.href)
   }
-
-  useEffect(() => {
-    if (status === 'loading') {
-      update();
-    }
-  }, [session, status, update]);
 
   return (
     <>
@@ -111,14 +113,14 @@ export default function Header() {
                 transition={{ type: 'spring', stiffness: 300, damping: 15 }}
                 className="w-full h-full"
               >
-                <Link href="/" className="block w-full h-full">
+                <Link href="/" className="block w-full h-full relative">
                   <Image
                     src="/images/baffabaffa-logo.png"
-                    width={30}
-                    height={50}
+                    fill
                     alt="logo"
                     className="object-cover w-full h-full"
                     priority
+                    sizes="30px"
                   />
                 </Link>
               </motion.div>
@@ -149,8 +151,6 @@ export default function Header() {
                   aria-label="User Account Actions"
                   className="h-auto w-51 rounded-[20px] border border-grey bg-background font-lexend p-0 gap-0 overflow-hidden m-0"
                 >
-
-
                   {userAccountItems.map((item, idx) => (
                     <>
                       {item.key === 'profile' ? (
@@ -171,8 +171,8 @@ export default function Header() {
                               name: "text-black text-sm font-lexend",
                               description: "text-[11px] font-light text-black font-lexend",
                             }}
-                            description={user?.email}
-                            name={user?.name}
+                            description={session?.email}
+                            name={session?.name}
                           />
                         </DropdownItem>
 
@@ -192,9 +192,16 @@ export default function Header() {
               </Dropdown>
 
             ) : (
-              <Button size="sm" as={'link'} href={'/login'} variant="bordered" rounded="md">Log In</Button>
+              <Button
+                size="sm"
+                as={'link'}
+                href={'/login'}
+                variant="bordered"
+                rounded="md"
+              >
+                Log In
+              </Button>
             )}
-
             <Link href="/cart">
               <ShoppingBagIcon className="icon-button" />
             </Link>

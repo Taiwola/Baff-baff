@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import React, { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
@@ -9,17 +10,13 @@ import { BreadCrumbItemType, BreadCrumbs, MayLikeProductsSkeleton, ProductGaller
 import { capitalizeFirstLetter } from '@utils'
 import { getProductBySlug } from '@actions/products.action'
 import { getUserMeasurement } from '@actions/measurements.action'
-import { Metadata, ResolvingMetadata } from 'next'
 
 type Props = {
   params: Promise<{ slug: string }>
 }
 
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = (await params).slug
   const product = await getProductBySlug(slug)
 
@@ -29,10 +26,10 @@ export async function generateMetadata(
       description: "The requested product does not exist.",
     }
   }
- 
+
   return {
-    title: "Marketplace - " + product?.name,
-    description: product?.description,
+    title: "Marketplace - " + product.name,
+    description: product.description,
   }
 }
 

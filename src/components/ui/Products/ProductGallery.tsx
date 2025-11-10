@@ -18,12 +18,12 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
         style={{ width: "34.375rem", height: "34.375rem" }}
       >
         {/* Thumbnails (scrollable vertically) */}
-        <div className="flex flex-col gap-[0.625rem] overflow-y-auto no-scrollbar w-[6.25rem]">
+        <div className="flex flex-col gap-2.5 overflow-y-auto no-scrollbar w-25">
           {images.map((img, idx) => (
             <button
               key={idx}
               onClick={() => setSelected(img)}
-              className={`w-full h-[7.5rem] border flex-shrink-0 cursor-pointer ${selected === img ? "border-brand-dark" : "border-gray-300"}`}
+              className={`w-full h-30 border shrink-0 cursor-pointer ${selected === img ? "border-brand-dark" : "border-gray-300"}`}
             >
               <Image
                 src={img}
@@ -37,13 +37,14 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
         </div>
 
         {/* Main Image */}
-        <div className="w-[27.5rem] h-[34.375rem] flex-shrink-0">
+        <div className="w-110 h-137.5 shrink-0">
           <Image
             src={selected}
             alt="Selected product"
             width={440}
             height={550}
             className="object-cover w-full h-full"
+            priority
           />
         </div>
       </div>
@@ -52,7 +53,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
       <div className="md:hidden w-full">
         <div className="flex gap-3 overflow-x-auto no-scrollbar">
           {images.map((img, idx) => (
-            <div key={idx} className="flex-shrink-0 w-full h-[23.1875rem]">
+            <div key={idx} className="shrink-0 w-full h-92.75">
               <Image
                 src={img}
                 alt={`Mobile product image ${idx + 1}`}

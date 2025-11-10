@@ -28,8 +28,14 @@ export default function ProductSizes({ activeFitting, sizes, onChangeFitting, on
                   variant='bordered'
                   className={`rounded-[2.5rem] font-montserrat gap-1.5 ${activeFitting === fitting.key ? '' : 'border-foreground text-black/70'}`}
                >
-                  <div className='w-[18px] h-[18px] overflow-hidden'>
-                     <Image src={fitting.image} alt={fitting.label} width={18} height={18} objectFit='contain' />
+                  <div className='w-[18px] h-[18px] overflow-hidden relative'>
+                     <Image
+                        src={fitting.image}
+                        alt={fitting.label}
+                        className='object-contain w-auto h-auto'
+                        fill
+                        sizes="18px"
+                     />
                   </div>
 
                   <span>{fitting.label}</span>

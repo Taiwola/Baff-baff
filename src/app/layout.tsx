@@ -4,6 +4,7 @@ import HeroUiProvider from "../providers/herouiProvider"
 import ToastProvider from "@providers/ToastProvider"
 
 import "@styles/globals.css"
+import { auth } from "@auth"
 import { CartProvider } from "@contexts/carts.context"
 import { SessionProvider } from "next-auth/react"
 
@@ -78,12 +79,13 @@ export const metadata: Metadata = {
   }
 }
 
-
-export default async function RootLayout({
-  children,
-}: Readonly<{
+type Props = Readonly<{
   children: React.ReactNode
-}>) {
+}>
+
+
+export default async function RootLayout({ children }: Props) {
+  const session = await auth()
 
   return (
     <html lang="en" suppressHydrationWarning={true}>
@@ -91,7 +93,7 @@ export default async function RootLayout({
         suppressHydrationWarning
         className={`${poppins.variable} ${montserrat.variable} ${roboto.variable} ${lexendDeca.variable} min:h-screen w-full`}
       >
-        <SessionProvider>
+        <SessionProvider session={session}>
           <ToastProvider>
             <HeroUiProvider>
               <CartProvider>

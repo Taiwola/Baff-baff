@@ -1,35 +1,31 @@
-import { verifySession } from "@lib/dal";
-import dbConnect from "@lib/database";
-import { IProduct } from "@models/product.model";
-import { getAllCarts, getOneCartById } from "@services/cart";
-import { sendResponse } from "@utils/api-response";
-import { extractProductAttributesFromCart, getRecommendedProducts } from "@utils/recommendation-helper";
-import { cookies } from "next/headers";
+import dbConnect from '@lib/database'
+import { cookies } from 'next/headers'
+import { verifySession } from '@lib/dal'
+import { ICartItem } from '@models/cart.model'
+import { sendResponse } from '@utils/api-response'
+import { adaptProduct } from '@adapters/product.adapter'
+import { getAllCarts, getOneCartById } from '@services/cart'
+import { extractProductAttributesFromCart, getRecommendedProducts } from '@utils/recommendation-helper'
 
 export async function GET() {
   await dbConnect()
 
-      const session = await verifySession()
-      const cookieStore = await cookies();
-      const guestCartId = cookieStore.get("guestCartId")?.value;
+  const session = await verifySession()
+  const cookieStore = await cookies()
+  const guestCartId = cookieStore.get('guestCartId')?.value
 
-     let recommendedProducts: IProduct[] = [];
+  const cartItems: ICartItem[] = []
 
-    if (session?.userId) {
-      const {carts} = await getAllCarts({userId: session.userId})
-      const items = carts.flatMap((cart) => cart.items)
-      console.log(items)
-      const {categories, productTypes, productIds} = await extractProductAttributesFromCart(items)
+  if (session?.userId) {
+    const { carts } = await getAllCarts({ userId: session.userId })
+    cartItems.push(...carts.flatMap((cart) => cart.items))
+  } else if (guestCartId) {
+    const cart = await getOneCartById(guestCartId)
+    cartItems.push(...(cart?.items || []))
+  }
 
-      recommendedProducts = await getRecommendedProducts(categories, productTypes, productIds)
-    } else if (guestCartId) {
-       const cart = await getOneCartById(guestCartId);
-       if (cart && cart.items.length > 0) {
-         const {categories, productTypes, productIds} = await extractProductAttributesFromCart(cart?.items)
-
-      recommendedProducts = await getRecommendedProducts(categories, productTypes, productIds)
-       } 
-    } 
-
-    return sendResponse("Request successfull", recommendedProducts, 200)
+  const { categories, productTypes, productIds } = await extractProductAttributesFromCart(cartItems)
+  const recommendedProducts = await getRecommendedProducts(categories, productTypes, productIds)
+  const response = recommendedProducts.map((p) => adaptProduct(p))
+  return sendResponse('Request successfull', response, 200)
 }
