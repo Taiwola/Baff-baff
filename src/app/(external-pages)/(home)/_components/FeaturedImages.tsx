@@ -1,18 +1,13 @@
-import { FeatureImageSvg1 } from "@assets/svg/featureImagesSvg1";
-import { FeatureImageSvg3 } from "@assets/svg/featureImagesSvg3";
-import { FeatureImageSvg2 } from "@assets/svg/featureImageSvg2";
-import { FeatureImageSvg4 } from "@assets/svg/featureImageSvg4";
-import { FeatureImageSvg5 } from "@assets/svg/featureImageSvg5";
-import { FeatureImageSvg6 } from "@assets/svg/featureImageSvg6";
+import Image from "next/image";
 
 export default function FeaturedImages() {
   const slides = [
-    { id: 1, component: <FeatureImageSvg1 className="w-full h-auto" /> },
-    { id: 2, component: <FeatureImageSvg2 className="w-full h-auto" /> },
-    { id: 3, component: <FeatureImageSvg3 className="w-full h-auto" /> },
-    { id: 4, component: <FeatureImageSvg4 className="w-full h-auto" /> },
-    { id: 5, component: <FeatureImageSvg5 className="w-full h-auto" /> },
-    { id: 6, component: <FeatureImageSvg6 className="w-full h-auto" /> },
+    { id: 1, component: <Image src={"/images/feature-imageSvg1.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
+    { id: 2, component: <Image src={"/images/feature-imageSvg2.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
+    { id: 3, component: <Image src={"/images/feature-imageSvg3.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
+    { id: 4, component: <Image src={"/images/feature-imageSvg4.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
+    { id: 5, component: <Image src={"/images/feature-imageSvg5.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
+    { id: 6, component: <Image src={"/images/feature-imageSvg6.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
   ];
 
   return (
