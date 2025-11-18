@@ -17,6 +17,7 @@ export async function getOrders(query: OrderQuery = {}): Promise<Pagination<Orde
   if (query.status) params.set('status', query.status)
   if (query.userId) params.set('userId', query.userId)
 
+
   const queryString = params.toString()
   const url = `/orders${queryString ? `?${queryString}` : ''}`
   const response = await ServerApiClient.get<Pagination<Order>>(url, { next: { tags: [tag.default] } })
