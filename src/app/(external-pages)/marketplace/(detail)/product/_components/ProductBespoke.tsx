@@ -2,10 +2,14 @@
 
 import React from 'react'
 import { formatCurrency, getSize } from '@utils'
+import ProductFittings from './ProductFittings'
 
 type Props = {
   type: ProductType
   sizes: IProductSizes
+  activeFitting: Fitting
+  price: number
+  onChangeFitting: (fitting: Fitting) => void
   shirtMeasurement: ShirtMeasurement
   trouserMeasurement: TrouserMeasurement
   saveMeasurements: boolean
@@ -14,7 +18,19 @@ type Props = {
   toggleSaveMeasurements: (value: boolean) => void
 }
 
-export default function ProductBespoke({ type, sizes, shirtMeasurement, trouserMeasurement, saveMeasurements, onChangeShirtMeasurement, onChangeTrouserMeasurement, toggleSaveMeasurements }: Props) {
+export default function ProductBespoke({
+  type,
+  sizes,
+  price,
+  activeFitting,
+  shirtMeasurement,
+  trouserMeasurement,
+  saveMeasurements,
+  onChangeFitting,
+  onChangeShirtMeasurement,
+  onChangeTrouserMeasurement,
+  toggleSaveMeasurements
+}: Props) {
   const measurements = type === 'trouser' || type === 'short' ? trouserMeasurement : shirtMeasurement
   let fields = [
     { key: 'chest', label: 'Chest', value: shirtMeasurement.chest },
@@ -22,7 +38,7 @@ export default function ProductBespoke({ type, sizes, shirtMeasurement, trouserM
     { key: 'sleeve', label: 'Sleeve', value: shirtMeasurement.sleeve },
     { key: 'shoulder', label: 'Shoulder', value: shirtMeasurement.shoulder },
     { key: 'length', label: 'Length', value: shirtMeasurement.length },
-    { key: 'neck', label: 'Neck', value: shirtMeasurement.neck },
+    { key: 'neck', label: 'Neck', value: shirtMeasurement.neck }
   ]
 
   if (type === 'trouser' || type === 'short') {
@@ -30,7 +46,7 @@ export default function ProductBespoke({ type, sizes, shirtMeasurement, trouserM
       { key: 'waist', label: 'Waist', value: trouserMeasurement.waist },
       { key: 'lap', label: 'Lap', value: trouserMeasurement.lap },
       { key: 'length', label: 'Length', value: trouserMeasurement.length },
-      { key: 'knee', label: 'Knee', value: trouserMeasurement.knee },
+      { key: 'knee', label: 'Knee', value: trouserMeasurement.knee }
     ]
   }
 
@@ -48,10 +64,7 @@ export default function ProductBespoke({ type, sizes, shirtMeasurement, trouserM
       <div className="flex flex-wrap gap-2.5">
         {fields.map((field) => (
           <div key={field.key} className="flex flex-col items-start">
-            <label
-              htmlFor={field.key}
-              className="text-sm font-medium text-brand-dark mb-1"
-            >
+            <label htmlFor={field.key} className="text-sm font-medium text-brand-dark mb-1">
               {field.label}
             </label>
 
@@ -64,9 +77,7 @@ export default function ProductBespoke({ type, sizes, shirtMeasurement, trouserM
                 onChange={(e) => handleChange(field.key, e.target.value)}
                 className="w-[70px] h-10 pr-6 pl-2 text-sm text-black focus:outline-none border border-black rounded-none"
               />
-              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">
-                in
-              </span>
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">in</span>
             </div>
           </div>
         ))}
@@ -81,16 +92,15 @@ export default function ProductBespoke({ type, sizes, shirtMeasurement, trouserM
           checked={saveMeasurements}
           onChange={(e) => toggleSaveMeasurements(e.target.checked)}
         />
-        <label
-          htmlFor="save-measurements"
-          className="text-xs text-black cursor-pointer"
-        >
+        <label htmlFor="save-measurements" className="text-xs text-black cursor-pointer">
           Save measurements
         </label>
       </div>
 
-      <p className='text-sm'>PRICE</p>
-      <p className='font-medium'>{formatCurrency(sizes[getSize(measurements)].discountPrice || sizes[getSize(measurements)].price)}</p>
+      {type === 'trouser' || type === 'short' ? <ProductFittings activeFitting={activeFitting} onChangeFitting={onChangeFitting} /> : null}
+
+      <p className="text-sm">PRICE</p>
+      <p className="font-medium">{formatCurrency(price)}</p>
     </form>
   )
 }

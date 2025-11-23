@@ -26,7 +26,7 @@ export function formatCurrency(amount: number, currency: string = 'NGN', locale:
 }
 
 export function capitalizeFirstLetter(val: string) {
-    return val.charAt(0).toUpperCase() + String(val).slice(1);
+  return val.charAt(0).toUpperCase() + String(val).slice(1)
 }
 
 export function getSortOption(key: string) {
@@ -56,6 +56,8 @@ export function getSortOption(key: string) {
   }
 }
 
+type MeasurementType = {}
+
 export function getSize(measurements: TrouserMeasurement | ShirtMeasurement | CartMeasurements): Size {
   if ('waist' in measurements) {
     return getTrouserSize(measurements)
@@ -75,15 +77,49 @@ function getShirtSize(measurements: ShirtMeasurement | CartMeasurements): Size {
     return 'xl'
   } else if (Number(measurements.chest) <= 60) {
     return 'xxl'
-  }
-
-  else return 'xxxl'
+  } else return 'xxxl'
 }
 
 function getTrouserSize(measurements: TrouserMeasurement | CartMeasurements): Size {
-  if(Number(measurements.waist) <= 38) {
-
+  if (Number(measurements.waist) <= 38) {
+    return 's'
   }
   return 'l'
 }
 
+// if it's fit, no amount added
+// if it's straight and below 38 adding 3k above 38 adding 5k
+// if it's baggy  and below 38 adding 5k and above 38 adding 10k
+
+export function getBespokePrice(price: number, currentFit: Fitting, waist: number) {
+  if (currentFit === 'straight') {
+    if (waist < 38) {
+      return price + 3000
+    } else if (waist > 38) {
+      return price + 5000
+    }
+  } else if (currentFit === 'baggy') {
+    if (waist < 38) {
+      return price + 5000
+    } else if (waist > 38) {
+      return price + 10000
+    }
+  }
+  return price
+}
+
+export function getPriceRange(product: Product) {
+  const range = [
+    product.sizes.l.price,
+    product.sizes.m.price,
+    product.sizes.s.price,
+    product.sizes.xl.price,
+    product.sizes.xxl.price,
+    product.sizes.xxxl.price
+  ]
+
+  const min = Math.min(...range)
+  const max = Math.max(...range)
+
+  return { min, max }
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import { Tab, Tabs } from '@heroui/react'
 import { useRouter } from 'next/navigation'
 
@@ -10,7 +10,7 @@ import ProductSizes from './ProductSizes'
 import ProductBespoke from './ProductBespoke'
 import { QuantityButton } from '@components/features/cart'
 
-import { formatCurrency, getSize } from '@utils'
+import { formatCurrency, getBespokePrice, getPriceRange, getSize } from '@utils'
 import { useCart } from '@contexts/carts.context'
 import { useProductCustomization } from '@hooks/useProductCustomization'
 
@@ -33,9 +33,16 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
     saveMeasurements: false
   })
 
-  const measurements = product.type === 'trouser' || product.type === 'short' ? trouserMeasurement : shirtMeasurement
-  const price = state.size !== 'Bespoke' ? product.sizes[state.size].price : product.sizes[getSize(measurements)].price
-  const discountPrice = state.size !== 'Bespoke' && product.sizes[state.size].discountPrice ? product.sizes[state.size].discountPrice : product.sizes[getSize(measurements)].discountPrice
+  const measurements = product.type === 'trouser' || product.type === 'short' ? state.trouserMeasurement : state.shirtMeasurement
+  const price =
+    state.size !== 'Bespoke'
+      ? product.sizes[state.size].price
+      : getBespokePrice(product.sizes[getSize(measurements)].price, state.fitting, Number(state?.trouserMeasurement?.waist || 0))
+  const discountPrice =
+    state.size !== 'Bespoke' && product.sizes[state.size].discountPrice
+      ? product.sizes[state.size].discountPrice
+      : product.sizes[getSize(measurements)].discountPrice
+  const { min, max } = getPriceRange(product)
 
   function handleAddToCart() {
     addItem({
@@ -46,7 +53,12 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
       fitting: state.fitting,
       size: state.size,
       saveMeasurements: state.saveMeasurements,
-      measurements: { ...state.shirtMeasurement, ...state.trouserMeasurement, length: state.shirtMeasurement.length, trouserLength: state.trouserMeasurement.length },
+      measurements: {
+        ...state.shirtMeasurement,
+        ...state.trouserMeasurement,
+        length: state.shirtMeasurement.length,
+        trouserLength: state.trouserMeasurement.length
+      },
       quantity: state.quantity
     })
 
@@ -55,14 +67,15 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
 
   return (
     <>
-      <div className='flex justify-start items-center gap-1'>
-        <h6 className='text-[1.25rem]'>{formatCurrency(price)}</h6>
-        {discountPrice ? <h6 className='text-[1.25rem]'>{`-${formatCurrency(discountPrice)}`}</h6> : null}
+      <div className="flex justify-start items-center gap-1">
+        <h6 className="text-[1.25rem]">
+          {formatCurrency(min)} - {formatCurrency(max)}
+        </h6>
       </div>
 
-      <p className='text-[0.6875rem]'>Bulk pricing available for quantities of 5 units or more</p>
+      <p className="text-[0.6875rem]">Bulk pricing available for quantities of 5 units or more</p>
 
-      <div className='w-full mt-5'>
+      <div className="w-full mt-5">
         <Tabs
           aria-label="Options"
           classNames={{
@@ -73,18 +86,16 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
           onSelectionChange={(key) => setSize(key as Size)}
         >
           <Tab key="s" title="SELECT SIZE">
-            <ProductSizes
-              sizes={product.sizes}
-              activeFitting={state.fitting}
-              onChangeFitting={setFitting}
-              onChangeSize={setSize}
-            />
+            <ProductSizes sizes={product.sizes} activeFitting={state.fitting} onChangeFitting={setFitting} onChangeSize={setSize} />
           </Tab>
 
           <Tab key="Bespoke" title="BESPOKE">
             <ProductBespoke
               sizes={product.sizes}
               type={product.type}
+              price={price}
+              activeFitting={state.fitting}
+              onChangeFitting={setFitting}
               saveMeasurements={state.saveMeasurements}
               shirtMeasurement={state.shirtMeasurement}
               trouserMeasurement={state.trouserMeasurement}
@@ -96,28 +107,15 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
         </Tabs>
       </div>
 
+      <div className="mt-5">
+        <p className="text-sm">QUANTITY</p>
 
-      <div className='mt-5'>
-        <p className='text-sm'>QUANTITY</p>
-
-        <QuantityButton
-          quantity={state.quantity}
-          setQuantity={setQuantity}
-        />
+        <QuantityButton quantity={state.quantity} setQuantity={setQuantity} />
       </div>
 
-      <Button
-        fullWidth={true}
-        className='bg-black mt-5 mb-7.5 font-montserrat text-base font-bold'
-        size='md'
-        rounded='md'
-        onClick={handleAddToCart}
-      >
+      <Button fullWidth={true} className="bg-black mt-5 mb-7.5 font-montserrat text-base font-bold" size="md" rounded="md" onClick={handleAddToCart}>
         ADD TO CART
       </Button>
     </>
   )
 }
-
-
-
