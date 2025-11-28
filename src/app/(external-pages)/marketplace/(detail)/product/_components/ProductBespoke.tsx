@@ -9,6 +9,7 @@ type Props = {
   sizes: IProductSizes
   activeFitting: Fitting
   price: number
+  discountPrice: number
   onChangeFitting: (fitting: Fitting) => void
   shirtMeasurement: ShirtMeasurement
   trouserMeasurement: TrouserMeasurement
@@ -20,8 +21,8 @@ type Props = {
 
 export default function ProductBespoke({
   type,
-  sizes,
   price,
+  discountPrice,
   activeFitting,
   shirtMeasurement,
   trouserMeasurement,
@@ -100,7 +101,7 @@ export default function ProductBespoke({
       {type === 'trouser' || type === 'short' ? <ProductFittings activeFitting={activeFitting} onChangeFitting={onChangeFitting} /> : null}
 
       <p className="text-sm">PRICE</p>
-      <p className="font-medium">{formatCurrency(price)}</p>
+      <p className="font-medium">{formatCurrency(discountPrice || price)}</p>
     </form>
   )
 }

@@ -123,3 +123,13 @@ export function getPriceRange(product: Product) {
 
   return { min, max }
 }
+
+
+export function getPriceForProudct(price: number, currentFit: Fitting) {
+  if (currentFit === "straight") {
+    return price + 3000
+  } else if (currentFit === "baggy") {
+    return price + 5000
+  }
+  return price
+}

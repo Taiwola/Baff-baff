@@ -9,16 +9,17 @@ import ProductFittings from './ProductFittings'
 type Props = {
   sizes: IProductSizes
   activeFitting: Fitting
+  type: ProductType
+  price: number
+  discountPrice: number
   onChangeFitting: (fitting: Fitting) => void
   onChangeSize: (size: Size) => void
 }
 
-export default function ProductSizes({ activeFitting, sizes, onChangeFitting, onChangeSize }: Props) {
+export default function ProductSizes({ activeFitting, sizes, type, price, discountPrice, onChangeFitting, onChangeSize }: Props) {
   return (
     <>
-      <>
-        <ProductFittings activeFitting={activeFitting} onChangeFitting={onChangeFitting} />
-      </>
+      <>{type === 'trouser' || type === 'short' ? <ProductFittings activeFitting={activeFitting} onChangeFitting={onChangeFitting} /> : null}</>
 
       <p className="text-sm">SIZE</p>
 
@@ -44,7 +45,7 @@ export default function ProductSizes({ activeFitting, sizes, onChangeFitting, on
               </div>
 
               <p className="mt-5 text-sm">PRICE</p>
-              <p className="mt-1.5 font-medium">{formatCurrency(details.discountPrice || details.price)}</p>
+              <p className="mt-1.5 font-medium">{formatCurrency(discountPrice || price)}</p>
             </Tab>
           ))}
         </Tabs>

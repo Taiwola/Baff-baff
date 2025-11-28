@@ -10,7 +10,7 @@ import ProductSizes from './ProductSizes'
 import ProductBespoke from './ProductBespoke'
 import { QuantityButton } from '@components/features/cart'
 
-import { formatCurrency, getBespokePrice, getPriceRange, getSize } from '@utils'
+import { formatCurrency, getBespokePrice, getPriceForProudct, getPriceRange, getSize } from '@utils'
 import { useCart } from '@contexts/carts.context'
 import { useProductCustomization } from '@hooks/useProductCustomization'
 
@@ -36,12 +36,12 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
   const measurements = product.type === 'trouser' || product.type === 'short' ? state.trouserMeasurement : state.shirtMeasurement
   const price =
     state.size !== 'Bespoke'
-      ? product.sizes[state.size].price
+      ? getPriceForProudct(product.sizes[state.size].price, state.fitting)
       : getBespokePrice(product.sizes[getSize(measurements)].price, state.fitting, Number(state?.trouserMeasurement?.waist || 0))
   const discountPrice =
     state.size !== 'Bespoke' && product.sizes[state.size].discountPrice
-      ? product.sizes[state.size].discountPrice
-      : product.sizes[getSize(measurements)].discountPrice
+      ? getPriceForProudct(Number(product.sizes[state.size].discountPrice), state.fitting)
+      : getBespokePrice(Number(product.sizes[getSize(measurements)].discountPrice), state.fitting, Number(state?.trouserMeasurement?.waist || 0))
   const { min, max } = getPriceRange(product)
 
   function handleAddToCart() {
@@ -86,7 +86,15 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
           onSelectionChange={(key) => setSize(key as Size)}
         >
           <Tab key="s" title="SELECT SIZE">
-            <ProductSizes sizes={product.sizes} activeFitting={state.fitting} onChangeFitting={setFitting} onChangeSize={setSize} />
+            <ProductSizes
+              sizes={product.sizes}
+              activeFitting={state.fitting}
+              type={product.type}
+              price={price}
+              discountPrice={discountPrice}
+              onChangeFitting={setFitting}
+              onChangeSize={setSize}
+            />
           </Tab>
 
           <Tab key="Bespoke" title="BESPOKE">
@@ -94,6 +102,7 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
               sizes={product.sizes}
               type={product.type}
               price={price}
+              discountPrice={discountPrice}
               activeFitting={state.fitting}
               onChangeFitting={setFitting}
               saveMeasurements={state.saveMeasurements}
