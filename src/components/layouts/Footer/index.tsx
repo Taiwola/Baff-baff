@@ -33,6 +33,12 @@ export default function Footer() {
         </div>
       </div>
 
+      
+           <div className="flex flex-col items-center gap-6 mt-20">
+             <Link href={'/terms'} className="font-montserrat font-semibold text-sm text-[#FEFEFE]">Terms And Conditions</Link>
+             <Link href={'/privacy'} className="font-montserrat font-semibold text-sm text-[#FEFEFE]">Privacy Policy</Link>
+          </div>
+
       <div className="md:hidden mt-20 text-center">
         <p className="text-[#FEFEFE] font-semibold font-montserrat text-xs">
           @copyright 2025 Baffa Baff. All rights reserved
@@ -40,8 +46,9 @@ export default function Footer() {
       </div>
 
       <div>
-        <div className="hidden md:flex md:px-20 md:gap-6 items-center">
-          <p className="text-[#FEFEFE] font-montserrat font-semibold">
+        <div className="hidden md:flex md:px-20 md:justify-between items-center">
+          <div className="flex gap-6 items-center">
+            <p className="text-[#FEFEFE] font-montserrat font-semibold">
             Follow us
           </p>
           
@@ -59,6 +66,13 @@ export default function Footer() {
               <LinkdlnSvg />
             </Link>
           </div>
+          </div>
+
+
+          <div className="flex justify-between items-center gap-6">
+             <Link href={'/terms'} className="font-montserrat font-semibold text-sm text-[#FEFEFE]">Terms And Conditions</Link>
+             <Link href={'/privacy'} className="font-montserrat font-semibold text-sm text-[#FEFEFE]">Privacy Policy</Link>
+          </div>
         </div>
         <div className="md:block md:border-1 md:border-[#FEFEFE80] md:my-10 hidden" />
 
@@ -73,6 +87,7 @@ export default function Footer() {
             <p className="font-montserrat font-semibold text-sm text-[#FEFEFE]">
               contactbafabafa@gmail.com
             </p>
+           
           </div>
           <div>
             <p className="text-[#FEFEFE] font-semibold font-montserrat text-xs">
