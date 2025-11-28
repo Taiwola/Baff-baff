@@ -34,7 +34,7 @@ export default function Footer() {
       </div>
 
       
-           <div className="flex flex-col items-center gap-6 mt-20">
+           <div className="md:hidden flex flex-col items-center gap-6 mt-20">
              <Link href={'/terms'} className="font-montserrat font-semibold text-sm text-[#FEFEFE]">Terms And Conditions</Link>
              <Link href={'/privacy'} className="font-montserrat font-semibold text-sm text-[#FEFEFE]">Privacy Policy</Link>
           </div>
@@ -73,6 +73,8 @@ export default function Footer() {
              <Link href={'/terms'} className="font-montserrat font-semibold text-sm text-[#FEFEFE]">Terms And Conditions</Link>
              <Link href={'/privacy'} className="font-montserrat font-semibold text-sm text-[#FEFEFE]">Privacy Policy</Link>
           </div>
+
+
         </div>
         <div className="md:block md:border-1 md:border-[#FEFEFE80] md:my-10 hidden" />
 
