@@ -56,8 +56,6 @@ export function getSortOption(key: string) {
   }
 }
 
-type MeasurementType = {}
-
 export function getSize(measurements: TrouserMeasurement | ShirtMeasurement | CartMeasurements): Size {
   if ('waist' in measurements) {
     return getTrouserSize(measurements)
