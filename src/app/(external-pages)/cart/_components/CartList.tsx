@@ -12,6 +12,8 @@ import { useCart } from '@contexts/carts.context'
 export default function CartList() {
   const { cart, fetchCart, updateItem, removeItem } = useCart()
 
+  console.log(cart)
+
   const { isLoading } = useSWR<Cart | null>('/api/cart', fetchCart)
 
   if (isLoading) return <CartSkeleton />
