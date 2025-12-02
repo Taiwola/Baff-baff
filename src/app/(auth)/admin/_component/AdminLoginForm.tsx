@@ -1,14 +1,12 @@
 'use client'
 
-import Image from 'next/image'
 import React, { useActionState, useEffect } from 'react'
 
 import { Button, Input } from '@components/ui'
 
 import { useToast } from '@hooks/useToast'
 import { LoginFormState } from '@validations/auth'
-import GoogleIcon from '@assets/svg/google-icon.svg'
-import { googleLogin, login } from '@actions/auth.action'
+import { login } from '@actions/auth.action'
 
 const initialState: LoginFormState = {
    values: {
