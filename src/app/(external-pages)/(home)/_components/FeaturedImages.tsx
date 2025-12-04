@@ -1,24 +1,46 @@
+"use client";
+
+import SwiperCarousel from "@components/features/home/Swipper";
 import Image from "next/image";
+import { SwiperSlide } from "swiper/react";
 
 export default function FeaturedImages() {
-  const slides = [
-    { id: 1, component: <Image src={"/images/feature-imageSvg1.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
-    { id: 2, component: <Image src={"/images/feature-imageSvg2.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
-    { id: 3, component: <Image src={"/images/feature-imageSvg3.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
-    { id: 4, component: <Image src={"/images/feature-imageSvg4.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
-    { id: 5, component: <Image src={"/images/feature-imageSvg5.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
-    { id: 6, component: <Image src={"/images/feature-imageSvg6.svg"} width={100} height={100} priority alt="feature image" className="w-full h-auto" /> },
+  const images = [
+    "/images/feature-imageSvg1.svg",
+    "/images/feature-imageSvg2.svg",
+    "/images/feature-imageSvg3.svg",
+    "/images/feature-imageSvg4.svg",
+    "/images/feature-imageSvg5.svg",
+    "/images/feature-imageSvg6.svg",
   ];
 
   return (
-    <div className="relative w-full mx-auto overflow-hidden md:overflow-x-scroll no-scrollbar">
-      <div className="flex transition-transform duration-500 ease-in-out">
-        {slides.map((slide) => (
-          <div key={slide.id} className="w-full shrink-0 flex justify-center">
-            {slide.component}
-          </div>
-        ))}
+    <section className="w-full py-12 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4">
+        <SwiperCarousel
+          spaceBetween={10}
+          slidesPerView={1.7}        // Mobile: show partial next slide
+          slidesPerGroup={1}
+          infinite={true}            // Enables infinite loop
+          autoplay={true}
+          className="featured-swiper"
+        >
+          {images.map((src, index) => (
+            <SwiperSlide key={index}>
+              <div className="w-full shrink-0 flex justify-center">
+                <Image
+                  src={src}
+                  width={200}
+                  height={200}
+                  alt={`Feature icon ${index + 1}`}
+                  className="w-full h-auto min-h-max object-contain drop-shadow-md"
+                  priority
+                />
+              </div>
+            </SwiperSlide>
+          ))}
+        </SwiperCarousel>
       </div>
-    </div>
+    </section>
   );
 }
