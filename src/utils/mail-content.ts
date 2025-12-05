@@ -19,7 +19,7 @@ export const generateResetPasswordEmail = (user: { name?: string; email: string 
       
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
       <p style="color: #999; font-size: 12px; text-align: center;">
-        This email was sent to ${user.email}. If you have questions, contact support@yourapp.com.
+        This email was sent to ${user.email}. If you have questions, contact contact@baffabaffa.com.
       </p>
     </div>
   `
@@ -53,7 +53,7 @@ export const generateAdminInvite = (user: { name?: string; email: string }, link
       
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
       <p style="color: #999; font-size: 12px; text-align: center;">
-        This email was sent to ${user.email}. If you have questions or did not expect this invitation, contact support@yourapp.com.
+        This email was sent to ${user.email}. If you have questions or did not expect this invitation, contact contact@baffabaffa.com.
       </p>
     </div>
   `
@@ -91,7 +91,7 @@ export const generateOrderPaymentEmail = (user: { name?: string; email: string }
 
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
       <p style="color: #999; font-size: 12px; text-align: center;">
-        This email was sent to ${user.email}. If you have questions about your order, please contact support@yourapp.com.
+        This email was sent to ${user.email}. If you have questions about your order, please contact contact@baffabaffa.com.
       </p>
     </div>
   `
@@ -142,7 +142,7 @@ export const generateOrderStatusUpdateEmail = (
 
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
       <p style="color: #999; font-size: 12px; text-align: center;">
-        This email was sent to ${user.email}. If you have any questions, please contact support@yourapp.com.
+        This email was sent to ${user.email}. If you have any questions, please contact contact@baffabaffa.com.
       </p>
     </div>
   `
@@ -181,7 +181,7 @@ export const generatePaymentFailedEmail = (
 
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
       <p style="color: #999; font-size: 12px; text-align: center;">
-        This email was sent to ${user.email}. If you have any questions, please contact support@yourapp.com.
+        This email was sent to ${user.email}. If you have any questions, please contact contact@baffabaffa.com.
       </p>
     </div>
   `
@@ -221,7 +221,7 @@ export const generateAdminOrderEmail = (
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
 
       <p style="color: #bbb; font-size: 11px; text-align: center; margin-top: 20px;">
-        © ${new Date().getFullYear()} Your Company Name. All rights reserved.<br>
+        © ${new Date().getFullYear()} Baffa Baffa. All rights reserved.<br>
         This is an automated notification — please do not reply directly to this email.
       </p>
     </div>

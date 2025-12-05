@@ -8,7 +8,7 @@ import { deleteCart, getCartById } from '@services/cart'
 import dbConnect from '@lib/database'
 import { getSize } from '@utils'
 import { generateAdminOrderEmail, generateOrderPaymentEmail } from '@utils/mail-content'
-import { sendBulkEmail, sendEmail } from '@lib/mail'
+import { sendEmail } from '@lib/mail'
 import { getAllUsers } from '@services/user'
 import { revalidateTag } from 'next/cache'
 import { tag } from '@tags/orders.tag'
@@ -97,17 +97,29 @@ export async function POST(req: NextRequest) {
 
           // Send admin notification emails
           const { users } = await getAllUsers({ role: 'admin' })
-          const adminEmails = users.map((admin) => admin.email).filter(Boolean) as string[]
+          // const adminEmails = users.map((admin) => admin.email).filter(Boolean) as string[]
+          const adminContent = generateAdminOrderEmail(order.id)
 
-          if (adminEmails.length > 0) {
-            const adminContent = generateAdminOrderEmail(order.id)
-            const bulkRecipients: BulkRecipient[] = adminEmails.map((email) => ({ email }))
-            const { failed } = await sendBulkEmail(bulkRecipients, 'New Order Placed', adminContent, 'Baffa Baffa', {})
+           const { error: adminError, errorMessage: adminErroMessage } = await sendEmail(
+           "orders@baffabaffa.com",
+            adminContent,
+            'New Order Placed',
+            'Baffa Baffa'
+          )
 
-            if (failed.length > 0) {
-              console.error('Failed to send admin order emails to:', failed)
-            }
+          if (adminError) {
+            console.error("Failed to send mail to orders@baffabaffa.com: ", adminErroMessage)
           }
+
+          // if (adminEmails.length > 0) {
+          //   const adminContent = generateAdminOrderEmail(order.id)
+          //   const bulkRecipients: BulkRecipient[] = adminEmails.map((email) => ({ email }))
+          //   const { failed } = await sendBulkEmail(bulkRecipients, 'New Order Placed', adminContent, 'Baffa Baffa', {})
+
+          //   if (failed.length > 0) {
+          //     console.error('Failed to send admin order emails to:', failed)
+          //   }
+          // }
         } catch (emailError) {
           console.error('Error sending notification emails:', emailError)
         }
