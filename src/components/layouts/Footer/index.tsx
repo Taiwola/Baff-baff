@@ -85,7 +85,7 @@ export default function Footer() {
             <p className="font-montserrat font-semibold text-sm text-[#FEFEFE]">contact@baffabaffa.com</p>
           </div>
           <div>
-            <p className="text-[#FEFEFE] font-semibold font-montserrat text-xs">@copyright 2025 Baffa Baff. All rights reserved</p>
+            <p className="text-[#FEFEFE] font-semibold font-montserrat text-xs">@copyright 2025 Baffa Baffa. All rights reserved</p>
           </div>
         </div>
       </div>
