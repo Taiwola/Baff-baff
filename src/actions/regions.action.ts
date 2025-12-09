@@ -41,7 +41,7 @@ export async function createRegion(state: CreateRegionFormState, formData: FormD
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/dashboard/regions', RedirectType.replace)
 }
 
@@ -104,9 +104,9 @@ export async function updateRegion(id: string, state: UpdateRegionFormState, for
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
-  revalidateTag(tag.createTag(id))
-  revalidateTag(tag.createTag(response.data.state + response.data.city))
+  revalidateTag(tag.default, {})
+  revalidateTag(tag.createTag(id), {})
+  revalidateTag(tag.createTag(response.data.state + response.data.city), {})
   redirect('/dashboard/regions', RedirectType.replace)
 }
 
@@ -117,6 +117,6 @@ export async function deleteRegion(id: string) {
     return { error: response.message }
   }
 
-  revalidateTag(tag.default)  
+  revalidateTag(tag.default, {})  
   redirect('/dashboard/regions', RedirectType.replace)
 }

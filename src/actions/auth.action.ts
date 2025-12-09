@@ -51,7 +51,7 @@ export async function register(state: RegisterFormState, formData: FormData): Pr
     return { ...state, error: response.message }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/login')
 }
 

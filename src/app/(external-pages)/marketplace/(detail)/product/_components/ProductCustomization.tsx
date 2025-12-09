@@ -47,7 +47,6 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
   function handleAddToCart() {
 
   const finalPrice = typeof discountPrice === 'number' && !isNaN(discountPrice) ? discountPrice : price
-    console.log("final price", finalPrice)
 
     addItem({
       id: uuidv4(),

@@ -48,7 +48,7 @@ export async function createMeasurement(state: CreateMeasurementFormState, formD
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/measurements', RedirectType.replace)
 }
 
@@ -136,8 +136,8 @@ export async function updateMeasurement(id: string, state: UpdateMeasurementForm
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
-  revalidateTag(tag.createTag(id))
+  revalidateTag(tag.default, {})
+  revalidateTag(tag.createTag(id), {})
   redirect('/measurements', RedirectType.replace)
 }
 
@@ -169,8 +169,8 @@ export async function updateUserMeasurement(state: UpdateMeasurementFormState, f
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
-  revalidateTag(tag.createTag('user'))
+  revalidateTag(tag.default, {})
+  revalidateTag(tag.createTag('user'), {})
   redirect('/measurements', RedirectType.replace)
 }
 
@@ -181,6 +181,6 @@ export async function deleteMeasurement(id: string) {
     return { error: response.message }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/measurements', RedirectType.replace)
 }
