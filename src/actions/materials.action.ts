@@ -61,7 +61,7 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/dashboard/materials', RedirectType.replace)
 }
 
@@ -108,8 +108,8 @@ export async function updateMaterial(id: string, state: UpdateMaterialFormState,
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
-  revalidateTag(tag.createTag(id))
+  revalidateTag(tag.default, {})
+  revalidateTag(tag.createTag(id), {})
   redirect('/dashboard/materials', RedirectType.replace)
 }
 
@@ -120,6 +120,6 @@ export async function deleteMaterial(id: string) {
     return { error: response.message }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/dashboard/materials', RedirectType.replace)
 }

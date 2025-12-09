@@ -68,7 +68,7 @@ export async function updateUser(id: string, state: UpdateUserFormState, formDat
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.createTag(id))
+  revalidateTag(tag.createTag(id), {})
 
   if (response.data.role === 'admin') {
     redirect('/dashboard/settings/profile', RedirectType.replace)
@@ -82,7 +82,7 @@ export async function updateRole(user: User, role: UserRole): Promise<User> {
     throw new Error(response.message)
   }
 
-  revalidateTag(tag.createTag(user.id))
+  revalidateTag(tag.createTag(user.id), {})
   return response.data
 }
 
@@ -104,6 +104,6 @@ export async function inviteAdmin(state: InviteAdminFormState, formData: FormDat
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/dashboard/settings/manage', RedirectType.replace)
 }

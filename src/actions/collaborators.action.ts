@@ -37,7 +37,7 @@ export async function createCollaborator(state: CreateCollaboratorFormState, for
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/dashboard/collaborators', RedirectType.replace)
 }
 
@@ -86,8 +86,8 @@ export async function updateCollaborator(id: string, state: UpdateCollaboratorFo
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
-  revalidateTag(tag.createTag(id))
+  revalidateTag(tag.default, {})
+  revalidateTag(tag.createTag(id), {})
   redirect('/dashboard/collaborators', RedirectType.replace)
 }
 
@@ -98,6 +98,6 @@ export async function deleteCollaborator(id: string) {
     return { error: response.message }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/dashboard/collaborators', RedirectType.replace)
 }

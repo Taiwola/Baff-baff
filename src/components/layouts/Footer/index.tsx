@@ -21,10 +21,21 @@ export default function Footer() {
       <div className="md:hidden flex flex-col justify-center items-center mt-10 gap-3">
         <p className="text-[#FEFEFE] font-montserrat font-semibold">Follow us</p>
         <div className="flex justify-center items-center gap-6">
-          <TwitterSvg />
-          <FacebookSvg />
-          <InstagramSvg />
-          <LinkdlnSvg />
+          <Link href="https://x.com/yourusername" target="_blank" rel="noopener noreferrer">
+                <TwitterSvg />
+              </Link>
+              <Link href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
+                <FacebookSvg />
+              </Link>
+              <Link href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer">
+                <InstagramSvg />
+              </Link>
+              <Link href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer">
+                <LinkdlnSvg />
+              </Link>
+              <Link href="https://wa.me/2348077775745" target="_blank" rel="noopener noreferrer">
+                <WhatappIconSvg />
+              </Link>
         </div>
       </div>
 
@@ -38,7 +49,7 @@ export default function Footer() {
       </div>
 
       <div className="md:hidden mt-20 text-center">
-        <p className="text-[#FEFEFE] font-semibold font-montserrat text-xs">@copyright 2025 Baffa Baff. All rights reserved</p>
+        <p className="text-[#FEFEFE] font-semibold font-montserrat text-xs">@copyright 2025 Baffa Baffa. All rights reserved</p>
       </div>
 
       <div>

@@ -59,7 +59,7 @@ export async function updateOrder(id: string, state: UpdateOrderFormState, formD
     return { ...state, error: response.message, values: parsed }
   }
 
-  revalidateTag(tag.default)
-  revalidateTag(tag.createTag(id))
+  revalidateTag(tag.default, {})
+  revalidateTag(tag.createTag(id), {})
   redirect(`/dashboard/orders/${id}`, RedirectType.replace)
 }

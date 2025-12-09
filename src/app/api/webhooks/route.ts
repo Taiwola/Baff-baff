@@ -124,8 +124,8 @@ export async function POST(req: NextRequest) {
           console.error('Error sending notification emails:', emailError)
         }
       })
-      revalidateTag(tag.default)
-      revalidateTag(tag.createTag(order.id))
+      revalidateTag(tag.default, {})
+      revalidateTag(tag.createTag(order.id), {})
       return sendResponse('Webhook processed successfully', null, 200)
     } catch (error) {
       if (session) await session.abortTransaction()

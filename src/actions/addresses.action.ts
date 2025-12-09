@@ -45,7 +45,7 @@ export async function createAddress(state: CreateAddressFormState, formData: For
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/addresses', RedirectType.replace)
 }
 
@@ -74,7 +74,7 @@ export async function changeAddress(state: CreateAddressFormState, formData: For
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/checkout/shipping', RedirectType.replace)
 }
 
@@ -136,11 +136,11 @@ export async function updateAddress(id: string, state: UpdateAddressFormState, f
     return { ...state, error: response.message, values: parsedValues }
   }
 
-  revalidateTag(tag.createTag(id))
-  revalidateTag(tag.default)
+  revalidateTag(tag.createTag(id), {})
+  revalidateTag(tag.default, {})
 
   if (response.data.active !== state.values.active) {
-    revalidateTag(tag.createTag('active'))
+    revalidateTag(tag.createTag('active'), {})
   }
 
   redirect('/addresses', RedirectType.replace)
@@ -153,8 +153,8 @@ export async function deleteAddress(id: string) {
     return { error: response.message }
   }
 
-  revalidateTag(tag.createTag(id))
-  revalidateTag(tag.createTag('active'))
-  revalidateTag(tag.default)
+  revalidateTag(tag.createTag(id), {})
+  revalidateTag(tag.createTag('active'), {})
+  revalidateTag(tag.default, {})
   redirect('/addresses', RedirectType.replace)
 }

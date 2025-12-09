@@ -65,7 +65,7 @@ export async function createProduct(state: CreateProductFormState, formData: For
     return { ...state, error: response.message, values: { ...parsedValues, images: [] } }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/dashboard/products', RedirectType.replace)
 }
 
@@ -188,9 +188,9 @@ export async function updateProduct(product: Product, state: UpdateProductFormSt
     }
   }
 
-  revalidateTag(tag.default)
-  revalidateTag(tag.createTag(product.id))
-  revalidateTag(tag.createTag(product.slug))
+  revalidateTag(tag.default, {})
+  revalidateTag(tag.createTag(product.id), {})
+  revalidateTag(tag.createTag(product.slug), {})
   redirect('/dashboard/products', RedirectType.replace)
 }
 
@@ -201,7 +201,7 @@ export async function deleteProduct(id: string) {
     return { error: response.message }
   }
 
-  revalidateTag(tag.default)
+  revalidateTag(tag.default, {})
   redirect('/dashboard/products', RedirectType.replace)
 }
 
@@ -212,7 +212,7 @@ export async function updateProductStatus(id: string, status: ProductStatus) {
     return { error: response.message }
   }
 
-  revalidateTag(tag.default)
-  revalidateTag(tag.createTag(id))
+  revalidateTag(tag.default, {})
+  revalidateTag(tag.createTag(id), {})
   redirect('/dashboard/products', RedirectType.replace)
 }

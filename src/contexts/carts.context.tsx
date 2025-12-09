@@ -47,24 +47,38 @@ export const CartProvider = ({ children }: Props) => {
   }
 
   async function addItem(item: CartItem) {
-    // find index of identical item
-    const idx = cart.items.findIndex((i) => isIdenticalItem(i, item));
+
+    console.log("Adding item to cart function called with item:", item)
+    // Normalize price to number (handle string from form input)
+    const normalizedItem: CartItem = {
+      ...item,
+      price: typeof item.price === 'string' ? parseFloat(item.price) : item.price
+    }
+    
+    // Validate price is a valid number
+    if (isNaN(normalizedItem.price) || normalizedItem.price <= 0) {
+      console.error('Invalid price:', item.price)
+      return
+    }
+
+    // find index of identical item (use normalizedItem)
+    const idx = cart.items.findIndex((i) => isIdenticalItem(i, normalizedItem));
     let newCartItems: CartItem[];
 
     if (idx > -1) {
-      // update the quantity of the identical item
-      newCartItems = cart.items.map((it, i) => i === idx ? { ...it, quantity: it.quantity + item.quantity } : it);
+      // update the quantity of the identical item (use normalizedItem)
+      newCartItems = cart.items.map((it, i) => i === idx ? { ...it, quantity: it.quantity + normalizedItem.quantity } : it);
     } else {
-      // add new item to cart
-      newCartItems = [...cart.items, item];
+      // add new item to cart (use normalizedItem)
+      newCartItems = [...cart.items, normalizedItem];
     }
 
     // update local cart state immediately for better UX
     setCart((prev) => ({ ...prev, items: newCartItems }));
 
-    // if there is a cart id (user is logged in), sync with server
+    // if there is a cart id (user is logged in), sync with server (use normalizedItem)
     if (cart.id) {
-      const { product, ...dto } = item
+      const { product, ...dto } = normalizedItem
       const payload: UpdateCartDto = { action: 'add', item: { ...dto, productId: product.id } }
       const updatedCart = await updateCart(cart.id, payload)
       if (updatedCart) setCart(updatedCart)
@@ -72,6 +86,7 @@ export const CartProvider = ({ children }: Props) => {
       await syncWithServer({ ...cart, items: newCartItems });
     }
   }
+
 
   async function updateItem(itemId: string, quantity: number) {
     const foundItem = cart.items.find(it => it.id === itemId)

@@ -45,10 +45,13 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
   const { min, max } = getPriceRange(product)
 
   function handleAddToCart() {
+
+  const finalPrice = typeof discountPrice === 'number' && !isNaN(discountPrice) ? discountPrice : price
+
     addItem({
       id: uuidv4(),
       product,
-      price: discountPrice ?? price,
+      price: finalPrice,
       name: product.name,
       fitting: state.fitting,
       size: state.size,
