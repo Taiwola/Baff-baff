@@ -24,7 +24,8 @@ const orderSchema: Schema<IOrder> = new Schema(
           name: { type: String, required: true },
           type: { type: String, required: true },
           category: { type: String, required: true },
-          images: { type: [String], default: [] }
+          images: { type: [String], default: [] },
+          slug: { type: String, required: true }
         },
         name: { type: String, required: true },
         price: { type: Number, required: true },
