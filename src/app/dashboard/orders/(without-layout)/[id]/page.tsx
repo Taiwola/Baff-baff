@@ -114,7 +114,7 @@ export default async function OrderDetailPage({ params }: Props) {
         <div className="w-full px-2 sm:px-5 mt-6 flex flex-col gap-2 md:max-w-xs md:ml-auto">
           <div className="flex justify-between text-sm text-gray-600">
             <span>SUBTOTAL</span>
-            <span>{formatCurrency(order.total)}</span>
+            <span>{formatCurrency(order.total - order.deliveryFee)}</span>
           </div>
           <div className="flex justify-between text-sm text-gray-600">
             <span>DELIVERY FEE</span>
@@ -123,7 +123,7 @@ export default async function OrderDetailPage({ params }: Props) {
           <hr className="my-1 border-gray-300" />
           <div className="flex justify-between text-base font-semibold text-black">
             <span>TOTAL</span>
-            <span>{formatCurrency(order.total + order.deliveryFee)}</span>
+            <span>{formatCurrency(order.total)}</span>
           </div>
         </div>
       </section>

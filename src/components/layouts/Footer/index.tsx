@@ -14,7 +14,7 @@ export default function Footer() {
       </div>
 
       <div className="px-10 w-full flex mt-14 justify-center items-center flex-col md:hidden">
-        <p className="font-montserrat font-semibold text-sm text-[#FEFEFE]">+2348162695360+2348090444452</p>
+        <p className="font-montserrat font-semibold text-sm text-[#FEFEFE]">+2348162695360+2348077775745</p>
         <p className="font-montserrat font-semibold text-sm text-[#FEFEFE]">contact@baffabaffa.com</p>
       </div>
 
