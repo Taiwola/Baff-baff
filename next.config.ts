@@ -9,9 +9,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'res.cloudinary.com'
+        hostname: 'res.cloudinary.com',
       }
-    ]
+    ],
+    qualities: [100, 70]
   },
   experimental: {
     serverActions: {
