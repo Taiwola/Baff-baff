@@ -12,7 +12,9 @@ type Result<T> = {
 }
 
 type FetchOptions = RequestInit & {
-  responseType?: 'json' | 'blob' | 'text'
+  responseType?: 'json' | 'blob' | 'text',
+  next?: NextFetchRequestConfig
+
 }
 
 interface MongooseCache {

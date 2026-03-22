@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Tab, Tabs } from '@heroui/react'
 import { formatCurrency } from '@utils'
 import ProductFittings from './ProductFittings'
