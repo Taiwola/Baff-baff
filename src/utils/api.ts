@@ -12,7 +12,7 @@ import { catchError, createFailure, createSuccess } from './result'
  * @returns A Result<T> object containing either data or an error
  */
 async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<Result<T>> {
-  const { body, responseType = 'json', ...restOptions } = options
+  const { body, responseType = 'json', next, ...restOptions } = options
 
   // Automatically set Content-Type header for JSON string bodies
   if (typeof body === 'string') {
@@ -21,7 +21,13 @@ async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<
 
   // Perform fetch with error capture
   const [error, response] = await catchError(
-    fetch(`${config.baseUrl}${endpoint}`, { ...restOptions, body, headers: { ...options.headers }, credentials: 'include' })
+    fetch(`${config.baseUrl}${endpoint}`, {
+      ...restOptions,
+      body,
+      headers: { ...options.headers },
+      credentials: 'include',
+      ...(next ? { next } : {})
+    })
   )
 
   // Handle error or non-OK response

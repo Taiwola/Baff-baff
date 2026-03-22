@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import React, { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, Box, Package, UsersRound, ShoppingCart, Settings, MapIcon, Menu } from 'lucide-react'
+import { LayoutDashboard, Users, Box, Package, UsersRound, ShoppingCart, Settings, MapIcon, Menu, RulerIcon } from 'lucide-react'
 
 import Logo from '@assets/images/Dashboard-logo.png'
 
@@ -74,6 +74,7 @@ const routes = [
   { name: 'materials', path: '/dashboard/materials', icon: Box },
   { name: 'products', path: '/dashboard/products', icon: Package },
   { name: 'regions', path: '/dashboard/regions', icon: MapIcon },
+  { name: 'size guide', path: '/dashboard/size-guide', icon: RulerIcon },
   { name: 'collaborators', path: '/dashboard/collaborators', icon: UsersRound },
   { name: 'orders', path: '/dashboard/orders', icon: ShoppingCart },
   { name: 'settings', path: '/dashboard/settings', icon: Settings },

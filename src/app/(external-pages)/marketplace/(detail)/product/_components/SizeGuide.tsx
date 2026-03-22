@@ -1,26 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-
-const womenData = [
-  { size: 'XXS', us: '00', bust: ['29.5" - 30.5"', '75cm - 77.5cm'], waist: ['23.5" - 24.5"', '60cm - 62.5cm'], hip: ['33.5" - 34.5"', '85cm - 88cm'] },
-  { size: 'XS', us: '0 - 2', bust: ['31.5" - 32.5"', '80cm - 83cm'], waist: ['25" - 25.5"', '63.5cm - 65cm'], hip: ['35" - 35.5"', '89cm - 90cm'] },
-  { size: 'S', us: '4 - 6', bust: ['33.5" - 34.5"', '85cm - 88cm'], waist: ['26.5" - 27.5"', '67.5cm - 70cm'], hip: ['36.5" - 37.5"', '93cm - 95.5cm'] },
-  { size: 'M', us: '8 - 10', bust: ['35.5" - 36.5"', '90cm - 93cm'], waist: ['28.5" - 29.5"', '72.5cm - 75cm'], hip: ['38.5" - 39.5"', '98cm - 100.5cm'] },
-  { size: 'L', us: '12', bust: ['38"', '96.5cm'], waist: ['31"', '79cm'], hip: ['41"', '104cm'] },
-  { size: 'XL', us: '14', bust: ['40"', '102cm'], waist: ['33"', '84cm'], hip: ['43"', '109cm'] },
-  { size: '2X', us: '16', bust: ['42"', '107cm'], waist: ['35"', '89cm'], hip: ['45"', '114cm'] }
-]
-
-const menData = [
-  { size: 'XS', us: '28 - 30', chest: ['33" - 35"', '84cm - 89cm'], waist: ['27" - 29"', '68.5cm - 73.5cm'], hip: ['33" - 35"', '84cm - 89cm'] },
-  { size: 'S', us: '30 - 32', chest: ['35" - 37"', '89cm - 94cm'], waist: ['29" - 31"', '73.5cm - 79cm'], hip: ['35" - 37"', '89cm - 94cm'] },
-  { size: 'M', us: '32 - 34', chest: ['37" - 39"', '94cm - 99cm'], waist: ['31" - 33"', '79cm - 84cm'], hip: ['37" - 39"', '94cm - 99cm'] },
-  { size: 'L', us: '34 - 36', chest: ['39" - 41"', '99cm - 104cm'], waist: ['33" - 35"', '84cm - 89cm'], hip: ['39" - 41"', '99cm - 104cm'] },
-  { size: 'XL', us: '36 - 38', chest: ['41" - 43"', '104cm - 109cm'], waist: ['35" - 37"', '89cm - 94cm'], hip: ['41" - 43"', '104cm - 109cm'] },
-  { size: 'XXL', us: '38 - 40', chest: ['43" - 45"', '109cm - 114cm'], waist: ['37" - 39"', '94cm - 99cm'], hip: ['43" - 45"', '109cm - 114cm'] },
-  { size: '2X', us: '40 - 42', chest: ['45" - 47"', '114cm - 119cm'], waist: ['39" - 41"', '99cm - 104cm'], hip: ['45" - 47"', '114cm - 119cm'] }
-]
+import { useState, useEffect } from 'react'
+import { getSizeGuideByGender } from '@actions/size-guide.actions'
 
 type Props = {
   modal?: boolean
@@ -28,8 +9,17 @@ type Props = {
 
 export default function SizeGuide({ modal = false }: Props) {
   const [gender, setGender] = useState<'women' | 'men'>('women')
+  const [guideData, setGuideData] = useState<SizeGuide | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const data = gender === 'women' ? womenData : menData
+  useEffect(() => {
+    setLoading(true)
+    getSizeGuideByGender(gender).then((data) => {
+      setGuideData(data)
+      setLoading(false)
+    })
+  }, [gender])
+
   const col3Label = gender === 'women' ? 'BUST' : 'CHEST'
 
   return (
@@ -62,7 +52,6 @@ export default function SizeGuide({ modal = false }: Props) {
         </div>
 
         <table className="w-full border-collapse">
-          {/* Column headers */}
           <thead>
             <tr className="border-b border-[#e0e0e0]">
               <th className="w-[100px]" />
@@ -82,47 +71,64 @@ export default function SizeGuide({ modal = false }: Props) {
           </thead>
 
           <tbody>
-            {data.map((row) => {
-              const col3Data = gender === 'women'
-                ? (row as (typeof womenData)[0]).bust
-                : (row as (typeof menData)[0]).chest
-
-              return (
-                <tr key={row.size} className="border-b border-[#e0e0e0] last:border-b-0">
+            {loading ? (
+              // Skeleton rows
+              Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i} className="border-b border-[#e0e0e0]">
+                  <td className="p-0 w-[100px]">
+                    <div className="bg-[#d0d0d0] animate-pulse min-h-[70px]" />
+                  </td>
+                  {Array.from({ length: 4 }).map((_, j) => (
+                    <td key={j} className="py-3 px-4 text-center">
+                      <div className="h-3 bg-[#e8e8e8] animate-pulse rounded mx-auto w-16 mb-1" />
+                      <div className="h-3 bg-[#e8e8e8] animate-pulse rounded mx-auto w-12" />
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : !guideData || guideData.entries.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="py-10 text-center text-sm text-[#9B8B7A]">
+                  No size guide available for {gender === 'women' ? "women" : "men"} yet.
+                </td>
+              </tr>
+            ) : (
+              guideData.entries.map((entry) => (
+                <tr key={entry.size} className="border-b border-[#e0e0e0] last:border-b-0">
                   {/* Size label — black cell */}
                   <td className="p-0 w-[100px]">
                     <div className="bg-[#202020] flex items-center justify-center h-full min-h-[70px]">
                       <span className="text-white text-xs font-medium tracking-[0.18em] uppercase">
-                        {row.size}
+                        {entry.size}
                       </span>
                     </div>
                   </td>
 
                   {/* US Size */}
                   <td className="py-3 px-4 text-center">
-                    <span className="text-sm font-normal text-[#202020]">{row.us}</span>
+                    <span className="text-sm font-normal text-[#202020]">{entry.us}</span>
                   </td>
 
                   {/* Bust / Chest */}
                   <td className="py-3 px-4 text-center">
-                    <span className="block text-sm font-normal text-[#202020]">{col3Data[0]}</span>
-                    <span className="block text-xs font-normal text-[#202020] mt-0.5">{col3Data[1]}</span>
+                    <span className="block text-sm font-normal text-[#202020]">{entry.measurement1}</span>
+                    <span className="block text-xs font-normal text-[#202020] mt-0.5">{entry.measurement1Cm}</span>
                   </td>
 
                   {/* Waist */}
                   <td className="py-3 px-4 text-center">
-                    <span className="block text-sm font-normal text-[#202020]">{row.waist[0]}</span>
-                    <span className="block text-xs font-normal text-[#202020] mt-0.5">{row.waist[1]}</span>
+                    <span className="block text-sm font-normal text-[#202020]">{entry.waist}</span>
+                    <span className="block text-xs font-normal text-[#202020] mt-0.5">{entry.waistCm}</span>
                   </td>
 
                   {/* Hip */}
                   <td className="py-3 px-4 text-center">
-                    <span className="block text-sm font-normal text-[#202020]">{row.hip[0]}</span>
-                    <span className="block text-xs font-normal text-[#202020] mt-0.5">{row.hip[1]}</span>
+                    <span className="block text-sm font-normal text-[#202020]">{entry.hip}</span>
+                    <span className="block text-xs font-normal text-[#202020] mt-0.5">{entry.hipCm}</span>
                   </td>
                 </tr>
-              )
-            })}
+              ))
+            )}
           </tbody>
         </table>
       </div>

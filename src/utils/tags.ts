@@ -11,6 +11,7 @@ export enum API_Tags {
   REGIONS = "regions",
   USERS = "users",
   ANALYTICS = "analytics",
+  SIZE_GUIDE = 'size-guides'
 }
 
 export function getTag(name: API_Tags, listId?: string) {
