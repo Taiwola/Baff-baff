@@ -6,13 +6,15 @@ import { errorResponse, sendResponse } from '@utils/api-response'
 import { adaptSizeGuide } from '@adapters/size-guide.adapter'
 import { deleteSizeGuide, getSizeGuideByGender } from '@services/size-guide.service'
 
-type Params = { params: Promise<{ gender: string }> }
+// Updated type to match the folder name [id]
+type Params = { params: Promise<{ id: string }> }
 
 // Public — storefront fetches men's or women's guide individually
 export async function GET(_req: NextRequest, { params }: Params) {
   await dbConnect()
 
-  const { gender } = await params
+  // Await the params Promise (required in Next.js 15+)
+  const { id: gender } = await params
 
   if (gender !== 'men' && gender !== 'women') {
     return errorResponse('Invalid gender param. Must be "men" or "women"', null, 400)
@@ -37,7 +39,8 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     return errorResponse('Forbidden', null, 403)
   }
 
-  const { gender } = await params
+  // Await the params Promise
+  const { id: gender } = await params
 
   if (gender !== 'men' && gender !== 'women') {
     return errorResponse('Invalid gender param. Must be "men" or "women"', null, 400)
