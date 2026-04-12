@@ -16,9 +16,11 @@ interface Props {
    errors: CreateProductErrors | UpdateProductErrors
    materials: Material[]
    action: (payload: FormData) => void
+   onDelete?: () => void | Promise<void>
+   isDeleting?: boolean
 }
 
-export default function ProductForm({ type = 'create', pending, initialState, errors, materials, action }: Props) {
+export default function ProductForm({ type = 'create', pending, initialState, errors, materials, action, onDelete, isDeleting = false }: Props) {
    const formRef = useRef<HTMLFormElement>(null)
    const { onOpen, onOpenChange, isOpen } = useDisclosure()
 
@@ -71,8 +73,10 @@ export default function ProductForm({ type = 'create', pending, initialState, er
                      variant='danger'
                      rounded='sm'
                      className='max-w-32.25 text-sm'
+                     onClick={onDelete}
+                     disabled={isDeleting || pending}
                   >
-                     Delete
+                     {isDeleting ? 'Deleting...' : 'Delete'}
                   </Button>
                ) : null}
 

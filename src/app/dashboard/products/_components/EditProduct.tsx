@@ -1,12 +1,14 @@
 'use client'
 
-import React, { useActionState, useEffect } from 'react'
+import React, { useActionState, useEffect, useState } from 'react'
+import { useDisclosure } from '@heroui/react'
 
 import { useToast } from '@hooks/useToast'
-import { updateProduct } from '@actions/products.action'
+import { updateProduct, deleteProduct } from '@actions/products.action'
 import { UpdateProductFormState } from '@validations/product'
 
 import ProductForm from './ProductForm'
+import ConfirmDeleteModal from './ConfirmDeleteModal'
 
 type Props = {
    product: Product
@@ -39,6 +41,8 @@ export default function EditProduct({ materials, product }: Props) {
 
    const toast = useToast()
    const [{ values, errors, error }, action, pending] = useActionState(updateProductWithId, initialState)
+   const [isDeleting, setIsDeleting] = useState(false)
+   const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onOpenChange: onDeleteModalOpenChange } = useDisclosure()
 
    useEffect(() => {
       if (error) {
@@ -46,14 +50,40 @@ export default function EditProduct({ materials, product }: Props) {
       }
    }, [error, toast])
 
+   const handleDeleteClick = () => {
+      onDeleteModalOpen()
+   }
+
+   const handleConfirmDelete = async () => {
+      setIsDeleting(true)
+      const result = await deleteProduct(product.id)
+      
+      if (result?.error) {
+         toast.error({ description: result.error })
+         setIsDeleting(false)
+         onDeleteModalOpenChange()
+      }
+      // If no error, the redirect will handle navigation
+   }
+
    return (
-      <ProductForm
-         type='edit'
-         errors={errors}
-         initialState={values}
-         pending={pending}
-         materials={materials}
-         action={action}
-      />
+      <>
+         <ProductForm
+            type='edit'
+            errors={errors}
+            initialState={values}
+            pending={pending}
+            materials={materials}
+            action={action}
+            onDelete={handleDeleteClick}
+            isDeleting={isDeleting}
+         />
+         <ConfirmDeleteModal
+            isOpen={isDeleteModalOpen}
+            onOpenChange={onDeleteModalOpenChange}
+            onConfirm={handleConfirmDelete}
+            isLoading={isDeleting}
+         />
+      </>
    )
 }
