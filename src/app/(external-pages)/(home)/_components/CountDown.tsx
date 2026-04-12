@@ -17,12 +17,12 @@ export function CountdownOverlay() {
       const currentYear = now.getFullYear()
       const currentMonth = now.getMonth()
       
-      // Calculate target date (March 15 of next month)
+      // Calculate target date (April 15 of current or next year)
       let targetYear = currentYear
-      let targetMonth = currentMonth + 1 // Next month
+      let targetMonth = 3 // April is month 3 (0-indexed: 0=Jan, 1=Feb, 2=Mar, 3=Apr)
       
-      if (targetMonth > 11) {
-        targetMonth = 0 // January
+      // If we're past April 15th this year, target next year's April 15th
+      if (currentMonth > 3 || (currentMonth === 3 && now.getDate() > 15)) {
         targetYear += 1
       }
       
@@ -137,7 +137,7 @@ export function CountdownOverlay() {
             
             <div className="border-t-2 border-gray-200 mt-8 pt-6">
               <p className="text-black font-mono text-sm">
-                We&apos;ll be back on <span className="font-bold">March 15th</span>
+                We&apos;ll be back on <span className="font-bold">April 15th</span>
               </p>
             </div>
           </div>
