@@ -10,7 +10,9 @@ export const metadata: Metadata = {
 }
 
 export default async function CreateProductPage() {
-  const materials = await getMaterials()
+  const materials = await getMaterials({
+    limit: 50
+  })
 
   return (
     <div className="w-full h-auto">
