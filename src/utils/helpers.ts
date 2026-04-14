@@ -106,27 +106,46 @@ export function getBespokePrice(price: number, currentFit: Fitting, waist: numbe
   return price
 }
 
-export function getPriceRange(product: Product) {
-  const range = [
-    product.sizes.l.price,
-    product.sizes.m.price,
-    product.sizes.s.price,
-    product.sizes.xl.price,
-    product.sizes.xxl.price,
-    product.sizes.xxxl.price
-  ]
-
-  const min = Math.min(...range)
-  const max = Math.max(...range)
-
-  return { min, max }
+export function getPriceRange(product: Product): { min: number; max: number } {
+  const type = product.type;
+  
+  const prices = [
+    product.sizes.s?.price,
+    product.sizes.m?.price,
+    product.sizes.l?.price,
+    product.sizes.xl?.price,
+    product.sizes.xxl?.price,
+    product.sizes.xxxl?.price
+  ].filter((price): price is number => 
+    price !== undefined && price !== null && typeof price === 'number'
+  );
+  
+  // Log warning for debugging
+  if (prices.length === 0) {
+    console.warn(`getPriceRange: No valid prices found for product ${product.id}`);
+    return { min: 0, max: 0 };
+  }
+  
+  if (prices.length < 3) {
+    console.warn(`getPriceRange: Only ${prices.length} valid prices for product ${product.id}`);
+  }
+  
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const TROUSER_SHORT_PREMIUM = 5000;
+  
+  return {
+    min,
+    max: (type === 'trouser' || type === 'short') 
+      ? max + TROUSER_SHORT_PREMIUM 
+      : max
+  };
 }
 
-
 export function getPriceForProudct(price: number, currentFit: Fitting) {
-  if (currentFit === "straight") {
+  if (currentFit === 'straight') {
     return price + 3000
-  } else if (currentFit === "baggy") {
+  } else if (currentFit === 'baggy') {
     return price + 5000
   }
   return price
