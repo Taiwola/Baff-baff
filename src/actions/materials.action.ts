@@ -66,7 +66,7 @@ export async function createMaterial(state: CreateMaterialFormState, formData: F
 }
 
 export async function getMaterials(options: PaginationParams = {}): Promise<Pagination<Material>> {
-  const response = await ServerApiClient.get<Pagination<Material>>(`/materials?page=${options.page ?? 1}&limit=${10}`, {
+  const response = await ServerApiClient.get<Pagination<Material>>(`/materials?page=${options.page ?? 1}&limit=${options.limit ?? 10}`, {
     next: { tags: [tag.default] }
   })
 

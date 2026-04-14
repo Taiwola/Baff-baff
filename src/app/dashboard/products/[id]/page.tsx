@@ -38,7 +38,9 @@ export default async function EditProductPage({ params }: Props) {
   const product = await getProduct(id)
   if (!product) return notFound()
 
-  const materials = await getMaterials()
+  const materials = await getMaterials({
+    limit: 50
+  })
 
   return (
     <div className="w-full h-auto">
