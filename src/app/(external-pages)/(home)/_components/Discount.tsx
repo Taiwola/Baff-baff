@@ -7,7 +7,7 @@ export default function Discount() {
       <div className="bg-black w-[43%] py-10 md:py-36 px-5 md:px-17">
         <h1 className="text-white font-roboto font-black text-[18px] md:text-[82px] uppercase">Affordable Luxury</h1>
 
-        <p className="font-montserrat text-sm text-[#FFFFFF] md:text-base">Major luxury on every shirt.</p>
+        <p className="font-montserrat text-sm text-[#FFFFFF] md:text-base">High quality on every shirt.</p>
       </div>
 
       <div className="w-[57%]">
