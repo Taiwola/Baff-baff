@@ -76,7 +76,7 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
         </h6>
       </div>
 
-      <p className="text-[0.6875rem]">Premium quality materials used for every piece</p>
+      <p className="text-[0.6875rem]">Top quality materials used for every piece</p>
 
       <div className="w-full mt-5">
         <Tabs
