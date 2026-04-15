@@ -3,7 +3,6 @@
 import React, { useActionState, useEffect, useRef, useState } from 'react'
 
 import { Input } from '@components/ui'
-
 import { useToast } from '@hooks/useToast'
 import { updateOrder } from '@actions/orders.action'
 import { UpdateOrderFormState } from '@validations/order'
@@ -21,18 +20,17 @@ type Props = {
 export default function UpdateStatus({ id }: Props) {
    const toast = useToast()
    const ref = useRef<HTMLFormElement | null>(null)
-   const [{ values, error }, action] = useActionState(updateOrder.bind(null, id), initialState)
+   const [{ values, error }, action, isPending] = useActionState(updateOrder.bind(null, id), initialState)
 
    const [status, setStatus] = useState(values.status)
 
    function handleChange(val: string) {
       setStatus(val as OrderStatus)
+      // Submit immediately when value changes
+      setTimeout(() => {
+        ref.current?.requestSubmit()
+      }, 0)
    }
-
-   useEffect(() => {
-      ref.current?.requestSubmit()
-   }, [status])
-
 
    useEffect(() => {
       if (error) {
@@ -53,6 +51,7 @@ export default function UpdateStatus({ id }: Props) {
             ]}
             onChange={handleChange}
             className='bg-blue-500'
+            disabled={isPending}
          />
       </form>
    )
