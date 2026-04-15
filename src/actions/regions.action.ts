@@ -106,7 +106,14 @@ export async function updateRegion(id: string, state: UpdateRegionFormState, for
 
   revalidateTag(tag.default, {})
   revalidateTag(tag.createTag(id), {})
-  revalidateTag(tag.createTag(response.data.state + response.data.city), {})
+
+    if (response.data && response.data.state && response.data.city) {
+    revalidateTag(tag.createTag(response.data.state + response.data.city), {})
+  } else {
+    // Fallback: revalidate based on the submitted values
+    revalidateTag(tag.createTag(parsedValues.state + parsedValues.city), {})
+  }
+  
   redirect('/dashboard/regions', RedirectType.replace)
 }
 
