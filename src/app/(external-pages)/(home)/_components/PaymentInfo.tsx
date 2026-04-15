@@ -30,7 +30,7 @@ export default function PaymentInfo() {
           </h3>
 
           <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed  font-montserrat mb-4">
-            Delivery take takes between 5 - 10 days working days
+            Delivery takes between 5 - 10 days working days
           </h3>
 
           
