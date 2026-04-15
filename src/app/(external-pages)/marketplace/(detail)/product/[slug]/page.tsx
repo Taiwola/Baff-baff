@@ -15,21 +15,20 @@ type Props = {
   params: Promise<{ slug: string }>
 }
 
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = (await params).slug
   const product = await getProductBySlug(slug)
 
   if (!product) {
     return {
-      title: "Product Not Found",
-      description: "The requested product does not exist.",
+      title: 'Product Not Found',
+      description: 'The requested product does not exist.'
     }
   }
 
   return {
-    title: "Marketplace - " + product.name,
-    description: product.description,
+    title: 'Marketplace - ' + product.name,
+    description: product.description
   }
 }
 
@@ -59,45 +58,35 @@ export default async function ProductDetail({ params }: Props) {
       href: `/marketplace/product/${product.slug}`,
       isCurrent: true,
       isDisabled: false
-    },
+    }
   ]
 
   return (
-    <main className='app-container py-5 md:py-12'>
-      <section className='flex flex-col md:flex-row justify-between items-start mb-2'>
-        <div className='flex md:hidden justify-start items-center gap-0.5 mb-6 w-full'>
-          <BreadCrumbs
-            separator={<ChevronRightIcon className='text-base text-black w-4 h-4' />}
-            items={breadcrumbs}
-          />
+    <main className="app-container py-5 md:py-12">
+      <section className="flex flex-col md:flex-row justify-between items-start mb-2">
+        <div className="flex md:hidden justify-start items-center gap-0.5 mb-6 w-full">
+          <BreadCrumbs separator={<ChevronRightIcon className="text-base text-black w-4 h-4" />} items={breadcrumbs} />
         </div>
 
-        <article className='w-full md:w-[51%] h-92.75 md:h-137.5'>
+        <article className="w-full md:w-[51%] h-92.75 md:h-137.5">
           <ProductGallery images={product.images} />
         </article>
 
-        <article className='w-full md:w-[46%] h-auto min-h-screen'>
-          <div className='hidden md:block'>
-            <BreadCrumbs
-              separator={<ChevronRightIcon className='text-base text-black w-4 h-4' />}
-              items={breadcrumbs}
-            />
+        <article className="w-full md:w-[46%] h-auto min-h-screen">
+          <div className="hidden md:block">
+            <BreadCrumbs separator={<ChevronRightIcon className="text-base text-black w-4 h-4" />} items={breadcrumbs} />
           </div>
 
-          <h1 className='font-normal mt-7.5 md:mt-5.5 mb-5 text-[36px] w-full'>{product.name}</h1>
+          <h1 className="font-normal mt-7.5 md:mt-5.5 mb-5 text-[36px] w-full">{product.name}</h1>
 
-          <ProductCustomization
-            product={product}
-            shirtMeasurement={userMeasurements.shirt}
-            trouserMeasurement={userMeasurements.trouser}
-          />
+          <ProductCustomization product={product} shirtMeasurement={userMeasurements.shirt} trouserMeasurement={userMeasurements.trouser} />
 
-          <Description />
+          <Description description={product.description} />
 
-          <h6 className='mt-7.5 font-semibold text-black'>Buy more, save more!!!</h6>
+         <h6 className="mt-7.5 font-semibold text-black">Delivery</h6>
           <p className="flex gap-x-1">
-            <span>Buy 5 or more and get</span>
-            <span className='text-[#AB0808]'>25% off</span>
+            <span>Delivery Takes</span>
+            <span className="text-[#AB0808]">5 - 10 days</span>
           </p>
         </article>
       </section>
@@ -108,4 +97,3 @@ export default async function ProductDetail({ params }: Props) {
     </main>
   )
 }
-
