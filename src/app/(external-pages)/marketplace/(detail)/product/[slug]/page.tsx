@@ -86,7 +86,7 @@ export default async function ProductDetail({ params }: Props) {
          <h6 className="mt-7.5 font-semibold text-black">Delivery</h6>
           <p className="flex gap-x-1">
             <span>Delivery Takes</span>
-            <span className="text-[#AB0808]">5 - 10 days</span>
+            <span className="text-[#AB0808]">5 - 10 working days</span>
           </p>
         </article>
       </section>
