@@ -1,3 +1,4 @@
+"use client";
 import { ArrowRightIcon } from "@heroicons/react/24/outline"
 
 import LargeHeroSvg from "@assets/svg/largeheroSvg"
@@ -5,14 +6,35 @@ import { HeroShopSvg } from "@assets/svg/heroShopSvg"
 import { HeroBannerSvg } from "@assets/svg/herobannerSvg"
 
 import { Button } from "@components/ui"
+import { useInView } from "react-intersection-observer"
+
 
 export default function HomeHero() {
+   const { ref: largeHeroRef, inView: largeHeroInView } = useInView({
+      triggerOnce: true,
+      rootMargin: '200px',
+   })
+
+   const { ref: bannerRef, inView: bannerInView } = useInView({
+      triggerOnce: true,
+      rootMargin: '200px',
+   })
+
+   const { ref: shopRef, inView: shopInView } = useInView({
+      triggerOnce: true,
+      rootMargin: '200px',
+   })
+
    return (
       <section className="container mx-auto">
          <div className="flex flex-col justify-center">
             <div className="border-b-3 pb-5 md:pb-7 border-[#202020]">
-               <div className="inline-block">
-                  <LargeHeroSvg className="max-w-full w-full h-auto" />
+               <div ref={largeHeroRef} className="inline-block w-full">
+                  {largeHeroInView ? (
+                    <LargeHeroSvg className="max-w-full w-full h-auto" />
+                  ) : (
+                    <div className="w-full h-20 md:h-32 bg-gray-100 animate-pulse rounded" />
+                  )}
                </div>
             </div>
             <div className="mt-4">
@@ -23,13 +45,21 @@ export default function HomeHero() {
          </div>
 
          {/* banner */}
-         <div className="relative w-full mt-9 md:mt-18">
+         <div ref={bannerRef} className="relative w-full mt-9 md:mt-18">
             <div>
-               <HeroBannerSvg className="max-w-full w-full h-auto" />
+               {bannerInView ? (
+                 <HeroBannerSvg className="max-w-full w-full h-auto" />
+               ) : (
+                 <div className="w-full h-48 md:h-96 bg-gray-100 animate-pulse rounded-lg" />
+               )}
             </div>
 
-            <div className="absolute top-0 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
-               <HeroShopSvg className="max-w-full w-24 h-auto md:w-48" />
+            <div ref={shopRef} className="absolute top-0 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
+               {shopInView ? (
+                 <HeroShopSvg className="max-w-full w-24 h-auto md:w-48" />
+               ) : (
+                 <div className="w-24 h-24 md:w-48 md:h-48 bg-gray-200 animate-pulse rounded-full" />
+               )}
             </div>
          </div>
 

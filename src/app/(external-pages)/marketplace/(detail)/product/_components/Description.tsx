@@ -5,7 +5,11 @@ import { Accordion, AccordionItem } from '@heroui/react'
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { Minus, Plus } from 'lucide-react'
 
-export default function Description() {
+type Props = {
+   description: string
+}
+
+export default function Description({description}:Props) {
    return (
       <Accordion
          variant="splitted"
@@ -35,8 +39,7 @@ export default function Description() {
             }
          >
             <p className="text-sm text-black">
-               This is the product description content. You can put details, materials,
-               care instructions, or anything relevant here.
+              {description}
             </p>
          </AccordionItem>
       </Accordion>

@@ -29,6 +29,12 @@ export default function PaymentInfo() {
             Delivery is made after payment confirmation at your cost. Delivery fees may vary depending on your location.
           </h3>
 
+          <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed  font-montserrat mb-4">
+            Delivery take takes between 5 - 10 days
+          </h3>
+
+          
+
           <p className="text-sm sm:text-base md:text-lg lg:text-xl font-medium  font-montserrat hover:text-brand-dark transition-colors">
             Contact us via WhatsApp to facilitate delivery
           </p>
