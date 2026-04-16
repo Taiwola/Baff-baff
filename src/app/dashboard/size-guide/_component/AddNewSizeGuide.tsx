@@ -19,25 +19,16 @@ const initialState: UpsertSizeGuideFormState = {
 }
 
 export default function AddNewSizeGuide() {
-  const toast = useToast()
-  const router = useRouter()
+   const { error: toast } = useToast()
   const { isOpen, onOpenChange, onOpen } = useDisclosure()
   const [gender, setGender] = useState<'men' | 'women'>('women')
 
-  const [{ error, errors, values, success }, action, pending] = useActionState(upsertSizeGuide, initialState)
+  const [{ error, errors, values }, action, pending] = useActionState(upsertSizeGuide, initialState)
 
 
   useEffect(() => {
-    if (error) toast.error({ description: error })
+    if (error) toast({ description: error })
   }, [toast, error])
-
-    useEffect(() => {
-    if (success) {
-      toast.success({ description: `${gender === 'women' ? "Women's" : "Men's"} size guide saved successfully.` })
-      router.refresh()
-      onOpenChange()
-    }
-  }, [success, toast, gender, onOpenChange])
 
   return (
     <>

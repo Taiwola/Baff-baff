@@ -5,6 +5,7 @@ import { Trash2, Plus } from 'lucide-react'
 import { Button } from '@components/ui'
 import { UpsertSizeGuideDto } from '@validations/size-guide'
 
+type GarmentType = 'shirt' | 'trouser' | 'jacket' | 'short'
 type Entry = UpsertSizeGuideDto['entries'][0]
 
 type Props = {
@@ -15,22 +16,79 @@ type Props = {
   action: (payload: FormData) => void
 }
 
-const emptyEntry = (): Entry => ({
+const emptyEntry = (type: GarmentType = 'shirt'): Entry => ({
   size: '',
-  us: '',
-  measurement1: '',
-  measurement1Cm: '',
-  waist: '',
-  waistCm: '',
-  hip: '',
-  hipCm: ''
+  type,
+  measurements: {
+    chest: '',
+    arm: '',
+    sleeve: '',
+    shoulder: '',
+    length: '',
+    neck: '',
+    waist: '',
+    lap: '',
+    knee: ''
+  }
 })
 
-export default function SizeGuideForm({ errors, gender, initialState, action, pending }: Props) {
-  const [entries, setEntries] = useState<Entry[]>(initialState.entries.length > 0 ? initialState.entries : [emptyEntry()])
+// Define which measurements to show per type
+const measurementFieldsByType: Record<GarmentType, Array<keyof Entry['measurements']>> = {
+  shirt: ['chest', 'arm', 'sleeve', 'shoulder', 'length', 'neck'],
+  jacket: ['chest', 'arm', 'sleeve', 'shoulder', 'length'],
+  trouser: ['waist', 'lap', 'length', 'knee'],
+  short: ['waist', 'lap', 'length', 'knee']
+}
 
-  function handleEntryChange(index: number, field: keyof Entry, value: string) {
-    setEntries((prev) => prev.map((e, i) => (i === index ? { ...e, [field]: value } : e)))
+// Labels for measurement fields
+const measurementLabels: Record<keyof Entry['measurements'], string> = {
+  chest: 'Chest',
+  arm: 'Arm',
+  sleeve: 'Sleeve',
+  shoulder: 'Shoulder',
+  length: 'Length',
+  neck: 'Neck',
+  waist: 'Waist',
+  lap: 'Lap',
+  knee: 'Knee'
+}
+
+export default function SizeGuideForm({ errors, gender, initialState, action, pending }: Props) {
+  const [entries, setEntries] = useState<Entry[]>(
+    initialState.entries.length > 0 ? initialState.entries : [emptyEntry()]
+  )
+
+  function handleTypeChange(index: number, newType: GarmentType) {
+    setEntries((prev) =>
+      prev.map((e, i) =>
+        i === index
+          ? {
+              ...emptyEntry(newType),
+              size: e.size // Preserve size when switching types
+            }
+          : e
+      )
+    )
+  }
+
+  function handleSizeChange(index: number, value: string) {
+    setEntries((prev) => prev.map((e, i) => (i === index ? { ...e, size: value } : e)))
+  }
+
+  function handleMeasurementChange(index: number, field: keyof Entry['measurements'], value: string) {
+    setEntries((prev) =>
+      prev.map((e, i) =>
+        i === index
+          ? {
+              ...e,
+              measurements: {
+                ...e.measurements,
+                [field]: value
+              }
+            }
+          : e
+      )
+    )
   }
 
   function addRow() {
@@ -43,13 +101,16 @@ export default function SizeGuideForm({ errors, gender, initialState, action, pe
 
   // Serialize entries into hidden inputs for FormData
   function buildHiddenInputs() {
-    return entries.map((entry, i) =>
-      Object.entries(entry).map(([key, val]) => <input key={`${i}-${key}`} type="hidden" name={`entries[${i}][${key}]`} value={val} />)
-    )
+    return entries.flatMap((entry, i) => [
+      <input key={`${i}-size`} type="hidden" name={`entries[${i}][size]`} value={entry.size} />,
+      <input key={`${i}-type`} type="hidden" name={`entries[${i}][type]`} value={entry.type} />,
+      ...Object.entries(entry.measurements).map(([key, val]) => (
+        <input key={`${i}-measurements-${key}`} type="hidden" name={`entries[${i}][measurements][${key}]`} value={val} />
+      ))
+    ])
   }
 
-  const col1Label = gender === 'women' ? 'Bust (in)' : 'Chest (in)'
-  const col1CmLabel = gender === 'women' ? 'Bust (cm)' : 'Chest (cm)'
+  const typeOptions: GarmentType[] = ['shirt', 'jacket', 'trouser', 'short']
 
   return (
     <form action={action} className="flex flex-col gap-6 w-full">
@@ -63,46 +124,85 @@ export default function SizeGuideForm({ errors, gender, initialState, action, pe
         <span className="px-3 py-1 rounded-full bg-[#202020] text-white text-xs font-medium capitalize">{gender}</span>
       </div>
 
-      {/* Entries table */}
-      <div className="w-full overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              {['Size', 'US Size', col1Label, col1CmLabel, 'Waist (in)', 'Waist (cm)', 'Hip (in)', 'Hip (cm)', ''].map((h) => (
-                <th key={h} className="px-3 py-2 text-left text-[10px] font-semibold tracking-widest uppercase text-black whitespace-nowrap">
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map((entry, i) => (
-              <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                {(['size', 'us', 'measurement1', 'measurement1Cm', 'waist', 'waistCm', 'hip', 'hipCm'] as (keyof Entry)[]).map((field) => (
-                  <td key={field} className="px-2 py-1.5">
+      {/* Entries */}
+      <div className="flex flex-col gap-4">
+        {entries.map((entry, i) => {
+          const visibleFields = measurementFieldsByType[entry.type]
+          
+          return (
+            <div key={i} className="border border-gray-200 rounded-lg p-4 bg-gray-50/30">
+              <div className="flex items-center gap-4 mb-4">
+                {/* Size input */}
+                <div className="flex-1">
+                  <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-600 mb-1">
+                    Size
+                  </label>
+                  <input
+                    type="text"
+                    value={entry.size}
+                    onChange={(e) => handleSizeChange(i, e.target.value)}
+                    className="w-full h-10 px-3 text-black text-sm border border-gray-200 focus:border-black focus:outline-none rounded"
+                    placeholder="e.g., M, L, 32"
+                  />
+                </div>
+
+                {/* Type select */}
+                <div className="flex-1">
+                  <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-600 mb-1">
+                    Type
+                  </label>
+                  <select
+                    value={entry.type}
+                    onChange={(e) => handleTypeChange(i, e.target.value as GarmentType)}
+                    className="w-full h-10 px-3 text-sm border text-black border-gray-200 focus:border-black focus:outline-none rounded bg-white"
+                  >
+                    {typeOptions.map((type) => (
+                      <option key={type} value={type} className="capitalize">
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Remove button */}
+                <button
+                  type="button"
+                  onClick={() => removeRow(i)}
+                  disabled={entries.length === 1}
+                  className="mt-5 text-red-600 hover:text-red-800 disabled:opacity-20 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Measurements grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {visibleFields.map((field) => (
+                  <div key={field}>
+                    <label className="block text-[10px] font-semibold tracking-widest uppercase text-gray-600 mb-1">
+                      {measurementLabels[field]}
+                    </label>
                     <input
                       type="text"
-                      value={entry[field]}
-                      onChange={(e) => handleEntryChange(i, field, e.target.value)}
-                      className="w-[90px] h-8 px-2 text-black text-xs border border-gray-200 focus:border-black focus:outline-none rounded"
+                      value={entry.measurements[field] || ''}
+                      onChange={(e) => handleMeasurementChange(i, field, e.target.value)}
+                      className="w-full h-10 px-3 text-sm text-black border border-gray-200 focus:border-black focus:outline-none rounded"
                       placeholder="—"
                     />
-                  </td>
+                  </div>
                 ))}
-                <td className="px-2 py-1.5">
-                  <button
-                    type="button"
-                    onClick={() => removeRow(i)}
-                    disabled={entries.length === 1}
-                    className="text-red-600 hover:text-red-800 disabled:opacity-20 transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              </div>
+
+              {/* Show error for this entry if exists */}
+              {errors[`entries.${i}.size`] && (
+                <p className="text-xs text-red-500 mt-2">{errors[`entries.${i}.size`]}</p>
+              )}
+              {errors[`entries.${i}.type`] && (
+                <p className="text-xs text-red-500 mt-2">{errors[`entries.${i}.type`]}</p>
+              )}
+            </div>
+          )
+        })}
       </div>
 
       {/* Add row */}

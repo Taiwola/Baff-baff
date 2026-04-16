@@ -50,6 +50,24 @@ export default function ProductSizes({ activeFitting, sizes, type, price, discou
     setIsFullscreen(false)
   }
 
+  // Map product type to size guide garment type
+  const getGarmentType = (productType: ProductType): 'shirt' | 'trouser' | 'jacket' | 'short' => {
+    switch (productType) {
+      case 'shirt':
+        return 'shirt'
+      case 'jacket':
+        return 'jacket'
+      case 'trouser':
+        return 'trouser'
+      case 'short':
+        return 'short'
+      default:
+        return 'shirt' // fallback
+    }
+  }
+
+  const garmentType = getGarmentType(type)
+
   return (
     <>
       {type === 'trouser' || type === 'short' ? (
@@ -138,7 +156,7 @@ export default function ProductSizes({ activeFitting, sizes, type, price, discou
                   width: zoom > 1 ? `${100 / zoom}%` : '100%'
                 }}
               >
-                <SizeGuide modal />
+                <SizeGuide modal initialType={garmentType} />
               </div>
             </div>
           </div>

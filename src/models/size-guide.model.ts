@@ -1,14 +1,24 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
+export interface ISizeGuideMeasurements {
+  // Top measurements
+  chest?: string
+  arm?: string
+  sleeve?: string
+  shoulder?: string
+  length?: string
+  neck?: string
+  
+  // Bottom measurements
+  waist?: string
+  lap?: string
+  knee?: string
+}
+
 export interface ISizeGuideEntry {
   size: string
-  us: string
-  measurement1: string
-  measurement1Cm: string
-  waist: string
-  waistCm: string
-  hip: string
-  hipCm: string
+  type: 'shirt' | 'trouser' | 'jacket' | 'short'
+  measurements: ISizeGuideMeasurements
 }
 
 export interface ISizeGuide extends Document {
@@ -19,16 +29,30 @@ export interface ISizeGuide extends Document {
   updatedAt: Date
 }
 
+const measurementsSchema = new Schema<ISizeGuideMeasurements>(
+  {
+    chest: { type: String, required: false },
+    arm: { type: String, required: false },
+    sleeve: { type: String, required: false },
+    shoulder: { type: String, required: false },
+    length: { type: String, required: false },
+    neck: { type: String, required: false },
+    waist: { type: String, required: false },
+    lap: { type: String, required: false },
+    knee: { type: String, required: false }
+  },
+  { _id: false }
+)
+
 const sizeGuideEntrySchema = new Schema<ISizeGuideEntry>(
   {
     size: { type: String, required: true },
-    us: { type: String, required: true },
-    measurement1: { type: String, required: true },
-    measurement1Cm: { type: String, required: true },
-    waist: { type: String, required: true },
-    waistCm: { type: String, required: true },
-    hip: { type: String, required: true },
-    hipCm: { type: String, required: true }
+    type: { 
+      type: String, 
+      enum: ['shirt', 'trouser', 'jacket', 'short'], 
+      required: true 
+    },
+    measurements: { type: measurementsSchema, required: true, default: {} }
   },
   { _id: false }
 )

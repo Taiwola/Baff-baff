@@ -3,12 +3,16 @@
 import { useState, useEffect } from 'react'
 import { getSizeGuideByGender } from '@actions/size-guide.actions'
 
+type GarmentType = 'shirt' | 'trouser' | 'jacket' | 'short'
+
 type Props = {
   modal?: boolean
+  initialType?: GarmentType
 }
 
-export default function SizeGuide({ modal = false }: Props) {
+export default function SizeGuide({ modal = false, initialType }: Props) {
   const [gender, setGender] = useState<'women' | 'men'>('women')
+  const [selectedType, setSelectedType] = useState<GarmentType>(initialType || 'shirt')
   const [guideData, setGuideData] = useState<SizeGuide | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -20,7 +24,49 @@ export default function SizeGuide({ modal = false }: Props) {
     })
   }, [gender])
 
-  const col3Label = gender === 'women' ? 'BUST' : 'CHEST'
+  const filteredEntries = guideData?.entries.filter(entry => entry.type === selectedType) || []
+
+  const availableTypes = guideData?.entries.length
+    ? [...new Set(guideData.entries.map(e => e.type))]
+    : []
+
+  // Only fall back if current selectedType doesn't exist in the new gender's data
+  useEffect(() => {
+    if (availableTypes.length > 0 && !availableTypes.includes(selectedType)) {
+      setSelectedType(availableTypes[0])
+    }
+  }, [availableTypes])
+
+  const getColumns = (type: GarmentType) => {
+    const columns: { key: string; label: string }[] = []
+
+    if (type === 'shirt' || type === 'jacket') {
+      columns.push({ key: 'chest', label: 'CHEST' })
+      columns.push({ key: 'arm', label: 'ARM' })
+      columns.push({ key: 'sleeve', label: 'SLEEVE' })
+      columns.push({ key: 'shoulder', label: 'SHOULDER' })
+      columns.push({ key: 'length', label: 'LENGTH' })
+      if (type === 'shirt') {
+        columns.push({ key: 'neck', label: 'NECK' })
+      }
+    } else {
+      columns.push({ key: 'waist', label: 'WAIST' })
+      columns.push({ key: 'lap', label: 'LAP' })
+      columns.push({ key: 'length', label: 'LENGTH' })
+      columns.push({ key: 'knee', label: 'KNEE' })
+    }
+
+    return columns
+  }
+
+  const columns = getColumns(selectedType)
+
+  const typeLabels: Record<GarmentType, string> = {
+    shirt: 'Shirts',
+    jacket: 'Jackets',
+    trouser: 'Trousers',
+    short: 'Shorts'
+  }
 
   return (
     <div className="w-full bg-[#f0f0f0] p-6 font-montserrat">
@@ -42,96 +88,129 @@ export default function SizeGuide({ modal = false }: Props) {
         ))}
       </div>
 
-      {/* Table card */}
-      <div className="bg-white border border-[#e0e0e0]">
-        {/* Table title */}
-        <div className="py-4 text-center border-b border-[#e0e0e0]">
-          <span className="text-xs font-normal tracking-[0.2em] uppercase text-[#202020]">
-            {gender === 'women' ? "Women's" : "Men's"} Size Chart
-          </span>
+      {/* Type selector */}
+      {!loading && availableTypes.length > 0 && (
+        <div className="flex gap-3 mb-4 flex-wrap">
+          {availableTypes.map((type) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => setSelectedType(type)}
+              className={`px-4 py-2 text-[10px] font-bold tracking-[0.18em] uppercase transition-all border ${
+                selectedType === type
+                  ? 'bg-[#202020] text-white border-[#202020]'
+                  : 'bg-transparent text-[#202020]/60 border-[#202020]/20 hover:text-[#202020] hover:border-[#202020]/40'
+              }`}
+            >
+              {typeLabels[type]}
+            </button>
+          ))}
         </div>
+      )}
 
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b border-[#e0e0e0]">
-              <th className="w-[100px]" />
-              <th className="py-3 px-4 text-center text-[11px] font-normal tracking-[0.15em] uppercase text-[#202020]">
-                US SIZE
-              </th>
-              <th className="py-3 px-4 text-center text-[11px] font-normal tracking-[0.15em] uppercase text-[#202020]">
-                {col3Label}
-              </th>
-              <th className="py-3 px-4 text-center text-[11px] font-normal tracking-[0.15em] uppercase text-[#202020]">
-                WAIST
-              </th>
-              <th className="py-3 px-4 text-center text-[11px] font-normal tracking-[0.15em] uppercase text-[#202020]">
-                HIP
-              </th>
-            </tr>
-          </thead>
+      {/* Table card */}
+      {!loading && availableTypes.length > 0 && (
+        <div className="bg-white border border-[#e0e0e0]">
+          <div className="py-4 text-center border-b border-[#e0e0e0]">
+            <span className="text-xs font-normal tracking-[0.2em] uppercase text-[#202020]">
+              {gender === 'women' ? "Women's" : "Men's"} {typeLabels[selectedType]} Size Chart
+            </span>
+          </div>
 
-          <tbody>
-            {loading ? (
-              // Skeleton rows
-              Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="border-b border-[#e0e0e0]">
-                  <td className="p-0 w-[100px]">
-                    <div className="bg-[#d0d0d0] animate-pulse min-h-[70px]" />
-                  </td>
-                  {Array.from({ length: 4 }).map((_, j) => (
-                    <td key={j} className="py-3 px-4 text-center">
-                      <div className="h-3 bg-[#e8e8e8] animate-pulse rounded mx-auto w-16 mb-1" />
-                      <div className="h-3 bg-[#e8e8e8] animate-pulse rounded mx-auto w-12" />
-                    </td>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse min-w-[600px]">
+              <thead>
+                <tr className="border-b border-[#e0e0e0]">
+                  <th className="w-[100px]" />
+                  {columns.map((col) => (
+                    <th
+                      key={col.key}
+                      className="py-3 px-4 text-center text-[11px] font-normal tracking-[0.15em] uppercase text-[#202020]"
+                    >
+                      {col.label}
+                    </th>
                   ))}
                 </tr>
-              ))
-            ) : !guideData || guideData.entries.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="py-10 text-center text-sm text-[#9B8B7A]">
-                  No size guide available for {gender === 'women' ? "women" : "men"} yet.
-                </td>
-              </tr>
-            ) : (
-              guideData.entries.map((entry) => (
-                <tr key={entry.size} className="border-b border-[#e0e0e0] last:border-b-0">
-                  {/* Size label — black cell */}
-                  <td className="p-0 w-[100px]">
-                    <div className="bg-[#202020] flex items-center justify-center h-full min-h-[70px]">
-                      <span className="text-white text-xs font-medium tracking-[0.18em] uppercase">
-                        {entry.size}
-                      </span>
-                    </div>
-                  </td>
+              </thead>
 
-                  {/* US Size */}
-                  <td className="py-3 px-4 text-center">
-                    <span className="text-sm font-normal text-[#202020]">{entry.us}</span>
-                  </td>
+              <tbody>
+                {filteredEntries.length === 0 ? (
+                  <tr>
+                    <td colSpan={columns.length + 1} className="py-10 text-center text-sm text-[#9B8B7A]">
+                      No {typeLabels[selectedType].toLowerCase()} size guide available for {gender === 'women' ? "women" : "men"} yet.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredEntries.map((entry) => (
+                    <tr key={`${entry.type}-${entry.size}`} className="border-b border-[#e0e0e0] last:border-b-0">
+                      <td className="p-0 w-[100px]">
+                        <div className="bg-[#202020] flex items-center justify-center h-full min-h-[70px]">
+                          <span className="text-white text-xs font-medium tracking-[0.18em] uppercase">
+                            {entry.size}
+                          </span>
+                        </div>
+                      </td>
+                      {columns.map((col) => (
+                        <td key={col.key} className="py-3 px-4 text-center">
+                          <span className="text-sm font-normal text-[#202020]">
+                            {entry.measurements[col.key as keyof typeof entry.measurements] || '—'}
+                          </span>
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
-                  {/* Bust / Chest */}
-                  <td className="py-3 px-4 text-center">
-                    <span className="block text-sm font-normal text-[#202020]">{entry.measurement1}</span>
-                    <span className="block text-xs font-normal text-[#202020] mt-0.5">{entry.measurement1Cm}</span>
-                  </td>
+      {/* No data state */}
+      {!loading && availableTypes.length === 0 && (
+        <div className="bg-white border border-[#e0e0e0] p-10 text-center">
+          <span className="text-sm text-[#9B8B7A]">
+            No size guide available for {gender === 'women' ? "women" : "men"} yet.
+          </span>
+        </div>
+      )}
 
-                  {/* Waist */}
-                  <td className="py-3 px-4 text-center">
-                    <span className="block text-sm font-normal text-[#202020]">{entry.waist}</span>
-                    <span className="block text-xs font-normal text-[#202020] mt-0.5">{entry.waistCm}</span>
-                  </td>
-
-                  {/* Hip */}
-                  <td className="py-3 px-4 text-center">
-                    <span className="block text-sm font-normal text-[#202020]">{entry.hip}</span>
-                    <span className="block text-xs font-normal text-[#202020] mt-0.5">{entry.hipCm}</span>
-                  </td>
+      {/* Loading state */}
+      {loading && (
+        <div className="bg-white border border-[#e0e0e0]">
+          <div className="py-4 text-center border-b border-[#e0e0e0]">
+            <div className="h-4 w-48 bg-[#e8e8e8] animate-pulse rounded mx-auto" />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse min-w-[600px]">
+              <thead>
+                <tr className="border-b border-[#e0e0e0]">
+                  <th className="w-[100px]" />
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <th key={i} className="py-3 px-4 text-center">
+                      <div className="h-3 w-16 bg-[#e8e8e8] animate-pulse rounded mx-auto" />
+                    </th>
+                  ))}
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="border-b border-[#e0e0e0]">
+                    <td className="p-0 w-[100px]">
+                      <div className="bg-[#d0d0d0] animate-pulse min-h-[70px]" />
+                    </td>
+                    {Array.from({ length: 5 }).map((_, j) => (
+                      <td key={j} className="py-3 px-4 text-center">
+                        <div className="h-4 bg-[#e8e8e8] animate-pulse rounded mx-auto w-16" />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

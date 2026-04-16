@@ -21,13 +21,13 @@ export default function Footer() {
       <div className="md:hidden flex flex-col justify-center items-center mt-10 gap-3">
         <p className="text-[#FEFEFE] font-montserrat font-semibold">Follow us</p>
         <div className="flex justify-center items-center gap-6">
-          <Link href="https://x.com/yourusername" target="_blank" rel="noopener noreferrer">
+          <Link href="https://x.com/baffabaffaa?s=21" target="_blank" rel="noopener noreferrer">
                 <TwitterSvg />
               </Link>
               <Link href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
                 <FacebookSvg />
               </Link>
-              <Link href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer">
+              <Link href="https://www.instagram.com/baffabaffaofficial?igsh=MTIyMjF2ODZpY2lobg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">
                 <InstagramSvg />
               </Link>
               <Link href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer">
@@ -58,13 +58,13 @@ export default function Footer() {
             <p className="text-[#FEFEFE] font-montserrat font-semibold">Follow us</p>
 
             <div className="flex justify-center items-center gap-6">
-              <Link href="https://x.com/yourusername" target="_blank" rel="noopener noreferrer">
+              <Link href="https://x.com/baffabaffaa?s=21" target="_blank" rel="noopener noreferrer">
                 <TwitterSvg />
               </Link>
               <Link href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
                 <FacebookSvg />
               </Link>
-              <Link href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer">
+              <Link href="https://www.instagram.com/baffabaffaofficial?igsh=MTIyMjF2ODZpY2lobg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">
                 <InstagramSvg />
               </Link>
               <Link href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer">
