@@ -1,14 +1,26 @@
 type SizeGuideGender = 'men' | 'women'
 
+type SizeGuideGarmentType = 'shirt' | 'trouser' | 'jacket' | 'short'
+
+type SizeGuideMeasurements = {
+  // Top measurements
+  chest?: string
+  arm?: string
+  sleeve?: string
+  shoulder?: string
+  length?: string
+  neck?: string
+  
+  // Bottom measurements
+  waist?: string
+  lap?: string
+  knee?: string
+}
+
 type SizeGuideEntry = {
   size: string
-  us: string
-  measurement1: string // bust (women) or chest (men)
-  measurement1Cm: string
-  waist: string
-  waistCm: string
-  hip: string
-  hipCm: string
+  type: SizeGuideGarmentType
+  measurements: SizeGuideMeasurements
 }
 
 type SizeGuide = {
