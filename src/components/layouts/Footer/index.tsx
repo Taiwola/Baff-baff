@@ -24,7 +24,7 @@ export default function Footer() {
           <Link href="https://x.com/baffabaffaa?s=21" target="_blank" rel="noopener noreferrer">
                 <TwitterSvg />
               </Link>
-              <Link href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
+              <Link href="https://web.facebook.com/baffabaffaofficial" target="_blank" rel="noopener noreferrer">
                 <FacebookSvg />
               </Link>
               <Link href="https://www.instagram.com/baffabaffaofficial?igsh=MTIyMjF2ODZpY2lobg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">
@@ -61,7 +61,7 @@ export default function Footer() {
               <Link href="https://x.com/baffabaffaa?s=21" target="_blank" rel="noopener noreferrer">
                 <TwitterSvg />
               </Link>
-              <Link href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
+              <Link href="https://web.facebook.com/baffabaffaofficial" target="_blank" rel="noopener noreferrer">
                 <FacebookSvg />
               </Link>
               <Link href="https://www.instagram.com/baffabaffaofficial?igsh=MTIyMjF2ODZpY2lobg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">
