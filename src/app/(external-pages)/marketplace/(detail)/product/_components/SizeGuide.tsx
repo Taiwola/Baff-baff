@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default function SizeGuide({ modal = false, initialType }: Props) {
-  const [gender, setGender] = useState<'women' | 'men'>('women')
+  const [gender, setGender] = useState<'women' | 'men'>('men')
   const [selectedType, setSelectedType] = useState<GarmentType>(initialType || 'shirt')
   const [guideData, setGuideData] = useState<SizeGuide | null>(null)
   const [loading, setLoading] = useState(true)
@@ -72,7 +72,7 @@ export default function SizeGuide({ modal = false, initialType }: Props) {
     <div className="w-full bg-[#f0f0f0] p-6 font-montserrat">
       {/* Gender toggle */}
       <div className="flex gap-4 mb-5">
-        {(['women', 'men'] as const).map((g) => (
+        {(['men', 'women'] as const).map((g) => (
           <button
             key={g}
             type="button"
@@ -83,7 +83,7 @@ export default function SizeGuide({ modal = false, initialType }: Props) {
                 : 'border-transparent text-black/40 hover:text-black/70'
             }`}
           >
-            {g === 'women' ? "Women's" : "Men's"}
+            {g === 'men' ? "Men's" : "Women's"}
           </button>
         ))}
       </div>
