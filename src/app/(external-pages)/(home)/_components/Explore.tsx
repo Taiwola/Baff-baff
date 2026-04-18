@@ -12,7 +12,7 @@ export default function Explore() {
          {/* explore card */}
          <div className="flex flex-col md:flex-row gap-6 justify-center">
             <ExploreCard
-               image="/images/corporate.png"
+               image="/images/corporate.jpeg"
                text="CORPORATES"
                href='/marketplace/corporates'
             />

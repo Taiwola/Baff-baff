@@ -18,7 +18,7 @@ export default function FilterDrawer() {
             onClick={onOpen}
             size="md"
             variant="bordered"
-            className="font-montserrat flex-1 gap-[1px] text-[0.6875rem] py-3.5"
+            className="font-montserrat flex-1 gap-px text-[0.6875rem] py-3.5"
          >
             <AdjustmentsHorizontalIcon className="w-4 h-4" />
             <span>Filter</span>
