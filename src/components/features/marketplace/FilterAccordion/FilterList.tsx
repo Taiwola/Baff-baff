@@ -13,7 +13,6 @@ export default function FilterList({ selectedKey, items, onSelect }: FilterListP
 
    return (
       <Listbox
-         disallowEmptySelection
          aria-label="Filter list"
          selectionMode="single"
          variant="flat"

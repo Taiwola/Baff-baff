@@ -15,7 +15,8 @@ export const updateUserSchema = z
       .optional(),
 
     phoneNumber: z.string().min(11).optional(),
-    gender: z.enum(['Male', 'Female']).optional()
+    gender: z.enum(['Male', 'Female']).optional(),
+    role: z.enum(['user', 'admin']).optional()
   })
 
   export type UpdateUserDto = z.infer<typeof updateUserSchema>
