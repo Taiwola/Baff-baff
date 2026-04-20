@@ -22,7 +22,7 @@ export default function UsersList({ promise }: Props) {
       lastName: user.lastName,
       email: user.email,
       phone: user.phoneNumber || <div className="w-full text-center">-</div>,
-      goodsPurchased: 0
+      goodsPurchased: user.numberOfItems ?? 0
    }))
 
    function handleChangePage(page: number) {

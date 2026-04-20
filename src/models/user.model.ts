@@ -12,6 +12,7 @@ export interface IUser extends Document {
   termsAndCondition: boolean
   googleProviderId: string
   password: string
+  numberOfItems: number
   createdAt: Date
   updatedAt: Date
   comparePassword(candidatePassword: string): Promise<boolean>
@@ -27,7 +28,8 @@ const usersSchema: Schema<IUser> = new Schema(
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     gender: { type: String, enum: ['Male', 'Female']},
     termsAndCondition: { type: Boolean, default: false },
-    googleProviderId: { type: String }
+    googleProviderId: { type: String },
+    numberOfItems: {type: Number, default: 0}
   },
   {
     timestamps: true

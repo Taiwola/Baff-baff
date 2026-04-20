@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
   const pageSize = queries?.limit || 10
 
   const {users, count} = await getAllUsers(queries)
+  console.log(users)
   const transformedUsers = adaptUsers({ data: users, total:count, page, pageSize })
 
   return sendResponse('Users fetched successfully', transformedUsers, 200)

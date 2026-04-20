@@ -75,13 +75,30 @@ export const generateOrderPaymentEmail = (user: { name?: string; email: string }
       
       <p style="color: #666; line-height: 1.6;">Hi ${displayName},</p>
       <p style="color: #666; line-height: 1.6;">
-        We’re excited to let you know that your payment has been successfully received. 
+        We're excited to let you know that your payment has been successfully received. 
         Your order <strong>#${orderId}</strong> is now being processed.
       </p>
 
       <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin: 20px 0;">
         <p style="margin: 0; color: #333;"><strong>Order ID:</strong> ${orderId}</p>
         <p style="margin: 0; color: #333;"><strong>Status:</strong> Paid</p>
+      </div>
+
+      <div style="background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: 15px; margin: 20px 0;">
+        <p style="margin: 0 0 8px 0; color: #333;"><strong>🚚 Delivery Information</strong></p>
+        <p style="margin: 0 0 8px 0; color: #666; line-height: 1.6;">
+          All orders are delivered via <strong>road transport or non-express</strong> and typically arrive within 
+          <strong>5–10 working days</strong>.
+        </p>
+        <p style="margin: 0; color: #666; line-height: 1.6;">
+          Need it faster? If you'd like <strong>express or air delivery</strong>, please reach out to us 
+          on WhatsApp and we'll arrange it for you:
+          <br><br>
+          <a href="https://wa.me/2348077775745" 
+            style="display: inline-block; background-color: #25D366; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
+            💬 Chat on WhatsApp
+          </a>
+        </p>
       </div>
 
       <p style="color: #666; line-height: 1.6;">
@@ -125,17 +142,6 @@ export const generateOrderStatusUpdateEmail = (
         <p style="margin: 0; color: #333;"><strong>New Status:</strong> ${order.status}</p>
       </div>
 
-      <p style="color: #666; line-height: 1.6;">
-        You can view your order details or track its progress using the link below.
-      </p>
-
-      <div style="text-align: center; margin: 30px 0;">
-         <a href="${CLIENT_URL}/orders/${order.id}" 
-           style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
-           View Order
-        </a>
-      </div>
-
       <p style="color: #666; line-height: 1.6; font-size: 14px;">
         Thank you for shopping with us. We appreciate your patience as we complete your order.
       </p>
@@ -147,6 +153,18 @@ export const generateOrderStatusUpdateEmail = (
     </div>
   `
 }
+
+
+// <p style="color: #666; line-height: 1.6;">
+      //   You can view your order details or track its progress using the link below.
+      // </p>
+
+      // <div style="text-align: center; margin: 30px 0;">
+      //    <a href="${CLIENT_URL}/orders/${order.id}" 
+      //      style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+      //      View Order
+      //   </a>
+      // </div>
 
 
 /**

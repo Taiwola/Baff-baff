@@ -11,6 +11,7 @@ export function adaptUser(user: IUser): User {
     phoneNumber: user.phoneNumber,
     gender: user.gender,
     role: user.role || 'user',
+    numberOfItems: user.numberOfItems,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString()
   }
