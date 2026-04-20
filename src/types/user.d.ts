@@ -6,6 +6,7 @@ type User = {
   phoneNumber?: string
   gender?: Gender
   email: string
+  numberOfItems: number
   role: UserRole
   createdAt: string
   updatedAt: string

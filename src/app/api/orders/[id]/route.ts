@@ -4,6 +4,9 @@ import { adaptOrder } from '@adapters/order.adapter'
 import { NextRequest } from 'next/server'
 import dbConnect from '@lib/database'
 import { updateOrderSchema } from '@validations/order'
+import { generateOrderStatusUpdateEmail } from '@utils/mail-content'
+import { getOneUser, updateUser } from '@services/user'
+import { sendEmail } from '@lib/mail'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await dbConnect()
@@ -20,11 +23,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   return sendResponse('Order found', transfromData, 200)
 }
 
-
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    await dbConnect()
-    const body = await req.json() 
-   const id = (await params).id
+  await dbConnect()
+  const body = await req.json()
+  const id = (await params).id
   const Order = await getOneOrderById(id)
 
   if (!Order) {
@@ -42,9 +44,27 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { status } = result.data
 
   try {
-    const updtOrder = await updateOrder(Order.id, {status: status})
+    const updtOrder = await updateOrder(Order.id, { status: status })
     if (!updtOrder) {
       return errorResponse('Order update failed', null, 500)
+    }
+    const user = await getOneUser({ id: updtOrder.userId })
+
+    const statusContent = generateOrderStatusUpdateEmail(
+      { name: updtOrder.shippingAddress.fullName, email: updtOrder.shippingAddress.email },
+      { id: updtOrder.id, status: updtOrder.status }
+    )
+
+    const { error, errorMessage } = await sendEmail(updtOrder.shippingAddress.email, statusContent, 'Order status', 'Baffa Baffa')
+
+    if (error) {
+      console.log(errorMessage)
+    }
+
+    if (user) {
+      if (updtOrder.status === 'delivered') {
+        await updateUser(user, { numberOfItems: user.numberOfItems + 1 })
+      }
     }
     const transfromData = adaptOrder(updtOrder)
     return sendResponse('Order updated successfully', transfromData, 200)

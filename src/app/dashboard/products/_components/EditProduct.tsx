@@ -32,6 +32,7 @@ export default function EditProduct({ materials, product }: Props) {
          collaborator: product.collaborator?.id,
          yard: product.yard,
          s: product.sizes.s,
+         m: product.sizes.m,
          l: product.sizes.l,
          xl: product.sizes.xl,
          xxl: product.sizes.xxl,
