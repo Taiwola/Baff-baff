@@ -60,7 +60,7 @@ export function parseProductForm(formData: FormData): CreateProductDto {
     l: parseSize(formData, 'l'),
     xl: parseSize(formData, 'xl'),
     xxl: parseSize(formData, 'xxl'),
-    xxxl: parseSize(formData, 'xxl')
+    xxxl: parseSize(formData, 'xxxl')
   }
 }
 
