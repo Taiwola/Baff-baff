@@ -1,81 +1,86 @@
-import type { Metadata } from "next"
-import { Poppins, Montserrat, Roboto, Lexend_Deca } from "next/font/google"
-import HeroUiProvider from "../providers/herouiProvider"
-import ToastProvider from "@providers/ToastProvider"
+import type { Metadata } from 'next'
+import { Poppins, Montserrat, Roboto, Lexend_Deca } from 'next/font/google'
+import HeroUiProvider from '../providers/herouiProvider'
+import ToastProvider from '@providers/ToastProvider'
 
-import "@styles/globals.css"
-import { auth } from "@auth"
-import { CartProvider } from "@contexts/carts.context"
-import { SessionProvider } from "next-auth/react"
+import '@styles/globals.css'
+import { auth } from '@auth'
+import { CartProvider } from '@contexts/carts.context'
+import { SessionProvider } from 'next-auth/react'
+import Script from 'next/script'
 
 const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-poppins",
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-poppins'
 })
 
 const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-montserrat",
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-montserrat'
 })
 
 const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-roboto",
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-roboto'
 })
 
 const lexendDeca = Lexend_Deca({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-lexend-deca",
-});
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-lexend-deca'
+})
 
 export const metadata: Metadata = {
   title: {
-    default: "Baffa Baffa | Premium Made-in-Nigeria Clothing",
-    template: "%s | Baffa Baffa"
+    default: 'Baffa Baffa | Premium Made-in-Nigeria Clothing',
+    template: '%s | Baffa Baffa'
   },
-  description: "Baffa Baffa offers stylish, high-quality men\'s clothing crafted in Nigeria. Shop smart, dress sharp — built for quality, value and modern style.",
+  description:
+    "Baffa Baffa offers stylish, high-quality men\'s clothing crafted in Nigeria. Shop smart, dress sharp — built for quality, value and modern style.",
   keywords: [
-    "Baffa Baffa",
-    "made in Nigeria clothing",
+    'Baffa Baffa',
+    'made in Nigeria clothing',
     "men\'s fashion Nigeria",
     "premium men\'s shirts Lagos",
-    "affordable quality apparel Africa",
-    "African fashion brand"
+    'affordable quality apparel Africa',
+    'African fashion brand'
   ],
-  authors: [{ name: "Tobi Olanitori", url: "https://intuneteq.com" }, { name: "Seun Olanitori", url: "https://github.com/Taiwola" }],
-  creator: "Baffa Baffa",
-  publisher: "Baffa Baffa",
-  metadataBase: new URL("https://baffabaffa.com"),
+  authors: [
+    { name: 'Tobi Olanitori', url: 'https://intuneteq.com' },
+    { name: 'Seun Olanitori', url: 'https://github.com/Taiwola' }
+  ],
+  creator: 'Baffa Baffa',
+  publisher: 'Baffa Baffa',
+  metadataBase: new URL('https://baffabaffa.com'),
   openGraph: {
     title: "Baffa Baffa | Premium Men\'s Clothing from Nigeria",
-    description: "Discover smart, modern clothing for men — designed in Nigeria, worn with confidence. Shop Baffa Baffa today.",
-    url: "https://baffabaffa.com",
-    siteName: "Baffa Baffa",
+    description: 'Discover smart, modern clothing for men — designed in Nigeria, worn with confidence. Shop Baffa Baffa today.',
+    url: 'https://baffabaffa.com',
+    siteName: 'Baffa Baffa',
     images: [
       {
-        url: "https://baffabaffa.com/images/og-image.png",
+        url: 'https://baffabaffa.com/images/og-image.png',
         width: 1200,
         height: 630,
         alt: "Baffa Baffa men\'s fashion collection"
       }
     ],
-    locale: "en_US",
-    type: "website"
+    locale: 'en_US',
+    type: 'website'
   },
   twitter: {
-    card: "summary_large_image",
+    card: 'summary_large_image',
     title: "Baffa Baffa | Premium Men\'s Clothing from Nigeria",
     description: "Explore our latest collection of stylish men'\s shirts and attire — quality meets affordability with Baffa Baffa.",
-    images: ["https://baffabaffa.com/images/og-image.png"],
-    creator: "@baffabaffaofficial"
+    images: ['https://baffabaffa.com/images/og-image.png'],
+    creator: '@baffabaffaofficial'
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png"
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png'
   }
 }
 
@@ -83,12 +88,39 @@ type Props = Readonly<{
   children: React.ReactNode
 }>
 
-
 export default async function RootLayout({ children }: Props) {
   const session = await auth()
 
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      <head>
+        {/* Google Analytics */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-DBQDFK4XWX" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-DBQDFK4XWX');
+          `}
+        </Script>
+
+        {/* Meta Pixel */}
+        <Script id="meta-pixel" strategy="afterInteractive">
+          {`
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '4521390578104307');
+            fbq('track', 'PageView');
+          `}
+        </Script>
+      </head>
       <body
         suppressHydrationWarning
         className={`${poppins.variable} ${montserrat.variable} ${roboto.variable} ${lexendDeca.variable} min:h-screen w-full`}
@@ -96,9 +128,7 @@ export default async function RootLayout({ children }: Props) {
         <SessionProvider session={session}>
           <ToastProvider>
             <HeroUiProvider>
-              <CartProvider>
-                {children}
-              </CartProvider>
+              <CartProvider>{children}</CartProvider>
             </HeroUiProvider>
           </ToastProvider>
         </SessionProvider>
