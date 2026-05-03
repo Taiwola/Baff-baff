@@ -45,8 +45,7 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
   const { min, max } = getPriceRange(product)
 
   function handleAddToCart() {
-
-  const finalPrice = typeof discountPrice === 'number' && !isNaN(discountPrice) ? discountPrice : price
+    const finalPrice = typeof discountPrice === 'number' && !isNaN(discountPrice) ? discountPrice : price
 
     addItem({
       id: uuidv4(),
@@ -64,6 +63,17 @@ export default function ProductCustomization({ product, shirtMeasurement, trouse
       },
       quantity: state.quantity
     })
+
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      ;(window as any).fbq('track', 'AddToCart', {
+        content_name: product.name,
+        content_ids: [product.id],
+        content_type: 'product',
+        value: finalPrice * state.quantity,
+        currency: 'NGN',
+        num_items: state.quantity
+      })
+    }
 
     router.push('/cart')
   }
