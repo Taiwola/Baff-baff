@@ -28,7 +28,7 @@ if (!globalWithMongoose.mongooseCache) {
 
 export default async function dbConnect(): Promise<typeof mongoose> {
   if (mongooseCache.conn) {
-    console.log("[dbConnect] Using cached connection. readyState:", mongooseCache.conn.connection.readyState);
+    // console.log("[dbConnect] Using cached connection. readyState:", mongooseCache.conn.connection.readyState);
     return mongooseCache.conn;
   }
 
@@ -43,7 +43,7 @@ export default async function dbConnect(): Promise<typeof mongoose> {
 
   try {
     mongooseCache.conn = await mongooseCache.promise;
-    console.log("[dbConnect] Connected successfully. readyState:", mongooseCache.conn.connection.readyState, "| db name:", mongooseCache.conn.connection.name);
+    // console.log("[dbConnect] Connected successfully. readyState:", mongooseCache.conn.connection.readyState, "| db name:", mongooseCache.conn.connection.name);
   } catch (err) {
     console.error("[dbConnect] Connection FAILED:", err);
     mongooseCache.promise = null;

@@ -17,11 +17,19 @@ export default function SizeGuide({ modal = false, initialType }: Props) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
+
     setLoading(true)
     getSizeGuideByGender(gender).then((data) => {
-      setGuideData(data)
-      setLoading(false)
+      if (isMounted) {
+        setGuideData(data)
+        setLoading(false)
+      }
     })
+
+    return () => {
+      isMounted = false
+    }
   }, [gender])
 
   const filteredEntries = guideData?.entries.filter(entry => entry.type === selectedType) || []
